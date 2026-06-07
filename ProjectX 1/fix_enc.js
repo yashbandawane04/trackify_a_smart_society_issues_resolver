@@ -1,0 +1,10 @@
+const fs = require('fs');
+const file = 'society-hub/app/dashboard/documents/page.tsx';
+let c = fs.readFileSync(file, 'utf8');
+c = c.replace(/\u2013|\u2014/g, '-');
+c = c.replace(/\u2022/g, '*');
+c = c.replace(/\u20B9/g, 'Rs.');
+c = c.replace(/\u2713/g, 'OK');
+c = c.replace(/\u2192/g, '->');
+fs.writeFileSync(file, c, 'utf8');
+console.log('done');
