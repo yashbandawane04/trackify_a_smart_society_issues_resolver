@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sequence Diagram – Trackify</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;600;700&display=swap');
+  @page { size: A4 landscape; margin: 20mm; }
+  @media print { body { margin: 0; } }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'EB Garamond', Garamond, 'Times New Roman', serif;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20mm;
+  }
+  h1 { font-size: 18pt; font-weight: 700; text-align: center; margin-bottom: 4pt; }
+  p.sub { font-size: 12pt; color: #444; text-align: center; margin-bottom: 12pt; }
+  svg text { font-family: 'EB Garamond', Garamond, 'Times New Roman', serif; }
+</style>
+</head>
+<body>
+<h1>Sequence Diagram</h1>
+<p class="sub">Trackify – Issue Submission to Resolution (Full Lifecycle)</p>
+<svg width="760" height="680" viewBox="0 0 760 680" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="fwd" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L0,8 L10,4 z" fill="#222"/>
+    </marker>
+    <marker id="ret" markerWidth="10" markerHeight="8" refX="1" refY="4" orient="auto">
+      <path d="M10,0 L10,8 L0,4 z" fill="#555"/>
+    </marker>
+  </defs>
+
+  <!-- ── LIFELINE HEADERS ── -->
+  <rect x="10"  y="14" width="100" height="38" rx="6" fill="#222"/>
+  <text x="60"  y="37" text-anchor="middle" font-size="13" fill="#fff" font-weight="bold">Resident</text>
+
+  <rect x="140" y="14" width="100" height="38" rx="6" fill="#444"/>
+  <text x="190" y="37" text-anchor="middle" font-size="13" fill="#fff" font-weight="bold">Browser</text>
+
+  <rect x="270" y="14" width="110" height="38" rx="6" fill="#333"/>
+  <text x="325" y="30" text-anchor="middle" font-size="13" fill="#fff" font-weight="bold">Next.js</text>
+  <text x="325" y="46" text-anchor="middle" font-size="11" fill="#ccc">API Routes</text>
+
+  <rect x="410" y="14" width="100" height="38" rx="6" fill="#555"/>
+  <text x="460" y="37" text-anchor="middle" font-size="13" fill="#fff" font-weight="bold">Gemini AI</text>
+
+  <rect x="540" y="14" width="110" height="38" rx="6" fill="#333"/>
+  <text x="595" y="30" text-anchor="middle" font-size="13" fill="#fff" font-weight="bold">Supabase</text>
+  <text x="595" y="46" text-anchor="middle" font-size="11" fill="#ccc">DB + Auth</text>
+
+  <rect x="680" y="14" width="70" height="38" rx="6" fill="#222"/>
+  <text x="715" y="37" text-anchor="middle" font-size="13" fill="#fff" font-weight="bold">Admin</text>
+
+  <!-- ── LIFELINES ── -->
+  <line x1="60"  y1="52" x2="60"  y2="670" stroke="#888" stroke-width="1.2" stroke-dasharray="5,4"/>
+  <line x1="190" y1="52" x2="190" y2="670" stroke="#888" stroke-width="1.2" stroke-dasharray="5,4"/>
+  <line x1="325" y1="52" x2="325" y2="670" stroke="#888" stroke-width="1.2" stroke-dasharray="5,4"/>
+  <line x1="460" y1="52" x2="460" y2="670" stroke="#888" stroke-width="1.2" stroke-dasharray="5,4"/>
+  <line x1="595" y1="52" x2="595" y2="670" stroke="#888" stroke-width="1.2" stroke-dasharray="5,4"/>
+  <line x1="715" y1="52" x2="715" y2="670" stroke="#888" stroke-width="1.2" stroke-dasharray="5,4"/>
+
+  <!-- Activation boxes -->
+  <rect x="56"  y="80"  width="8" height="540" fill="#ddd" stroke="#888" stroke-width="1"/>
+  <rect x="186" y="100" width="8" height="500" fill="#ddd" stroke="#888" stroke-width="1"/>
+  <rect x="321" y="140" width="8" height="380" fill="#ddd" stroke="#888" stroke-width="1"/>
+  <rect x="456" y="180" width="8" height="80"  fill="#ddd" stroke="#888" stroke-width="1"/>
+  <rect x="591" y="260" width="8" height="260" fill="#ddd" stroke="#888" stroke-width="1"/>
+  <rect x="711" y="340" width="8" height="200" fill="#ddd" stroke="#888" stroke-width="1"/>
+
+  <!-- Messages -->
+  <line x1="64"  y1="90"  x2="186" y2="90"  stroke="#222" stroke-width="1.8" marker-end="url(#fwd)"/>
+  <text x="125"  y="84"   text-anchor="middle" font-size="12" font-weight="bold">1. Open Issue Form</text>
+
+  <line x1="194" y1="120" x2="321" y2="120" stroke="#222" stroke-width="1.8" marker-end="url(#fwd)"/>
+  <text x="257"  y="114"  text-anchor="middle" font-size="12" font-weight="bold">2. GET /dashboard/issues/new</text>
+
+  <line x1="321" y1="148" x2="194" y2="148" stroke="#555" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#ret)"/>
+  <text x="257"  y="142"  text-anchor="middle" font-size="12" fill="#555">3. Return form page (SSR)</text>
+
+  <line x1="64"  y1="178" x2="186" y2="178" stroke="#222" stroke-width="1.8" marker-end="url(#fwd)"/>
+  <text x="125"  y="172"  text-anchor="middle" font-size="12" font-weight="bold">4. Fill &amp; Submit Form</text>
+
+  <line x1="194" y1="208" x2="321" y2="208" stroke="#222" stroke-width="1.8" marker-end="url(#fwd)"/>
+  <text x="257"  y="202"  text-anchor="middle" font-size="12" font-weight="bold">5. POST /api/classify-issue</text>
+
+  <line x1="329" y1="238" x2="456" y2="238" stroke="#222" stroke-width="1.8" marker-end="url(#fwd)"/>
+  <text x="392"  y="232"  text-anchor="middle" font-size="12" font-weight="bold">6. Classify(title, description)</text>
+
+  <line x1="456" y1="268" x2="329" y2="268" stroke="#555" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#ret)"/>
+  <text x="392"  y="262"  text-anchor="middle" font-size="12" fill="#555">7. {category, priority, enhanced_desc}</text>
+
+  <line x1="329" y1="298" x2="194" y2="298" stroke="#555" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#ret)"/>
+  <text x="257"  y="292"  text-anchor="middle" font-size="12" fill="#555">8. Show AI suggestions</text>
+
+  <line x1="64"  y1="328" x2="186" y2="328" stroke="#222" stroke-width="1.8" marker-end="url(#fwd)"/>
+  <text x="125"  y="322"  text-anchor="middle" font-size="12" font-weight="bold">9. Confirm &amp; Submit</text>
+
+  <line x1="194" y1="358" x2="321" y2="358" stroke="#222" stroke-width="1.8" marker-end="url(#fwd)"/>
+  <text x="257"  y="352"  text-anchor="middle" font-size="12" font-weight="bold">10. POST /api/issues</text>
+
+  <line x1="329" y1="388" x2="591" y2="388" stroke="#222" stroke-width="1.8" marker-end="url(#fwd)"/>
+  <text x="460"  y="382"  text-anchor="middle" font-size="12" font-weight="bold">11. INSERT issue record</text>
+
+  <line x1="591" y1="418" x2="329" y2="418" stroke="#555" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#ret)"/>
+  <text x="460"  y="412"  text-anchor="middle" font-size="12" fill="#555">12. Return issue_id</text>
+
+  <line x1="329" y1="448" x2="194" y2="448" stroke="#555" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#ret)"/>
+  <text x="257"  y="442"  text-anchor="middle" font-size="12" fill="#555">13. Redirect to issue detail</text>
+
+  <line x1="599" y1="478" x2="711" y2="478" stroke="#222" stroke-width="1.8" marker-end="url(#fwd)"/>
+  <text x="655"  y="472"  text-anchor="middle" font-size="12" font-weight="bold">14. Push notification to Admin</text>
+
+  <line x1="711" y1="508" x2="599" y2="508" stroke="#222" stroke-width="1.8" marker-end="url(#fwd)"/>
+  <text x="655"  y="502"  text-anchor="middle" font-size="12" font-weight="bold">15. Admin assigns issue</text>
+
+  <line x1="711" y1="538" x2="599" y2="538" stroke="#222" stroke-width="1.8" marker-end="url(#fwd)"/>
+  <text x="655"  y="532"  text-anchor="middle" font-size="12" font-weight="bold">16. UPDATE status = Resolved</text>
+
+  <line x1="591" y1="568" x2="64"  y2="568" stroke="#555" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#ret)"/>
+  <text x="327"  y="562"  text-anchor="middle" font-size="12" fill="#555">17. Notify resident: issue resolved</text>
+
+  <line x1="64"  y1="598" x2="591" y2="598" stroke="#222" stroke-width="1.8" marker-end="url(#fwd)"/>
+  <text x="327"  y="592"  text-anchor="middle" font-size="12" font-weight="bold">18. Resident confirms + rates (1–5)</text>
+
+  <line x1="591" y1="628" x2="64"  y2="628" stroke="#555" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#ret)"/>
+  <text x="327"  y="622"  text-anchor="middle" font-size="12" fill="#555">19. status = Closed · rating saved</text>
+
+  <!-- Legend -->
+  <line x1="20" y1="658" x2="70" y2="658" stroke="#222" stroke-width="1.8" marker-end="url(#fwd)"/>
+  <text x="78" y="663" font-size="12" fill="#333">Request</text>
+  <line x1="160" y1="658" x2="210" y2="658" stroke="#555" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#ret)"/>
+  <text x="218" y="663" font-size="12" fill="#555">Response</text>
+</svg>
+</body>
+</html>

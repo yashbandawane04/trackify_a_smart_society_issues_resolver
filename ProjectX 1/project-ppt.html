@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trackify – Smart Society Management System</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #0f172a; color: #1e293b; }
+    .slide {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 60px 80px;
+      position: relative;
+      border-bottom: 4px solid rgba(255,255,255,0.08);
+    }
+    .slide-inner {
+      width: 100%;
+      max-width: 900px;
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 56px 64px;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.35);
+      position: relative;
+    }
+    .slide-number {
+      position: absolute;
+      top: 20px;
+      right: 28px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #94a3b8;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .slide h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 28px;
+      line-height: 1.2;
+    }
+    .slide ul {
+      list-style: none;
+      padding: 0;
+    }
+    .slide ul li {
+      font-size: 1.05rem;
+      line-height: 1.7;
+      padding: 10px 0 10px 28px;
+      position: relative;
+      color: #334155;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .slide ul li:last-child { border-bottom: none; }
+    .slide ul li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent, #3b82f6);
+    }
+    /* Accent colors per slide group */
+    .s1  { background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%); }
+    .s1 .slide-inner { background: linear-gradient(135deg, #1d4ed8, #0ea5e9); color: #fff; }
+    .s1 h1 { color: #fff; font-size: 2.6rem; }
+    .s1 .subtitle { color: rgba(255,255,255,0.85); font-size: 1.15rem; margin-top: 12px; }
+    .s1 .tag { display: inline-block; background: rgba(255,255,255,0.2); color: #fff; padding: 6px 18px; border-radius: 999px; font-size: 0.85rem; margin-top: 20px; letter-spacing: 1px; }
+    .s1 .slide-number { color: rgba(255,255,255,0.5); }
+    .s2  { background: linear-gradient(135deg, #1a0a2e, #0f172a); }
+    .s3  { background: linear-gradient(135deg, #0a1f1a, #0f172a); }
+    .s4  { background: linear-gradient(135deg, #1a1a0a, #0f172a); }
+    .s5  { background: linear-gradient(135deg, #1a0a0a, #0f172a); }
+    .s6  { background: linear-gradient(135deg, #0a1a2e, #0f172a); }
+    .s7  { background: linear-gradient(135deg, #0a2e1a, #0f172a); }
+    .s8  { background: linear-gradient(135deg, #1a0a2e, #0f172a); }
+    .s9  { background: linear-gradient(135deg, #0a1a1a, #0f172a); }
+    .s10 { background: linear-gradient(135deg, #0a0a2e, #0f172a); }
+    .s11 { background: linear-gradient(135deg, #1a1a0a, #0f172a); }
+    .s12 { background: linear-gradient(135deg, #0a2e2e, #0f172a); }
+    .s13 { background: linear-gradient(135deg, #2e0a1a, #0f172a); }
+    .s14 { background: linear-gradient(135deg, #0a2e0a, #0f172a); }
+    .s15 { background: linear-gradient(135deg, #2e1a0a, #0f172a); }
+    .s16 { background: linear-gradient(135deg, #0a0a2e, #0f172a); }
+    .s17 { background: linear-gradient(135deg, #1a2e0a, #0f172a); }
+    .s18 { background: linear-gradient(135deg, #2e0a2e, #0f172a); }
+    .s19 { background: linear-gradient(135deg, #0a2e1a, #0f172a); }
+    .s20 { background: linear-gradient(135deg, #1a0a2e, #0f172a); }
+    .s21 { background: linear-gradient(135deg, #2e0a0a, #0f172a); }
+    .s22 { background: linear-gradient(135deg, #0a1a2e, #0f172a); }
+    .s23 { background: linear-gradient(135deg, #0a2e0a, #0f172a); }
+    .s24 { background: linear-gradient(135deg, #2e2e0a, #0f172a); }
+    .s25 { background: linear-gradient(135deg, #1a0a1a, #0f172a); }
+    .s26 { background: linear-gradient(135deg, #0a1a0a, #0f172a); }
+    .s27 { background: linear-gradient(135deg, #0a0a1a, #0f172a); }
+    .s28 { background: linear-gradient(135deg, #1a2e1a, #0f172a); }
+    .s29 { background: linear-gradient(135deg, #0a1a2e, #0f172a); }
+    .s30 { background: linear-gradient(135deg, #1a1a1a, #0f172a); }
+    .accent-bar {
+      width: 60px;
+      height: 5px;
+      border-radius: 3px;
+      background: var(--accent, #3b82f6);
+      margin-bottom: 24px;
+    }
+    .tag-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+    .tag-pill {
+      background: #f1f5f9;
+      color: #475569;
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      border: 1px solid #e2e8f0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Slide 1: Title -->
+<section class="slide s1">
+  <div class="slide-inner">
+    <span class="slide-number">Slide 1 / 30</span>
+    <h1>Trackify</h1>
+    <p class="subtitle">Smart Society Management System</p>
+    <p class="subtitle" style="margin-top:8px;font-size:0.95rem;opacity:0.75;">A full-stack web application for modern residential community management</p>
+    <span class="tag">Web Application &nbsp;|&nbsp; Next.js &nbsp;|&nbsp; Supabase</span>
+  </div>
+</section>
+
+<!-- Slide 2: Problem Statement -->
+<section class="slide s2" style="--accent:#ef4444">
+  <div class="slide-inner">
+    <span class="slide-number">Slide 2 / 30</span>
+    <div class="accent-bar"></div>
+    <h1>Problem Statement</h1>
+    <ul>
+      <li>Residential societies rely on manual, paper-based processes for maintenance, payments, and communication.</li>
+      <li>Residents lack a unified platform to report issues, book amenities, or track payment status in real time.</li>
+      <li>Security management for visitor entry is fragmented and prone to human error.</li>
+      <li>Society administrators have no centralized dashboard for analytics, fund tracking, or member oversight.</li>
+      <li>Emergency situations such as SOS alerts have no digital escalation mechanism in place.</li>
+      <li>Absence of AI-assisted tools leads to slow issue classification and poor service matching.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Slide 3: Objectives -->
+<section class="slide s3" style="--accent:#10b981">
+  <div class="slide-inner">
+    <span class="slide-number">Slide 3 / 30</span>
+    <div class="accent-bar"></div>
+    <h1>Objectives</h1>
+    <ul>
+      <li>Build a centralized digital platform for end-to-end society management accessible via web and mobile browsers.</li>
+      <li>Enable residents to report issues, pay maintenance dues, and book amenities seamlessly.</li>
+      <li>Provide administrators with real-time analytics, fund management, and member oversight tools.</li>
+      <li>Integrate AI features for issue classification, service matching, and an intelligent assistant (ARIA).</li>
+      <li>Implement a secure visitor management system with OTP-based entry verification.</li>
+      <li>Deliver SOS emergency alerts with SMS notifications to designated contacts.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Slide 4: Existing System -->
+<section class="slide s4" style="--accent:#f59e0b">
+  <div class="slide-inner">
+    <span class="slide-number">Slide 4 / 30</span>
+    <div class="accent-bar"></div>
+    <h1>Existing System</h1>
+    <ul>
+      <li>Most societies use WhatsApp groups and physical notice boards for announcements and communication.</li>
+      <li>Maintenance payments are collected manually via cash or bank transfer with no digital record.</li>
+      <li>Visitor entry is managed through physical registers maintained by security guards.</li>
+      <li>Issue complaints are submitted verbally or via handwritten forms with no tracking mechanism.</li>
+      <li>Amenity bookings are handled informally, leading to double-booking and disputes.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Slide 5: Limitations of Existing System -->
+<section class="slide s5" style="--accent:#ef4444">
+  <div class="slide-inner">
+    <span class="slide-number">Slide 5 / 30</span>
+    <div class="accent-bar"></div>
+    <h1>Limitations of Existing System</h1>
+    <ul>
+      <li>No real-time visibility into issue status, payment dues, or visitor logs for residents or admins.</li>
+      <li>Manual processes are error-prone, time-consuming, and difficult to audit or trace.</li>
+      <li>Communication is scattered across multiple channels with no single source of truth.</li>
+      <li>No role-based access control — all information is accessible to everyone or no one.</li>
+      <li>Lack of data analytics prevents informed decision-making by the managing committee.</li>
+      <li>Emergency situations cannot be escalated digitally, delaying response times.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Slide 6: Proposed System -->
+<section class="slide s6" style="--accent:#3b82f6">
+  <div class="slide-inner">
+    <span class="slide-number">Slide 6 / 30</span>
+    <div class="accent-bar"></div>
+    <h1>Proposed System</h1>
+    <ul>
+      <li>Trackify is a full-stack web application providing a unified platform for all society operations.</li>
+      <li>Role-based dashboards for residents, guards, secretaries, and chairpersons with tailored views.</li>
+      <li>Integrated payment gateway (Razorpay) for online maintenance collection with automated notifications.</li>
+      <li>AI-powered modules for issue classification, smart service matching, and a conversational assistant.</li>
+      <li>OTP-based visitor management system with digital pass generation and guard verification.</li>
+      <li>Real-time analytics, society fund tracking, and community engagement features built in.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Slide 7: Key Features -->
+<section class="slide s7" style="--accent:#10b981">
+  <div class="slide-inner">
+    <span class="slide-number">Slide 7 / 30</span>
+    <div class="accent-bar"></div>
+    <h1>Key Features</h1>
+    <ul>
+      <li>Issue reporting and tracking with AI-based auto-classification and status updates.</li>
+      <li>Online maintenance payment via Razorpay with receipt generation and due-date reminders.</li>
+      <li>Amenity booking system with calendar-based slot management and conflict prevention.</li>
+      <li>Visitor management with OTP verification, digital passes, and guard-side approval.</li>
+      <li>SOS emergency alert system with SMS dispatch to registered emergency contacts.</li>
+      <li>ARIA — an AI assistant for resident queries, notices, and society information.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Slide 8: System Architecture Overview -->
+<section class="slide s8" style="--accent:#8b5cf6">
+  <div class="slide-inner">
+    <span class="slide-number">Slide 8 / 30</span>
+    <div class="accent-bar"></div>
+    <h1>System Architecture Overview</h1>
+    <ul>
+      <li>Three-tier architecture: Presentation Layer (Next.js), Application Layer (API Routes), Data Layer (Supabase).</li>
+      <li>Client-side rendering with React for interactive UI; server-side API routes handle business logic securely.</li>
+      <li>Supabase provides PostgreSQL database, authentication, real-time subscriptions, and row-level security.</li>
+      <li>External integrations: Razorpay for payments, Twilio/SMS gateway for SOS alerts, OpenAI for AI features.</li>
+      <li>Deployed on Vercel with edge functions for low-latency API responses globally.</li>
+      <li>Progressive Web App (PWA) support enables mobile-like experience without a native app.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Slide 9: Technology Stack -->
+<section class="slide s9" style="--accent:#06b6d4">
+  <div class="slide-inner">
+    <span class="slide-number">Slide 9 / 30</span>
+    <div class="accent-bar"></div>
+    <h1>Technology Stack</h1>
+    <ul>
+      <li>Frontend: Next.js 14 (App Router), React 18, TypeScript, Tailwind CSS, Framer Motion.</li>
+      <li>Backend: Next.js API Routes (serverless), Node.js runtime on Vercel Edge.</li>
+      <li>Database: Supabase (PostgreSQL) with Row Level Security and real-time listeners.</li>
+      <li>Authentication: Supabase Auth with email/password and session management.</li>
+      <li>Payments: Razorpay SDK for order creation, payment capture, and webhook verification.</li>
+      <li>AI: OpenAI API for ARIA assistant, issue classification, and smart service matching.</li>
+    </ul>
+    <div class="tag-row">
+      <span class="tag-pill">Next.js</span><span class="tag-pill">TypeScript</span><span class="tag-pill">Supabase</span>
+      <span class="tag-pill">Razorpay</span><span class="tag-pill">OpenAI</span><span class="tag-pill">Tailwind CSS</span>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 10: Frontend Technologies -->
+<section class="slide s10" style="--accent:#3b82f6">
+  <div class="slide-inner">
+    <span class="slide-number">Slide 10 / 30</span>
+    <div class="accent-bar"></div>
+    <h1>Frontend Technologies</h1>
+    <ul>
+      <li>Next.js 14 App Router enables file-based routing, layouts, loading states, and server components.</li>
+      <li>React 18 with hooks (useState, useEffect, useCallback) for reactive, performant UI components.</li>
+      <li>TypeScript enforces type safety across all components, API calls, and data models.</li>
+      <li>Tailwind CSS provides utility-first styling with responsive design and dark mode support.</li>
+      <li>Framer Motion powers smooth animations, page transitions, and micro-interactions.</li>
+      <li>Lucide React supplies a consistent, accessible icon library used throughout the interface.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Slide 11: Backend Technologies -->
+<section class="slide s11" style="--accent:#f59e0b">
+  <div class="slide-inner">
+    <span class="slide-number">Slide 11 / 30</span>
+    <div class="accent-bar"></div>
+    <h1>Backend Technologies</h1>
+    <ul>
+      <li>Next.js API Routes serve as serverless backend endpoints, eliminating the need for a separate server.</li>
+      <li>Supabase client library handles all database queries, authentication, and real-time subscriptions.</li>
+      <li>Razorpay Node SDK manages order creation, payment verification via HMAC-SHA256 signature validation.</li>
+      <li>OpenAI API integration powers AI features including ARIA chatbot, issue classification, and service matching.</li>
+      <li>SMS notifications for SOS alerts are dispatched via a third-party SMS gateway API with input sanitization.</li>
+      <li>Rate limiting is implemented on sensitive endpoints (e.g., ARIA) to prevent abuse and control API costs.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Slide 12: Database Design -->
+<section class="slide s12" style="--accent:#06b6d4">
+  <div class="slide-inner">
+    <span class="slide-number">Slide 12 / 30</span>
+    <div class="accent-bar"></div>
+    <h1>Database Design</h1>
+    <ul>
+      <li>PostgreSQL hosted on Supabase with normalized relational schema and foreign key constraints.</li>
+      <li>Core tables: society_members, issues, payments, amenity_bookings, visitor_passes, notices, polls.</li>
+      <li>Row Level Security (RLS) policies ensure users can only access data belonging to their society and role.</li>
+      <li>Indexes on frequently queried columns (user_id, status, created_at) for optimized read performance.</li>
+      <li>Real-time subscriptions on issues and payments tables enable live dashboard updates without polling.</li>
+      <li>Seed SQL scripts provided for amenities, payments, and analytics data to support development and demos.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Slide 13: System Modules Overview -->
+<section class="slide s13" style="--accent:#ec4899">
+  <div class="slide-inner">
+    <span class="slide-number">Slide 13 / 30</span>
+    <div class="accent-bar"></div>
+    <h1>System Modules Overview</h1>
+    <ul>
+      <li>Authentication Module: Registration, login, forgot/reset password, and society onboarding.</li>
+      <li>Issue Management Module: Report, track, classify, and resolve maintenance complaints.</li>
+      <li>Payment Module: Online maintenance payments, history, receipts, and admin approval workflow.</li>
+      <li>Visitor Management Module: Pass creation, OTP verification, guard dashboard, and cancellation.</li>
+      <li>Amenity Booking Module: Slot-based booking, conflict detection, and booking history.</li>
+      <li>AI & Communication Module: ARIA assistant, SOS alerts, community chat, notices, and polls.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Slide 14: Module 1 – Issue Management -->
+<section class="slide s14" style="--accent:#10b981">
+  <div class="slide-inner">
+    <span class="slide-number">Slide 14 / 30</span>
+    <div class="accent-bar"></div>
+    <h1>Module 1: Issue Management</h1>
+    <ul>
+      <li>Residents submit maintenance complaints with title, description, category, and optional photo attachment.</li>
+      <li>AI-powered classification endpoint auto-assigns issue category (plumbing, electrical, civil, etc.) on submission.</li>
+      <li>Clean-description API rewrites poorly formatted complaints into professional, actionable language.</li>
+      <li>Issues are tracked through statuses: Open, In Progress, and Resolved with timestamped history.</li>
+      <li>Admin dashboard displays all open issues with priority indicators and assignment capabilities.</li>
+      <li>Residents receive status update notifications when their issue progresses or is resolved.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Slide 15: Module 2 – Payment System -->
+<section class="slide s15" style="--accent:#f59e0b">
+  <div class="slide-inner">
+    <span class="slide-number">Slide 15 / 30</span>
+    <div class="accent-bar"></div>
+    <h1>Module 2: Payment System</h1>
+    <ul>
+      <li>Residents view pending maintenance dues with due dates and amounts on their payment dashboard.</li>
+      <li>Razorpay integration creates a secure payment order server-side and opens the checkout modal client-side.</li>
+      <li>Payment verification uses HMAC-SHA256 signature validation to confirm transaction authenticity.</li>
+      <li>Successful payments update the database record and trigger an email/notification receipt to the resident.</li>
+      <li>Admin panel shows all pending and completed payments with export and approval capabilities.</li>
+      <li>Smart banner alerts residents when a payment is due within 7 days for proactive reminders.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Slide 16: Module 3 – Visitor Management -->
+<section class="slide s16" style="--accent:#8b5cf6">
+  <div class="slide-inner">
+    <span class="slide-number">Slide 16 / 30</span>
+    <div class="accent-bar"></div>
+    <h1>Module 3: Visitor Management</h1>
+    <ul>
+      <li>Residents pre-register expected visitors with name, contact number, purpose, and expected arrival time.</li>
+      <li>System generates a unique OTP and digital visitor pass upon successful registration.</li>
+      <li>Guard dashboard displays all active passes; guards verify entry by validating the OTP at the gate.</li>
+      <li>Residents can cancel a pending visitor pass before the visitor arrives via the my-passes view.</li>
+      <li>All visitor activity is logged with timestamps, enabling a complete audit trail per flat.</li>
+      <li>Input validation ensures only valid Indian mobile numbers are accepted for visitor contact fields.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Slide 17: User Roles & Permissions -->
+<section class="slide s17" style="--accent:#84cc16">
+  <div class="slide-inner">
+    <span class="slide-number">Slide 17 / 30</span>
+    <div class="accent-bar"></div>
+    <h1>User Roles &amp; Permissions</h1>
+    <ul>
+      <li>Resident: Can report issues, pay dues, book amenities, register visitors, use ARIA, and send SOS alerts.</li>
+      <li>Guard: Accesses the guard dashboard to verify visitor OTPs and monitor active passes at the gate.</li>
+      <li>Secretary: Manages payment approvals, member records, notices, and society fund transactions.</li>
+      <li>Chairman / Chairwoman: Full admin access including analytics, map view, polls, and all module oversight.</li>
+      <li>Role assignment is stored in the society_members table as a badge field and enforced via RLS policies.</li>
+      <li>Dashboard greeting and quick-action cards adapt dynamically based on the authenticated user's role.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Slide 18: Data Flow Diagram -->
+<section class="slide s18" style="--accent:#a855f7">
+  <div class="slide-inner">
+    <span class="slide-number">Slide 18 / 30</span>
+    <div class="accent-bar"></div>
+    <h1>Data Flow Diagram (Described)</h1>
+    <ul>
+      <li>User authenticates via Supabase Auth; session token is stored client-side and sent with every API request.</li>
+      <li>Client sends form data to Next.js API Route; the route validates input, applies business logic, and writes to Supabase.</li>
+      <li>For payments: Client calls /api/razorpay/create-order, Razorpay returns order ID, client completes payment, then /api/razorpay/verify-payment confirms the signature.</li>
+      <li>For AI features: Client sends prompt to /api/aria or /api/classify-issue; the route calls OpenAI API and returns the structured response.</li>
+      <li>For SOS: Client sends emergency data to /api/send-sos-sms; the route sanitizes input and dispatches SMS via gateway.</li>
+      <li>Supabase real-time listeners push database changes directly to subscribed client components without page refresh.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Slide 19: System Workflow -->
+<section class="slide s19" style="--accent:#10b981">
+  <div class="slide-inner">
+    <span class="slide-number">Slide 19 / 30</span>
+    <div class="accent-bar"></div>
+    <h1>System Workflow</h1>
+    <ul>
+      <li>New society registers via the society-register page; admin account is created and society config is initialized.</li>
+      <li>Residents register with flat number and email; admin approves and assigns the appropriate role badge.</li>
+      <li>Upon login, users land on a role-aware dashboard displaying relevant stats, notices, and quick actions.</li>
+      <li>All CRUD operations flow through typed API routes with server-side validation before database writes.</li>
+      <li>Notifications (payment due, issue update, visitor arrival) are delivered via in-app banners and email.</li>
+      <li>Admin reviews analytics, manages funds, and exports reports from the dedicated admin panel.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Slide 20: UI/UX Design Overview -->
+<section class="slide s20" style="--accent:#6366f1">
+  <div class="slide-inner">
+    <span class="slide-number">Slide 20 / 30</span>
+    <div class="accent-bar"></div>
+    <h1>UI/UX Design Overview</h1>
+    <ul>
+      <li>Design follows a clean, card-based layout with consistent spacing, rounded corners, and gradient accents.</li>
+      <li>Framer Motion animations provide smooth page transitions, hover effects, and animated stat counters.</li>
+      <li>Responsive grid layouts adapt from single-column on mobile to multi-column on desktop seamlessly.</li>
+      <li>Color-coded modules (red for issues, yellow for payments, blue for bookings, green for visitors) aid quick recognition.</li>
+      <li>Loading skeletons and animated placeholders prevent layout shift during data fetching.</li>
+      <li>PWA manifest and viewport meta tags ensure a native-like experience on iOS and Android browsers.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Slide 21: Security Features -->
+<section class="slide s21" style="--accent:#ef4444">
+  <div class="slide-inner">
+    <span class="slide-number">Slide 21 / 30</span>
+    <div class="accent-bar"></div>
+    <h1>Security Features</h1>
+    <ul>
+      <li>Supabase Row Level Security (RLS) ensures database queries are scoped to the authenticated user's society.</li>
+      <li>Razorpay payment verification uses HMAC-SHA256 signature validation to prevent payment tampering.</li>
+      <li>All API route inputs are validated and sanitized server-side before processing or database writes.</li>
+      <li>Rate limiting on the ARIA endpoint prevents abuse and controls third-party API cost exposure.</li>
+      <li>Indian mobile number validation on SOS and visitor endpoints blocks malformed or malicious inputs.</li>
+      <li>Environment variables store all secrets (API keys, DB URLs); no credentials are exposed client-side.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Slide 22: Performance Optimization -->
+<section class="slide s22" style="--accent:#3b82f6">
+  <div class="slide-inner">
+    <span class="slide-number">Slide 22 / 30</span>
+    <div class="accent-bar"></div>
+    <h1>Performance Optimization</h1>
+    <ul>
+      <li>Parallel data fetching using Promise.all on the dashboard reduces total load time significantly.</li>
+      <li>useCallback memoization prevents unnecessary re-renders of data-fetching functions in React components.</li>
+      <li>Next.js Inter font loaded with display: swap and preload: true to eliminate flash of unstyled text.</li>
+      <li>Viewport meta tag sets maximumScale: 1 to prevent iOS zoom on input focus, improving mobile UX.</li>
+      <li>Supabase queries use head: true for count-only requests, avoiding full row data transfer.</li>
+      <li>Vercel Edge deployment ensures API routes execute close to the user's geographic location.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Slide 23: Testing Strategy -->
+<section class="slide s23" style="--accent:#10b981">
+  <div class="slide-inner">
+    <span class="slide-number">Slide 23 / 30</span>
+    <div class="accent-bar"></div>
+    <h1>Testing Strategy</h1>
+    <ul>
+      <li>Unit testing of utility functions (OTP generation, amount validation, phone number validation) using Jest.</li>
+      <li>API route testing with mock Supabase and Razorpay clients to validate request/response contracts.</li>
+      <li>Integration testing of the payment flow: order creation, checkout, and verification end-to-end.</li>
+      <li>Manual UI testing across Chrome, Firefox, and Safari on desktop and mobile viewports.</li>
+      <li>ESLint with the project's .eslintrc.json configuration enforces code quality and catches common errors.</li>
+      <li>Supabase seed SQL scripts enable consistent test data setup for repeatable functional testing.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Slide 24: Implementation Process -->
+<section class="slide s24" style="--accent:#eab308">
+  <div class="slide-inner">
+    <span class="slide-number">Slide 24 / 30</span>
+    <div class="accent-bar"></div>
+    <h1>Implementation Process</h1>
+    <ul>
+      <li>Phase 1: Project setup — Next.js scaffold, Supabase project creation, schema design, and auth configuration.</li>
+      <li>Phase 2: Core modules — Authentication, dashboard, issue management, and payment integration.</li>
+      <li>Phase 3: Advanced modules — Visitor management, amenity booking, SOS alerts, and guard dashboard.</li>
+      <li>Phase 4: AI integration — ARIA assistant, issue classifier, clean-description, and smart service match APIs.</li>
+      <li>Phase 5: Admin features — Analytics dashboard, society fund, map view, polls, and member management.</li>
+      <li>Phase 6: Polish — PWA setup, animations, responsive design, performance tuning, and deployment to Vercel.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Slide 25: Challenges Faced -->
+<section class="slide s25" style="--accent:#a855f7">
+  <div class="slide-inner">
+    <span class="slide-number">Slide 25 / 30</span>
+    <div class="accent-bar"></div>
+    <h1>Challenges Faced</h1>
+    <ul>
+      <li>Designing RLS policies that correctly scope data per society without impacting query performance.</li>
+      <li>Ensuring Razorpay payment verification is tamper-proof while handling edge cases like network failures.</li>
+      <li>Managing real-time Supabase subscriptions without memory leaks across multiple dashboard components.</li>
+      <li>Preventing circular re-renders when combining useCallback, useEffect, and real-time listeners in React.</li>
+      <li>Balancing AI API call costs with user experience — rate limiting ARIA without degrading responsiveness.</li>
+      <li>Achieving consistent mobile UX across iOS Safari and Android Chrome with PWA constraints.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Slide 26: Solutions Implemented -->
+<section class="slide s26" style="--accent:#10b981">
+  <div class="slide-inner">
+    <span class="slide-number">Slide 26 / 30</span>
+    <div class="accent-bar"></div>
+    <h1>Solutions Implemented</h1>
+    <ul>
+      <li>RLS policies were iteratively tested with Supabase's policy editor and seed data to validate correctness.</li>
+      <li>Payment verification implemented server-side with crypto HMAC comparison, never exposed to the client.</li>
+      <li>Supabase subscriptions are cleaned up in useEffect return functions to prevent memory leaks on unmount.</li>
+      <li>useCallback with stable dependency arrays prevents infinite re-render loops in data-fetching hooks.</li>
+      <li>IP-based rate limiting with an in-memory map throttles ARIA requests per client without external infrastructure.</li>
+      <li>PWA viewport and manifest configuration tested on real devices to resolve iOS-specific rendering issues.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Slide 27: Future Scope -->
+<section class="slide s27" style="--accent:#6366f1">
+  <div class="slide-inner">
+    <span class="slide-number">Slide 27 / 30</span>
+    <div class="accent-bar"></div>
+    <h1>Future Scope</h1>
+    <ul>
+      <li>Native mobile applications for iOS and Android using React Native with shared business logic.</li>
+      <li>Multi-society support allowing a single admin to manage multiple residential complexes from one account.</li>
+      <li>Automated maintenance due generation and recurring payment scheduling for residents.</li>
+      <li>Integration with smart home and IoT devices for gate automation and energy monitoring.</li>
+      <li>Advanced analytics with predictive maintenance alerts based on historical issue patterns.</li>
+      <li>Multilingual support to serve diverse residential communities across different regions.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Slide 28: Advantages of the System -->
+<section class="slide s28" style="--accent:#22c55e">
+  <div class="slide-inner">
+    <span class="slide-number">Slide 28 / 30</span>
+    <div class="accent-bar"></div>
+    <h1>Advantages of the System</h1>
+    <ul>
+      <li>Single unified platform eliminates the need for multiple disconnected tools and manual processes.</li>
+      <li>Role-based access ensures every stakeholder sees only what is relevant to their responsibilities.</li>
+      <li>AI-powered features reduce administrative workload and improve response quality for residents.</li>
+      <li>Real-time updates keep all parties informed without requiring manual follow-up or polling.</li>
+      <li>Secure, auditable digital records replace error-prone paper-based systems for compliance and transparency.</li>
+      <li>Scalable serverless architecture supports growth from small societies to large gated communities.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Slide 29: Conclusion -->
+<section class="slide s29" style="--accent:#3b82f6">
+  <div class="slide-inner">
+    <span class="slide-number">Slide 29 / 30</span>
+    <div class="accent-bar"></div>
+    <h1>Conclusion</h1>
+    <ul>
+      <li>Trackify successfully digitizes and streamlines all core operations of a modern residential society.</li>
+      <li>The system demonstrates how Next.js, Supabase, and AI APIs can be combined into a production-ready platform.</li>
+      <li>Role-based design, real-time data, and integrated payments deliver measurable value to all stakeholders.</li>
+      <li>AI features such as ARIA, issue classification, and smart service matching set Trackify apart from conventional systems.</li>
+      <li>The project establishes a strong foundation for future enhancements including mobile apps and IoT integration.</li>
+      <li>Trackify proves that thoughtful software design can transform community living through technology.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Slide 30: References -->
+<section class="slide s30" style="--accent:#64748b">
+  <div class="slide-inner">
+    <span class="slide-number">Slide 30 / 30</span>
+    <div class="accent-bar"></div>
+    <h1>References</h1>
+    <ul>
+      <li>Next.js Documentation — https://nextjs.org/docs (App Router, API Routes, Metadata API)</li>
+      <li>Supabase Documentation — https://supabase.com/docs (Auth, Database, RLS, Realtime)</li>
+      <li>Razorpay Developer Docs — https://razorpay.com/docs (Payment Orders, Webhooks, Signature Verification)</li>
+      <li>OpenAI API Reference — https://platform.openai.com/docs (Chat Completions, Prompt Engineering)</li>
+      <li>Framer Motion Documentation — https://www.framer.com/motion (Animation, Variants, Gestures)</li>
+      <li>Tailwind CSS Documentation — https://tailwindcss.com/docs (Utility Classes, Responsive Design)</li>
+    </ul>
+  </div>
+</section>
+
+</body>
+</html>

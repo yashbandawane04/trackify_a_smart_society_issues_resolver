@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Source Code – Trackify: A Society Issue Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: #ffffff;
+    color: #111;
+    padding: 40px 48px 60px;
+    font-size: 12pt;
+    line-height: 1.6;
+  }
+
+  /* ── PAGE HEADER ── */
+  .page-header {
+    text-align: center;
+    border-bottom: 2.5px solid #111;
+    padding-bottom: 16px;
+    margin-bottom: 40px;
+  }
+  .page-header h1 { font-size: 1.5rem; font-weight: 700; }
+  .page-header p  { font-size: .9rem; color: #555; margin-top: 4px; }
+
+  /* ── CHAPTER TITLE ── */
+  .chapter-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    border-bottom: 2px solid #111;
+    padding-bottom: 8px;
+    margin-bottom: 28px;
+  }
+
+  /* ── SECTION HEADING ── */
+  .section-heading {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 32px 0 10px;
+    padding-left: 10px;
+    border-left: 4px solid #2563eb;
+    color: #1e3a8a;
+  }
+
+  /* ── FILE LABEL ── */
+  .file-label {
+    display: inline-block;
+    background: #1e293b;
+    color: #e2e8f0;
+    font-family: 'Fira Code', monospace;
+    font-size: .78rem;
+    padding: 4px 14px;
+    border-radius: 6px 6px 0 0;
+    margin-bottom: 0;
+    margin-top: 16px;
+  }
+
+  /* ── CODE BLOCK ── */
+  pre {
+    background: #f8fafc;
+    border: 1.5px solid #cbd5e1;
+    border-top: none;
+    border-radius: 0 6px 6px 6px;
+    padding: 18px 20px;
+    font-family: 'Fira Code', monospace;
+    font-size: 8.5pt;
+    line-height: 1.65;
+    overflow-x: auto;
+    white-space: pre;
+    margin-bottom: 8px;
+    page-break-inside: avoid;
+  }
+
+  /* ── DESCRIPTION TEXT ── */
+  .desc {
+    font-size: .88rem;
+    color: #374151;
+    margin-bottom: 6px;
+    text-align: justify;
+  }
+
+  /* ── PAGE BREAK ── */
+  .page-break { page-break-before: always; margin-top: 48px; }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    margin-top: 48px;
+    font-size: .75rem;
+    color: #999;
+    border-top: 1px solid #ddd;
+    padding-top: 12px;
+  }
+
+  @media print {
+    body { padding: 2.54cm 2.54cm 2.54cm 3.81cm; }
+    pre  { font-size: 7.5pt; }
+    .page-break { page-break-before: always; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>Trackify – A Society Issue Tracker</h1>
+  <p>Chapter 11: Source Code Explanation &nbsp;|&nbsp; Academic Submission 2025–26</p>
+</div>
+
+<div class="chapter-title">Chapter 11: Source Code</div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 11.1 — MIDDLEWARE (AUTH GUARD)
+══════════════════════════════════════════════ -->
+<div class="section-heading">11.1 &nbsp; Authentication Middleware — middleware.ts</div>
+<p class="desc">
+  The middleware intercepts every incoming HTTP request before it reaches a page or API route.
+  It reads the Supabase session from HTTP-only cookies, validates the JWT, silently refreshes
+  expired tokens, and enforces role-based route protection. Unauthenticated users attempting
+  to access <code>/dashboard/*</code> are redirected to the login page.
+</p>
+
+<div class="file-label">middleware.ts</div>
+<pre>
+import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+
+export async function middleware(req: NextRequest) {
+  const res = NextResponse.next();
+  const supabase = createMiddlewareClient({ req, res });
+
+  // Refresh session if expired — keeps the user logged in
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  // Protect all dashboard routes
+  if (!session && req.nextUrl.pathname.startsWith('/dashboard')) {
+    return NextResponse.redirect(new URL('/auth/login', req.url));
+  }
+
+  // Role-based route protection for admin panel
+  if (session && req.nextUrl.pathname.startsWith('/dashboard/admin')) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', session.user.id)
+      .single();
+
+    if (profile?.role !== 'admin') {
+      return NextResponse.redirect(new URL('/dashboard', req.url));
+    }
+  }
+
+  return res;
+}
+
+// Apply middleware to all dashboard and API routes
+export const config = {
+  matcher: ['/dashboard/:path*', '/api/:path*'],
+};
+</pre>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 11.2 — SUPABASE CLIENT
+══════════════════════════════════════════════ -->
+<div class="section-heading">11.2 &nbsp; Supabase Client Configuration — lib/supabase.ts</div>
+<p class="desc">
+  A singleton Supabase client is created once and exported for use across all client components.
+  The client is initialised with the project URL and anonymous key from environment variables.
+  The <code>persistSession</code> flag ensures the JWT is stored in cookies for SSR compatibility.
+</p>
+
+<div class="file-label">lib/supabase.ts</div>
+<pre>
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl  = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseAnon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+export const supabase = createClient(supabaseUrl, supabaseAnon, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
+  },
+});
+
+// Type helper — fetch the currently authenticated user
+export async function getCurrentUser() {
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
+  if (error) throw error;
+  return user;
+}
+
+// Type helper — fetch the user's profile row
+export async function getUserProfile(userId: string) {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('id', userId)
+    .single();
+  if (error) throw error;
+  return data;
+}
+</pre>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 11.3 — AI ISSUE CLASSIFICATION API
+══════════════════════════════════════════════ -->
+<div class="section-heading">11.3 &nbsp; AI Issue Classification API — app/api/classify-issue/route.ts</div>
+<p class="desc">
+  This Next.js Route Handler accepts a POST request containing a resident's rough note.
+  It forwards the text to the Groq LLaMA 3.3-70B model with a structured prompt that
+  instructs the model to return a JSON object containing a professional title, detailed
+  description, category, priority level, and responsible department. The response is
+  parsed and returned to the client for display in the issue submission form.
+</p>
+
+<div class="file-label">app/api/classify-issue/route.ts</div>
+<pre>
+import { NextRequest, NextResponse } from 'next/server';
+
+export async function POST(request: NextRequest) {
+  try {
+    const { roughNote } = await request.json();
+
+    const apiKey = process.env.GROQ_API_KEY;
+    if (!apiKey) {
+      return NextResponse.json(
+        { success: false, error: 'Groq API key not configured' },
+        { status: 500 }
+      );
+    }
+
+    const prompt = `You are a society management assistant. A resident typed a rough
+note about an issue. Generate a proper complaint report.
+
+Resident's note: "${roughNote}"
+
+Respond ONLY with valid JSON, no markdown, no code blocks, no extra text:
+{
+  "title":       "Clear professional issue title max 8 words",
+  "description": "Detailed 2-3 sentence description of the problem",
+  "category":    "Plumbing",
+  "priority":    "high",
+  "department":  "Maintenance Team"
+}
+
+category  → one of: Plumbing, Electrical, Maintenance, Security,
+            Parking, Amenities, Housekeeping, Noise, Other
+priority  → one of: low, medium, high, critical
+department→ one of: Maintenance Team, Security Team, Admin Office,
+            Housekeeping, Management Committee`;
+
+    const response = await fetch(
+      'https://api.groq.com/openai/v1/chat/completions',
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model:       'llama-3.3-70b-versatile',
+          messages:    [{ role: 'user', content: prompt }],
+          max_tokens:  200,
+          temperature: 0.2,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      const text = await response.text();
+      return NextResponse.json(
+        { success: false, error: `Groq ${response.status}: ${text}` },
+        { status: 500 }
+      );
+    }
+
+    const data = await response.json();
+    const content = data.choices?.[0]?.message?.content?.trim();
+    if (!content) {
+      return NextResponse.json(
+        { success: false, error: 'No content from Groq' },
+        { status: 500 }
+      );
+    }
+
+    // Extract JSON even if model wraps it in markdown fences
+    const jsonMatch = content.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      return NextResponse.json(
+        { success: false, error: 'Could not parse response' },
+        { status: 500 }
+      );
+    }
+
+    const result = JSON.parse(jsonMatch[0]);
+    return NextResponse.json({ success: true, ...result });
+
+  } catch (error: any) {
+    console.error('classify-issue error:', error);
+    return NextResponse.json(
+      { success: false, error: error.message },
+      { status: 500 }
+    );
+  }
+}
+</pre>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 11.4 — SOS SMS API
+══════════════════════════════════════════════ -->
+<div class="page-break"></div>
+<div class="section-heading">11.4 &nbsp; Emergency SOS SMS API — app/api/send-sos-sms/route.ts</div>
+<p class="desc">
+  When a citizen triggers the SOS alert, this endpoint is called with the recipient's
+  phone number and the emergency message. It uses the Fast2SMS bulk API to dispatch
+  an SMS to the 10-digit Indian mobile number. The endpoint strips any country-code
+  prefix before sending and returns the Fast2SMS request ID on success.
+</p>
+
+<div class="file-label">app/api/send-sos-sms/route.ts</div>
+<pre>
+import { NextRequest, NextResponse } from 'next/server';
+
+export async function POST(request: NextRequest) {
+  try {
+    const { to, message } = await request.json();
+
+    const apiKey = process.env.FAST2SMS_API_KEY;
+    if (!apiKey) {
+      return NextResponse.json(
+        { success: false, error: 'Fast2SMS API key not configured' },
+        { status: 500 }
+      );
+    }
+
+    // Fast2SMS requires a 10-digit number — strip +91 / 91 prefix
+    const number = to.replace(/^\+91|^91/, '').replace(/\s/g, '');
+
+    const response = await fetch('https://www.fast2sms.com/dev/bulkV2', {
+      method: 'POST',
+      headers: {
+        authorization:   apiKey,
+        'Content-Type':  'application/json',
+        'cache-control': 'no-cache',
+      },
+      body: JSON.stringify({
+        route:   'q',       // Quick transactional route
+        message: message,
+        numbers: number,
+        flash:   0,
+      }),
+    });
+
+    const text = await response.text();
+    let data: any = {};
+    try { data = JSON.parse(text); } catch { /* empty body */ }
+
+    if (data.return === true) {
+      return NextResponse.json({
+        success:   true,
+        messageId: data.request_id,
+      });
+    }
+
+    return NextResponse.json(
+      {
+        success: false,
+        error:   data.message
+          ? JSON.stringify(data.message)
+          : 'Failed to send SMS',
+      },
+      { status: 400 }
+    );
+
+  } catch (error: any) {
+    return NextResponse.json(
+      { success: false, error: error.message },
+      { status: 500 }
+    );
+  }
+}
+</pre>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 11.5 — RAZORPAY CREATE ORDER
+══════════════════════════════════════════════ -->
+<div class="section-heading">11.5 &nbsp; Razorpay Payment — Create Order — app/api/razorpay/create-order/route.ts</div>
+<p class="desc">
+  This endpoint creates a Razorpay payment order on the server side. The amount is
+  received in paise (1 INR = 100 paise). A short receipt ID is generated to comply
+  with Razorpay's 40-character limit. The returned order object is passed to the
+  Razorpay checkout widget on the client to initiate the payment flow.
+</p>
+
+<div class="file-label">app/api/razorpay/create-order/route.ts</div>
+<pre>
+import { NextRequest, NextResponse } from 'next/server';
+import Razorpay from 'razorpay';
+
+const razorpay = new Razorpay({
+  key_id:     process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID!,
+  key_secret: process.env.RAZORPAY_KEY_SECRET!,
+});
+
+export async function POST(request: NextRequest) {
+  try {
+    const { amount, currency, receipt } = await request.json();
+
+    // Razorpay receipt field has a 40-character limit
+    const shortReceipt = receipt
+      ? receipt.substring(0, 40)
+      : `rcpt_${Date.now()}`;
+
+    const options = {
+      amount:   amount,           // amount in paise
+      currency: currency || 'INR',
+      receipt:  shortReceipt,
+    };
+
+    const order = await razorpay.orders.create(options);
+
+    return NextResponse.json({ success: true, order });
+
+  } catch (error: any) {
+    console.error('Error creating Razorpay order:', error);
+    return NextResponse.json(
+      {
+        success: false,
+        error:   error.message || 'Failed to create order',
+        details: error.error?.description || 'Unknown error',
+      },
+      { status: 500 }
+    );
+  }
+}
+</pre>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 11.6 — RAZORPAY VERIFY PAYMENT
+══════════════════════════════════════════════ -->
+<div class="section-heading">11.6 &nbsp; Razorpay Payment — Verify Signature — app/api/razorpay/verify-payment/route.ts</div>
+<p class="desc">
+  After the Razorpay checkout widget completes a payment, the client sends the
+  <code>orderId</code>, <code>paymentId</code>, and <code>signature</code> to this
+  endpoint. The server recomputes the HMAC-SHA256 signature using the secret key and
+  compares it with the received signature. This server-side verification prevents
+  tampered or forged payment confirmations from being accepted.
+</p>
+
+<div class="file-label">app/api/razorpay/verify-payment/route.ts</div>
+<pre>
+import { NextRequest, NextResponse } from 'next/server';
+import crypto from 'crypto';
+
+export async function POST(request: NextRequest) {
+  try {
+    const { orderId, paymentId, signature } = await request.json();
+
+    const keySecret = process.env.RAZORPAY_KEY_SECRET!;
+
+    // Razorpay signature = HMAC-SHA256( orderId + "|" + paymentId )
+    const generatedSignature = crypto
+      .createHmac('sha256', keySecret)
+      .update(`${orderId}|${paymentId}`)
+      .digest('hex');
+
+    const isValid = generatedSignature === signature;
+
+    return NextResponse.json({ success: true, isValid });
+
+  } catch (error: any) {
+    console.error('Error verifying Razorpay payment:', error);
+    return NextResponse.json(
+      { success: false, error: error.message },
+      { status: 500 }
+    );
+  }
+}
+</pre>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 11.7 — VISITOR PASS CREATE API
+══════════════════════════════════════════════ -->
+<div class="page-break"></div>
+<div class="section-heading">11.7 &nbsp; Visitor Pass Creation API — app/api/visitors/create/route.ts</div>
+<p class="desc">
+  Residents use this endpoint to generate a one-time OTP-based visitor pass. The
+  server verifies the resident's JWT, looks up their flat number, lazily expires any
+  overdue active passes, generates a unique 6-digit OTP (with collision retry), and
+  inserts the new pass record. The pass is valid for 24 hours by default.
+</p>
+
+<div class="file-label">app/api/visitors/create/route.ts</div>
+<pre>
+import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
+
+// Service-role client bypasses Row-Level Security for server-side ops
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
+
+function generateOTP(): string {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    const authHeader = req.headers.get('authorization');
+    if (!authHeader)
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user }, error: authError } =
+      await supabaseAdmin.auth.getUser(token);
+    if (authError || !user)
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+    const { visitor_name, visitor_phone, purpose, valid_from, valid_until } =
+      await req.json();
+
+    // Input validation
+    if (!visitor_name || visitor_name.trim().length < 2)
+      return NextResponse.json(
+        { error: 'Visitor name must be at least 2 characters' },
+        { status: 400 }
+      );
+    if (visitor_phone && !/^[0-9]{10}$/.test(visitor_phone))
+      return NextResponse.json(
+        { error: 'Phone must be 10 digits' },
+        { status: 400 }
+      );
+
+    // Fetch resident's flat number
+    const { data: member } = await supabaseAdmin
+      .from('society_members')
+      .select('flat_number')
+      .eq('email', user.email)
+      .single();
+    if (!member)
+      return NextResponse.json({ error: 'Resident not found' }, { status: 404 });
+
+    // Expire overdue active passes before creating a new one
+    await supabaseAdmin
+      .from('visitor_passes')
+      .update({ status: 'expired' })
+      .eq('resident_id', user.id)
+      .eq('status', 'active')
+      .lt('valid_until', new Date().toISOString());
+
+    // Generate unique OTP — retry up to 5 times on collision
+    let otp = generateOTP();
+    for (let i = 0; i < 5; i++) {
+      const { data: existing } = await supabaseAdmin
+        .from('visitor_passes')
+        .select('id')
+        .eq('otp', otp)
+        .eq('status', 'active')
+        .maybeSingle();
+      if (!existing) break;
+      otp = generateOTP();
+    }
+
+    const fromTime  = valid_from
+      ? new Date(valid_from).toISOString()
+      : new Date().toISOString();
+    const untilTime = valid_until
+      ? new Date(valid_until).toISOString()
+      : new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+
+    const { data: pass, error: insertError } = await supabaseAdmin
+      .from('visitor_passes')
+      .insert({
+        resident_id:   user.id,
+        flat_number:   member.flat_number,
+        visitor_name:  visitor_name.trim(),
+        visitor_phone: visitor_phone || null,
+        purpose:       purpose || 'Guest',
+        otp,
+        valid_from:    fromTime,
+        valid_until:   untilTime,
+        status:        'active',
+      })
+      .select()
+      .single();
+
+    if (insertError) throw insertError;
+
+    return NextResponse.json({ success: true, pass }, { status: 201 });
+
+  } catch (err: any) {
+    console.error('Create visitor pass error:', err);
+    return NextResponse.json(
+      { error: err.message || 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+</pre>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 11.8 — ISSUE STATUS TIMELINE COMPONENT
+══════════════════════════════════════════════ -->
+<div class="section-heading">11.8 &nbsp; Issue Status Timeline Component — components/IssueStatusTimeline.tsx</div>
+<p class="desc">
+  A reusable React component that renders a horizontal progress timeline showing the
+  four stages of an issue's lifecycle: Reported → In Progress → Resolved → Closed.
+  Framer Motion animates the connecting progress bar and each step node. Completed
+  steps show a green check icon; the active step pulses in blue.
+</p>
+
+<div class="file-label">components/IssueStatusTimeline.tsx</div>
+<pre>
+'use client';
+
+import { motion } from 'framer-motion';
+import { CheckCircle, Circle, Clock } from 'lucide-react';
+
+interface TimelineStep {
+  status:    'open' | 'in_progress' | 'resolved' | 'closed';
+  label:     string;
+  timestamp?: string;
+  active:    boolean;
+  completed: boolean;
+}
+
+interface IssueStatusTimelineProps {
+  currentStatus: 'open' | 'in_progress' | 'resolved' | 'closed';
+  createdAt:     string;
+  updatedAt?:    string;
+}
+
+export default function IssueStatusTimeline({
+  currentStatus,
+  createdAt,
+  updatedAt,
+}: IssueStatusTimelineProps) {
+  const statusOrder  = ['open', 'in_progress', 'resolved', 'closed'];
+  const currentIndex = statusOrder.indexOf(currentStatus);
+
+  const steps: TimelineStep[] = [
+    {
+      status:    'open',
+      label:     'Reported',
+      timestamp: createdAt,
+      active:    currentStatus === 'open',
+      completed: currentIndex >= 0,
+    },
+    {
+      status:    'in_progress',
+      label:     'In Progress',
+      timestamp: currentStatus !== 'open' ? updatedAt : undefined,
+      active:    currentStatus === 'in_progress',
+      completed: currentIndex >= 1,
+    },
+    {
+      status:    'resolved',
+      label:     'Resolved',
+      timestamp:
+        currentStatus === 'resolved' || currentStatus === 'closed'
+          ? updatedAt
+          : undefined,
+      active:    currentStatus === 'resolved',
+      completed: currentIndex >= 2,
+    },
+    {
+      status:    'closed',
+      label:     'Closed',
+      timestamp: currentStatus === 'closed' ? updatedAt : undefined,
+      active:    currentStatus === 'closed',
+      completed: currentIndex >= 3,
+    },
+  ];
+
+  const getIcon = (step: TimelineStep) => {
+    if (step.completed) return &lt;CheckCircle className="w-6 h-6 text-white" /&gt;;
+    if (step.active)    return &lt;Clock className="w-6 h-6 text-white animate-pulse" /&gt;;
+    return &lt;Circle className="w-6 h-6 text-gray-400" /&gt;;
+  };
+
+  const getColor = (step: TimelineStep) => {
+    if (step.completed) return 'bg-green-500';
+    if (step.active)    return 'bg-blue-500';
+    return 'bg-gray-300';
+  };
+
+  return (
+    &lt;div className="py-6"&gt;
+      &lt;div className="flex items-center justify-between relative"&gt;
+        {/* Static grey background line */}
+        &lt;div className="absolute top-6 left-0 right-0 h-1 bg-gray-200 -z-10" /&gt;
+
+        {/* Animated green progress line */}
+        &lt;motion.div
+          className="absolute top-6 left-0 h-1 bg-green-500 -z-10"
+          initial={{ width: '0%' }}
+          animate={{
+            width: `${(currentIndex / (steps.length - 1)) * 100}%`,
+          }}
+          transition={{ duration: 0.8, ease: 'easeOut' }}
+        /&gt;
+
+        {steps.map((step, index) =&gt; (
+          &lt;div key={step.status} className="flex flex-col items-center flex-1"&gt;
+            &lt;motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: index * 0.1, type: 'spring' }}
+              className={`w-12 h-12 rounded-full ${getColor(step)}
+                flex items-center justify-center shadow-lg mb-3 relative z-10`}
+            &gt;
+              {getIcon(step)}
+            &lt;/motion.div&gt;
+
+            &lt;p className={`text-sm font-semibold
+              ${step.completed || step.active ? 'text-gray-900' : 'text-gray-400'}`}&gt;
+              {step.label}
+            &lt;/p&gt;
+
+            {step.timestamp &amp;&amp; (
+              &lt;p className="text-xs text-gray-500 mt-1"&gt;
+                {new Date(step.timestamp).toLocaleDateString('en-IN', {
+                  day:    'numeric',
+                  month:  'short',
+                  hour:   '2-digit',
+                  minute: '2-digit',
+                })}
+              &lt;/p&gt;
+            )}
+          &lt;/div&gt;
+        ))}
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}
+</pre>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 11.9 — ISSUE CREATION (CLIENT LOGIC)
+══════════════════════════════════════════════ -->
+<div class="page-break"></div>
+<div class="section-heading">11.9 &nbsp; Issue Creation Logic — app/dashboard/issues/page.tsx (excerpt)</div>
+<p class="desc">
+  The <code>createIssue</code> function handles the full issue submission flow on the
+  client side. It validates required fields, uploads any attached image or video to
+  Supabase Storage, inserts the issue record into the database, plays an audio chime
+  using the Web Audio API, and shows an animated success toast. If the issue category
+  maps to a service partner, a suggestion panel is displayed.
+</p>
+
+<div class="file-label">app/dashboard/issues/page.tsx — createIssue()</div>
+<pre>
+const createIssue = async () => {
+  if (!newIssue.title || !newIssue.description) {
+    toast.error('Please fill in all required fields');
+    return;
+  }
+
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return;
+
+  setUploading(true);
+  let imageUrl: string | null = null;
+  let videoUrl: string | null = null;
+
+  // ── Upload image attachment ──────────────────────────────────────
+  if (selectedImage) {
+    const fileExt  = selectedImage.name.split('.').pop();
+    const fileName = `${user.id}-${Date.now()}.${fileExt}`;
+
+    const { data: uploadData, error: uploadError } = await supabase.storage
+      .from('issue-images')
+      .upload(fileName, selectedImage);
+
+    if (!uploadError && uploadData) {
+      const { data: { publicUrl } } = supabase.storage
+        .from('issue-images')
+        .getPublicUrl(fileName);
+      imageUrl = publicUrl;
+    }
+  }
+
+  // ── Upload video attachment ──────────────────────────────────────
+  if (selectedVideo) {
+    const fileExt  = selectedVideo.name.split('.').pop();
+    const fileName = `${user.id}-${Date.now()}.${fileExt}`;
+
+    const { data: uploadData, error: uploadError } = await supabase.storage
+      .from('issue-videos')
+      .upload(fileName, selectedVideo);
+
+    if (!uploadError && uploadData) {
+      const { data: { publicUrl } } = supabase.storage
+        .from('issue-videos')
+        .getPublicUrl(fileName);
+      videoUrl = publicUrl;
+    }
+  }
+
+  // ── Insert issue record ──────────────────────────────────────────
+  const { error } = await supabase.from('issues').insert({
+    ...newIssue,
+    created_by: user.id,
+    image_url:  imageUrl,
+    video_url:  videoUrl,
+  });
+
+  if (!error) {
+    // Reset form state
+    setShowCreateModal(false);
+    setNewIssue({ title: '', description: '', category: '', priority: 'medium' });
+    setSelectedImage(null);
+    setImagePreview('');
+    setSelectedVideo(null);
+    setVideoPreview('');
+    setUploading(false);
+    setAiDepartment('');
+    fetchIssues();
+
+    // ── Play success chime via Web Audio API ─────────────────────
+    try {
+      const ctx = new (window.AudioContext ||
+        (window as any).webkitAudioContext)();
+
+      const playNote = (freq: number, start: number, duration: number) => {
+        const osc  = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + start);
+        gain.gain.setValueAtTime(0, ctx.currentTime + start);
+        gain.gain.linearRampToValueAtTime(0.3, ctx.currentTime + start + 0.01);
+        gain.gain.exponentialRampToValueAtTime(
+          0.001, ctx.currentTime + start + duration
+        );
+        osc.start(ctx.currentTime + start);
+        osc.stop(ctx.currentTime + start + duration);
+      };
+
+      playNote(880,  0,    0.3);   // A5
+      playNote(1108, 0.12, 0.3);   // C#6
+      playNote(1320, 0.24, 0.5);   // E6
+    } catch (_) { /* Audio not supported — fail silently */ }
+
+    // ── Show animated success toast ──────────────────────────────
+    setInlineToast({
+      show:     true,
+      title:    newIssue.title,
+      category: newIssue.category || 'General',
+    });
+    setTimeout(
+      () => setInlineToast({ show: false, title: '', category: '' }),
+      4000
+    );
+
+    // ── Suggest a service partner if category matches ────────────
+    const categoryMap: Record&lt;string, string&gt; = {
+      Plumbing:    'plumbing',
+      Electrical:  'electrical',
+      Carpentry:   'carpentry',
+      Painting:    'painting',
+      Cleaning:    'cleaning',
+      'Pest Control': 'pest',
+      'AC/Heating': 'ac',
+      Appliance:   'appliance',
+    };
+    const serviceCategory = categoryMap[newIssue.category || ''];
+    if (serviceCategory) {
+      setSuggestedPartner({ category: serviceCategory, name: newIssue.category });
+      setShowPartnerSuggestion(true);
+    }
+  }
+};
+</pre>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 11.10 — REAL-TIME NOTIFICATION SUBSCRIPTION
+══════════════════════════════════════════════ -->
+<div class="section-heading">11.10 &nbsp; Real-Time Notification Subscription — app/dashboard/layout.tsx (excerpt)</div>
+<p class="desc">
+  The dashboard layout subscribes to two Supabase real-time channels: one for new SOS
+  alerts and one for new issues. When a Postgres INSERT event fires on either table,
+  the notification bell is refreshed immediately. The subscription is cleaned up when
+  the component unmounts to prevent memory leaks.
+</p>
+
+<div class="file-label">app/dashboard/layout.tsx — real-time subscriptions</div>
+<pre>
+// Stable ref so the subscription callback always calls the latest version
+// of fetchNotifications without stale closure issues.
+const fetchNotificationsRef = useRef&lt;() =&gt; void&gt;(() =&gt; {});
+
+useEffect(() =&gt; {
+  fetchNotificationsRef.current = fetchNotifications;
+}, [fetchNotifications]);
+
+useEffect(() =&gt; {
+  checkUser();
+  fetchNotifications();
+
+  // ── Subscribe to new SOS alerts ──────────────────────────────────
+  const sosSubscription = supabase
+    .channel('sos_alerts')
+    .on(
+      'postgres_changes',
+      { event: 'INSERT', schema: 'public', table: 'sos_alerts' },
+      () =&gt; fetchNotificationsRef.current()
+    )
+    .subscribe();
+
+  // ── Subscribe to new issue reports ───────────────────────────────
+  const issuesSubscription = supabase
+    .channel('issues_notif')
+    .on(
+      'postgres_changes',
+      { event: 'INSERT', schema: 'public', table: 'issues' },
+      () =&gt; fetchNotificationsRef.current()
+    )
+    .subscribe();
+
+  // ── Cleanup on unmount ───────────────────────────────────────────
+  return () =&gt; {
+    sosSubscription.unsubscribe();
+    issuesSubscription.unsubscribe();
+  };
+}, [checkUser, fetchNotifications]);
+
+// ── Fetch and merge SOS + Issue notifications ────────────────────────
+const fetchNotifications = useCallback(async () =&gt; {
+  // Unresolved SOS alerts — always shown at top
+  const { data: sosAlerts } = await supabase
+    .from('sos_alerts')
+    .select('*, profiles:user_id (full_name, flat_number)')
+    .eq('is_resolved', false)
+    .order('created_at', { ascending: false })
+    .limit(10);
+
+  // Issues created in the last 48 hours
+  const since = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
+  const { data: recentIssues } = await supabase
+    .from('issues')
+    .select('*, profiles:created_by (full_name, flat_number)')
+    .gte('created_at', since)
+    .order('created_at', { ascending: false })
+    .limit(5);
+
+  const sosNotifs = (sosAlerts || []).map((alert: any) =&gt; ({
+    id:      `sos-${alert.id}`,
+    type:    'sos',
+    title:   'SOS Emergency Alert',
+    message: `${alert.profiles?.full_name} (${alert.profiles?.flat_number}) needs help!`,
+    time:    alert.created_at,
+    urgent:  true,
+    href:    '/dashboard/sos',
+  }));
+
+  const issueNotifs = (recentIssues || []).map((issue: any) =&gt; ({
+    id:      `issue-${issue.id}`,
+    type:    'issue',
+    title:   'Issue Reported',
+    message: `${issue.profiles?.full_name} reported: ${issue.title}`,
+    time:    issue.created_at,
+    urgent:  false,
+    href:    '/dashboard/issues',
+  }));
+
+  const allNotifs = [...sosNotifs, ...issueNotifs].sort(
+    (a, b) =&gt; new Date(b.time).getTime() - new Date(a.time).getTime()
+  );
+
+  setNotifications(allNotifs);
+  setUnreadCount(allNotifs.length);
+}, []);
+</pre>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 11.11 — KEYWORD-BASED COST ESTIMATOR
+══════════════════════════════════════════════ -->
+<div class="page-break"></div>
+<div class="section-heading">11.11 &nbsp; Keyword-Based Cost Estimator — app/dashboard/issues/page.tsx (excerpt)</div>
+<p class="desc">
+  Before submitting an issue, residents can request a rough repair cost estimate.
+  The <code>estimateCost</code> function scans the issue description for high-priority
+  keywords first (e.g., "full renovation", "POP ceiling") and falls back to category-level
+  ranges if no keyword matches. This avoids the cost of an AI API call for a simple
+  heuristic lookup.
+</p>
+
+<div class="file-label">app/dashboard/issues/page.tsx — estimateCost()</div>
+<pre>
+const estimateCost = (text: string, category: string): string | null =&gt; {
+  const t = text.toLowerCase();
+
+  // ── HIGH cost — checked first (highest priority) ─────────────────
+  if (t.includes('full renovation') || t.includes('complete renovation'))
+    return 'Rs. 1,00,000 - Rs. 5,00,000';
+  if (t.includes('pop') || t.includes('false ceiling'))
+    return 'Rs. 50,000 - Rs. 1,50,000';
+  if (t.includes('waterproof') || t.includes('seepage'))
+    return 'Rs. 15,000 - Rs. 50,000';
+  if (t.includes('lift') || t.includes('elevator'))
+    return 'Rs. 10,000 - Rs. 50,000';
+  if (t.includes('cctv') || t.includes('security camera'))
+    return 'Rs. 5,000 - Rs. 20,000';
+  if (t.includes('motor') || t.includes('pump'))
+    return 'Rs. 5,000 - Rs. 15,000';
+
+  // ── MEDIUM cost ───────────────────────────────────────────────────
+  if (t.includes('painting') || t.includes('paint'))
+    return 'Rs. 5,000 - Rs. 30,000';
+  if (t.includes('short circuit') || t.includes('rewiring'))
+    return 'Rs. 3,000 - Rs. 15,000';
+  if (t.includes('burst') || t.includes('major pipe'))
+    return 'Rs. 3,000 - Rs. 10,000';
+  if (t.includes('installation') || t.includes('install new'))
+    return 'Rs. 2,000 - Rs. 8,000';
+  if (t.includes('pest') || t.includes('termite'))
+    return 'Rs. 1,500 - Rs. 5,000';
+  if (t.includes('ac') || t.includes('air condition'))
+    return 'Rs. 1,500 - Rs. 6,000';
+  if (t.includes('not working') || t.includes('broken'))
+    return 'Rs. 1,000 - Rs. 5,000';
+
+  // ── LOW cost ──────────────────────────────────────────────────────
+  if (t.includes('leak') || t.includes('drip') || t.includes('tap'))
+    return 'Rs. 500 - Rs. 3,000';
+  if (t.includes('cleaning') || t.includes('sweep'))
+    return 'Rs. 500 - Rs. 2,000';
+  if (t.includes('bulb') || t.includes('switch') || t.includes('socket'))
+    return 'Rs. 200 - Rs. 1,000';
+  if (t.includes('minor') || t.includes('small fix'))
+    return 'Rs. 200 - Rs. 800';
+
+  // ── Category fallback ─────────────────────────────────────────────
+  const catMap: Record&lt;string, string&gt; = {
+    Plumbing:     'Rs. 500 - Rs. 5,000',
+    Electrical:   'Rs. 500 - Rs. 10,000',
+    Maintenance:  'Rs. 1,000 - Rs. 8,000',
+    Security:     'Rs. 2,000 - Rs. 20,000',
+    Parking:      'Rs. 500 - Rs. 3,000',
+    Amenities:    'Rs. 2,000 - Rs. 15,000',
+    Housekeeping: 'Rs. 500 - Rs. 2,000',
+  };
+  return catMap[category] || null;   // null → "Estimate not available"
+};
+
+// Triggered by the "Estimate Cost" button in the issue form
+const estimateCostIssue = () =&gt; {
+  if (!newIssue.description.trim()) return;
+  setCostLoading(true);
+  setTimeout(() =&gt; {
+    const result = estimateCost(newIssue.description, newIssue.category);
+    setAiDepartment(result ?? 'Estimate not available');
+    setCostLoading(false);
+  }, 600);
+};
+</pre>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 11.12 — LOGIN PAGE
+══════════════════════════════════════════════ -->
+<div class="section-heading">11.12 &nbsp; Login Page — app/auth/login/page.tsx (excerpt)</div>
+<p class="desc">
+  The login page uses Supabase Auth's <code>signInWithPassword</code> method. On
+  successful authentication the user is redirected to the dashboard. A Framer Motion
+  animated panda mascot reacts to the password field — it covers its eyes when the
+  user starts typing the password, providing a playful privacy indicator.
+</p>
+
+<div class="file-label">app/auth/login/page.tsx — handleLogin() &amp; panda eye logic</div>
+<pre>
+// ── Authentication handler ────────────────────────────────────────────
+const handleLogin = async (e: React.FormEvent) =&gt; {
+  e.preventDefault();
+  setLoading(true);
+  setError('');
+
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) throw error;
+    if (data.user) router.push('/dashboard');
+
+  } catch (error: any) {
+    setError(error.message || 'Failed to login');
+  } finally {
+    setLoading(false);
+  }
+};
+
+// ── Panda mascot — eyes animate based on password field focus ────────
+// isTypingPassword is set true onFocus and false onBlur of the password input.
+// When true, the panda's eye divs scale to scaleY: 0.1 (closed),
+// and two "hand" divs slide in from left and right to cover the eyes.
+
+&lt;motion.div
+  animate={{ scaleY: isTypingPassword ? 0.1 : 1 }}
+  transition={{ duration: 0.2 }}
+  className="absolute top-12 left-8 w-8 h-10 bg-gray-900 rounded-full overflow-hidden"
+&gt;
+  {!isTypingPassword &amp;&amp; (
+    &lt;motion.div
+      animate={{ x: [0, 3, 0, -3, 0] }}
+      transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+      className="w-4 h-4 bg-white rounded-full mt-3 ml-2"
+    /&gt;
+  )}
+&lt;/motion.div&gt;
+
+{/* Hands slide in to cover eyes when typing password */}
+{isTypingPassword &amp;&amp; (
+  &lt;&gt;
+    &lt;motion.div
+      initial={{ x: -50, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      exit={{ x: -50, opacity: 0 }}
+      transition={{ duration: 0.3 }}
+      className="absolute top-10 left-4 w-12 h-12 bg-gray-900 rounded-full"
+    /&gt;
+    &lt;motion.div
+      initial={{ x: 50, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      exit={{ x: 50, opacity: 0 }}
+      transition={{ duration: 0.3 }}
+      className="absolute top-10 right-4 w-12 h-12 bg-gray-900 rounded-full"
+    /&gt;
+  &lt;/&gt;
+)}
+
+{/* Speech bubble */}
+&lt;motion.div
+  animate={{
+    opacity: isTypingPassword ? 1 : 0,
+    scale:   isTypingPassword ? 1 : 0.8,
+  }}
+  transition={{ duration: 0.3 }}
+  className="absolute -top-16 left-1/2 -translate-x-1/2
+    bg-blue-500 text-white px-4 py-2 rounded-2xl text-sm font-medium
+    whitespace-nowrap shadow-lg"
+&gt;
+  I won't peek! 🙈
+&lt;/motion.div&gt;
+</pre>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 11.13 — DATABASE RLS POLICIES (SQL)
+══════════════════════════════════════════════ -->
+<div class="section-heading">11.13 &nbsp; Database Row-Level Security Policies — SQL</div>
+<p class="desc">
+  Supabase PostgreSQL Row-Level Security (RLS) is enabled on all sensitive tables.
+  The policies below ensure that citizens can only read and insert issues belonging
+  to their own society, while admins can update any issue. Super-admins bypass all
+  restrictions. These policies act as a second layer of security independent of the
+  application layer.
+</p>
+
+<div class="file-label">supabase/migrations/rls_policies.sql</div>
+<pre>
+-- ── Enable RLS on core tables ─────────────────────────────────────────
+ALTER TABLE issues          ENABLE ROW LEVEL SECURITY;
+ALTER TABLE visitor_passes  ENABLE ROW LEVEL SECURITY;
+ALTER TABLE sos_alerts      ENABLE ROW LEVEL SECURITY;
+ALTER TABLE profiles        ENABLE ROW LEVEL SECURITY;
+
+-- ── ISSUES: residents can view all issues in their society ────────────
+CREATE POLICY "residents_view_issues" ON issues
+  FOR SELECT USING (
+    society_id = (
+      SELECT society_id FROM profiles WHERE id = auth.uid()
+    )
+  );
+
+-- ── ISSUES: residents can only insert their own issues ────────────────
+CREATE POLICY "residents_insert_issues" ON issues
+  FOR INSERT WITH CHECK (
+    created_by = auth.uid()
+    AND society_id = (
+      SELECT society_id FROM profiles WHERE id = auth.uid()
+    )
+  );
+
+-- ── ISSUES: admins can update any issue in their society ──────────────
+CREATE POLICY "admins_update_issues" ON issues
+  FOR UPDATE USING (
+    society_id = (
+      SELECT society_id FROM profiles WHERE id = auth.uid()
+    )
+    AND (
+      SELECT role FROM profiles WHERE id = auth.uid()
+    ) = 'admin'
+  );
+
+-- ── VISITOR PASSES: residents see only their own passes ───────────────
+CREATE POLICY "residents_own_passes" ON visitor_passes
+  FOR SELECT USING (resident_id = auth.uid());
+
+CREATE POLICY "residents_insert_passes" ON visitor_passes
+  FOR INSERT WITH CHECK (resident_id = auth.uid());
+
+-- ── SOS ALERTS: residents can insert; admins can view all ─────────────
+CREATE POLICY "residents_insert_sos" ON sos_alerts
+  FOR INSERT WITH CHECK (user_id = auth.uid());
+
+CREATE POLICY "admins_view_sos" ON sos_alerts
+  FOR SELECT USING (
+    (SELECT role FROM profiles WHERE id = auth.uid()) = 'admin'
+    OR user_id = auth.uid()
+  );
+
+-- ── PROFILES: users can only read/update their own profile ────────────
+CREATE POLICY "users_own_profile" ON profiles
+  FOR ALL USING (id = auth.uid());
+</pre>
+
+<footer>
+  Trackify – A Society Issue Tracker &nbsp;·&nbsp;
+  Chapter 11: Source Code &nbsp;·&nbsp;
+  Shivajirao S. Jondhle Polytechnic, Asangaon &nbsp;·&nbsp;
+  Academic Submission 2025–26
+</footer>
+
+</body>
+</html>

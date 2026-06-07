@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>System Architecture – Trackify</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;600;700&display=swap');
+  @page { size: A4 landscape; margin: 20mm; }
+  @media print { body { margin: 0; } }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'EB Garamond', Garamond, 'Times New Roman', serif;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20mm;
+    min-height: 100vh;
+  }
+  h1 {
+    font-family: 'EB Garamond', Garamond, serif;
+    font-size: 18pt;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 4pt;
+    letter-spacing: 1px;
+  }
+  p.sub {
+    font-family: 'EB Garamond', Garamond, serif;
+    font-size: 12pt;
+    color: #444;
+    text-align: center;
+    margin-bottom: 14pt;
+  }
+  svg { display: block; margin: 0 auto; }
+  svg text { font-family: 'EB Garamond', Garamond, 'Times New Roman', serif; }
+</style>
+</head>
+<body>
+<h1>System Architecture Diagram</h1>
+<p class="sub">Trackify – A Society Issue Tracker</p>
+<svg width="750" height="520" viewBox="0 0 750 520" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L0,8 L10,4 z" fill="#222"/>
+    </marker>
+  </defs>
+
+  <!-- LAYER 1: CLIENT -->
+  <rect x="10" y="10" width="730" height="80" rx="8" fill="#f7f7f7" stroke="#333" stroke-width="1.5"/>
+  <text x="375" y="32" text-anchor="middle" font-size="13" font-weight="bold" fill="#111">CLIENT LAYER</text>
+  <rect x="22"  y="42" width="130" height="38" rx="6" fill="#fff" stroke="#555" stroke-width="1.2"/>
+  <text x="87"  y="65" text-anchor="middle" font-size="12">Browser (PWA)</text>
+  <rect x="168" y="42" width="130" height="38" rx="6" fill="#fff" stroke="#555" stroke-width="1.2"/>
+  <text x="233" y="65" text-anchor="middle" font-size="12">Mobile Browser</text>
+  <rect x="314" y="42" width="130" height="38" rx="6" fill="#fff" stroke="#555" stroke-width="1.2"/>
+  <text x="379" y="65" text-anchor="middle" font-size="12">Guard Tablet</text>
+  <rect x="460" y="42" width="130" height="38" rx="6" fill="#fff" stroke="#555" stroke-width="1.2"/>
+  <text x="525" y="65" text-anchor="middle" font-size="12">Admin Desktop</text>
+  <rect x="606" y="42" width="124" height="38" rx="6" fill="#fff" stroke="#555" stroke-width="1.2"/>
+  <text x="668" y="65" text-anchor="middle" font-size="12">Resident App</text>
+
+  <!-- Arrow -->
+  <line x1="375" y1="90" x2="375" y2="112" stroke="#333" stroke-width="1.8" marker-end="url(#arr)"/>
+
+  <!-- LAYER 2: CDN -->
+  <rect x="10" y="114" width="730" height="62" rx="8" fill="#efefef" stroke="#333" stroke-width="1.5"/>
+  <text x="375" y="134" text-anchor="middle" font-size="13" font-weight="bold" fill="#111">CDN LAYER — Vercel Edge Network</text>
+  <rect x="30"  y="142" width="156" height="26" rx="5" fill="#fff" stroke="#666" stroke-width="1"/>
+  <text x="108" y="159" text-anchor="middle" font-size="12">Static Asset Delivery</text>
+  <rect x="204" y="142" width="156" height="26" rx="5" fill="#fff" stroke="#666" stroke-width="1"/>
+  <text x="282" y="159" text-anchor="middle" font-size="12">Image Optimization</text>
+  <rect x="378" y="142" width="156" height="26" rx="5" fill="#fff" stroke="#666" stroke-width="1"/>
+  <text x="456" y="159" text-anchor="middle" font-size="12">Edge Caching</text>
+  <rect x="552" y="142" width="168" height="26" rx="5" fill="#fff" stroke="#666" stroke-width="1"/>
+  <text x="636" y="159" text-anchor="middle" font-size="12">Global Distribution</text>
+
+  <!-- Arrow -->
+  <line x1="375" y1="176" x2="375" y2="198" stroke="#333" stroke-width="1.8" marker-end="url(#arr)"/>
+
+  <!-- LAYER 3: APPLICATION -->
+  <rect x="10" y="200" width="730" height="120" rx="8" fill="#f7f7f7" stroke="#333" stroke-width="1.5"/>
+  <text x="375" y="220" text-anchor="middle" font-size="13" font-weight="bold" fill="#111">APPLICATION LAYER — Next.js 14 on Vercel Serverless</text>
+  <rect x="22"  y="228" width="132" height="80" rx="6" fill="#fff" stroke="#555" stroke-width="1.2"/>
+  <text x="88"  y="248" text-anchor="middle" font-size="12" font-weight="bold">Auth Middleware</text>
+  <text x="88"  y="264" text-anchor="middle" font-size="11" fill="#444">JWT Validation</text>
+  <text x="88"  y="279" text-anchor="middle" font-size="11" fill="#444">Role Enforcement</text>
+  <text x="88"  y="294" text-anchor="middle" font-size="11" fill="#444">Route Protection</text>
+  <rect x="168" y="228" width="132" height="80" rx="6" fill="#fff" stroke="#555" stroke-width="1.2"/>
+  <text x="234" y="248" text-anchor="middle" font-size="12" font-weight="bold">API Routes</text>
+  <text x="234" y="264" text-anchor="middle" font-size="11" fill="#444">/api/issues</text>
+  <text x="234" y="279" text-anchor="middle" font-size="11" fill="#444">/api/visitors</text>
+  <text x="234" y="294" text-anchor="middle" font-size="11" fill="#444">/api/razorpay</text>
+  <rect x="314" y="228" width="132" height="80" rx="6" fill="#fff" stroke="#555" stroke-width="1.2"/>
+  <text x="380" y="248" text-anchor="middle" font-size="12" font-weight="bold">Server Components</text>
+  <text x="380" y="264" text-anchor="middle" font-size="11" fill="#444">Dashboard Pages</text>
+  <text x="380" y="279" text-anchor="middle" font-size="11" fill="#444">Analytics Page</text>
+  <text x="380" y="294" text-anchor="middle" font-size="11" fill="#444">SSR Data Fetch</text>
+  <rect x="460" y="228" width="132" height="80" rx="6" fill="#fff" stroke="#555" stroke-width="1.2"/>
+  <text x="526" y="248" text-anchor="middle" font-size="12" font-weight="bold">Client Components</text>
+  <text x="526" y="264" text-anchor="middle" font-size="11" fill="#444">Issue Form</text>
+  <text x="526" y="279" text-anchor="middle" font-size="11" fill="#444">Real-time Updates</text>
+  <text x="526" y="294" text-anchor="middle" font-size="11" fill="#444">ARIA Assistant</text>
+  <rect x="606" y="228" width="124" height="80" rx="6" fill="#fff" stroke="#555" stroke-width="1.2"/>
+  <text x="668" y="248" text-anchor="middle" font-size="12" font-weight="bold">Static Pages</text>
+  <text x="668" y="264" text-anchor="middle" font-size="11" fill="#444">Landing (SSG)</text>
+  <text x="668" y="279" text-anchor="middle" font-size="11" fill="#444">Login / Register</text>
+  <text x="668" y="294" text-anchor="middle" font-size="11" fill="#444">Guard Interface</text>
+
+  <!-- Arrow -->
+  <line x1="375" y1="320" x2="375" y2="342" stroke="#333" stroke-width="1.8" marker-end="url(#arr)"/>
+
+  <!-- LAYER 4: SERVICES -->
+  <rect x="10" y="344" width="730" height="90" rx="8" fill="#efefef" stroke="#333" stroke-width="1.5"/>
+  <text x="375" y="364" text-anchor="middle" font-size="13" font-weight="bold" fill="#111">BACKEND SERVICES LAYER</text>
+  <rect x="22"  y="372" width="130" height="52" rx="6" fill="#fff" stroke="#555" stroke-width="1.2"/>
+  <text x="87"  y="392" text-anchor="middle" font-size="12" font-weight="bold">Supabase</text>
+  <text x="87"  y="408" text-anchor="middle" font-size="11" fill="#444">Auth + PostgreSQL</text>
+  <rect x="168" y="372" width="130" height="52" rx="6" fill="#fff" stroke="#555" stroke-width="1.2"/>
+  <text x="233" y="392" text-anchor="middle" font-size="12" font-weight="bold">Google Gemini</text>
+  <text x="233" y="408" text-anchor="middle" font-size="11" fill="#444">AI Classification</text>
+  <rect x="314" y="372" width="130" height="52" rx="6" fill="#fff" stroke="#555" stroke-width="1.2"/>
+  <text x="379" y="392" text-anchor="middle" font-size="12" font-weight="bold">Razorpay</text>
+  <text x="379" y="408" text-anchor="middle" font-size="11" fill="#444">Payment Gateway</text>
+  <rect x="460" y="372" width="130" height="52" rx="6" fill="#fff" stroke="#555" stroke-width="1.2"/>
+  <text x="525" y="392" text-anchor="middle" font-size="12" font-weight="bold">Twilio</text>
+  <text x="525" y="408" text-anchor="middle" font-size="11" fill="#444">SMS / OTP / SOS</text>
+  <rect x="606" y="372" width="124" height="52" rx="6" fill="#fff" stroke="#555" stroke-width="1.2"/>
+  <text x="668" y="392" text-anchor="middle" font-size="12" font-weight="bold">Supabase Storage</text>
+  <text x="668" y="408" text-anchor="middle" font-size="11" fill="#444">Files / Attachments</text>
+
+  <!-- Arrow -->
+  <line x1="375" y1="434" x2="375" y2="456" stroke="#333" stroke-width="1.8" marker-end="url(#arr)"/>
+
+  <!-- LAYER 5: DATA -->
+  <rect x="10" y="458" width="730" height="52" rx="8" fill="#ddd" stroke="#333" stroke-width="1.5"/>
+  <text x="375" y="480" text-anchor="middle" font-size="13" font-weight="bold" fill="#111">DATA LAYER — PostgreSQL 15 with Row-Level Security (RLS)</text>
+  <text x="375" y="500" text-anchor="middle" font-size="12" fill="#333">societies · profiles · issues · visitor_passes · amenity_bookings · payments · notices</text>
+</svg>
+</body>
+</html>

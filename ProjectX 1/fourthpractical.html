@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Practical 4 — Strong Password Authentication | NIS 316317</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<!-- Progress bar -->
+<div id="progress-bar" style="position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,#4299e1,#63b3ed,#4fc3f7);z-index:9999;transition:width 0.1s;box-shadow:0 0 8px #63b3ed;"></div>
+<style>
+/* ===== RESET & BASE ===== */
+*{margin:0;padding:0;box-sizing:border-box;}
+
+:root{
+  --bg:#f0f4ff;--surface:#fff;--text:#1a202c;--text-muted:#4a5568;
+  --border:#e2e8f0;--accent:#3182ce;--accent-light:#ebf8ff;
+  --accent-border:#bee3f8;--heading:#1a365d;--card-shadow:0 4px 24px rgba(66,153,225,0.10);
+}
+body.dark{
+  --bg:#0d1117;--surface:#161b22;--text:#e6edf3;--text-muted:#8b949e;
+  --border:#30363d;--accent:#58a6ff;--accent-light:#1c2a3a;
+  --accent-border:#1f6feb;--heading:#cdd6f4;--card-shadow:0 4px 24px rgba(0,0,0,0.4);
+}
+
+body{
+  font-family:'Poppins',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.7;
+  transition:background 0.3s,color 0.3s;
+}
+
+/* ===== PRINT STYLES ===== */
+@media print{
+  body{background:#fff;color:#000;}
+  .no-print{display:none;}
+  .page-break{page-break-before:always;}
+  section{break-inside:avoid;}
+  .cover{background:linear-gradient(135deg,#1a365d,#2b6cb0) !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  pre{border:1px solid #ccc !important;background:#1e1e2e !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+}
+
+/* ===== COVER PAGE ===== */
+.cover{
+  background:linear-gradient(135deg,#0a0e27 0%,#0d1b4b 45%,#1a4a8a 100%);
+  color:#fff;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:3rem 2rem;
+  position:relative;
+  overflow:hidden;
+}
+.cover::before{
+  content:'';
+  position:absolute;
+  width:500px;height:500px;
+  background:radial-gradient(circle,rgba(99,179,237,0.12) 0%,transparent 70%);
+  top:-100px;right:-100px;
+  border-radius:50%;
+}
+.cover::after{
+  content:'';
+  position:absolute;
+  width:400px;height:400px;
+  background:radial-gradient(circle,rgba(66,153,225,0.1) 0%,transparent 70%);
+  bottom:-80px;left:-80px;
+  border-radius:50%;
+}
+.cover-badge{
+  background:rgba(99,179,237,0.15);
+  border:1px solid rgba(99,179,237,0.4);
+  padding:0.4rem 1.2rem;
+  border-radius:30px;
+  font-size:0.8rem;
+  color:#90cdf4;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  margin-bottom:2rem;
+  position:relative;z-index:1;
+}
+.cover-icon{font-size:4rem;margin-bottom:1rem;position:relative;z-index:1;}
+.cover h1{
+  font-size:clamp(1.6rem,4vw,2.8rem);
+  font-weight:800;
+  line-height:1.2;
+  margin-bottom:1rem;
+  position:relative;z-index:1;
+}
+.cover h1 span{
+  background:linear-gradient(90deg,#63b3ed,#90cdf4,#4fc3f7);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.cover-sub{
+  font-size:1rem;
+  color:#a0aec0;
+  margin-bottom:2.5rem;
+  position:relative;z-index:1;
+}
+.cover-meta{
+  display:flex;
+  gap:1.5rem;
+  flex-wrap:wrap;
+  justify-content:center;
+  position:relative;z-index:1;
+}
+.cover-meta-item{
+  background:rgba(255,255,255,0.07);
+  border:1px solid rgba(99,179,237,0.25);
+  border-radius:12px;
+  padding:0.8rem 1.5rem;
+  text-align:center;
+}
+.cover-meta-item .label{font-size:0.65rem;color:#718096;text-transform:uppercase;letter-spacing:1px;}
+.cover-meta-item .value{font-size:0.9rem;font-weight:600;color:#e2e8f0;margin-top:0.2rem;}
+.cover-divider{
+  width:80px;height:3px;
+  background:linear-gradient(90deg,#4299e1,#63b3ed);
+  border-radius:2px;
+  margin:2rem auto;
+  position:relative;z-index:1;
+}
+
+/* ===== MAIN CONTENT ===== */
+.main{max-width:860px;margin:0 auto;padding:2rem 1.5rem 4rem;}
+
+/* ===== SECTION CARDS ===== */
+.section-card{
+  background:var(--surface);
+  border-radius:20px;
+  box-shadow:var(--card-shadow);
+  border:1px solid var(--border);
+  margin-bottom:2rem;
+  overflow:hidden;
+  opacity:0;
+  transform:translateY(30px);
+  transition:opacity 0.5s ease,transform 0.5s ease,border-color 0.3s,box-shadow 0.3s;
+}
+.section-card.visible{opacity:1;transform:translateY(0);}
+.section-card.active-section{
+  border-color:var(--accent);
+  box-shadow:0 0 0 2px rgba(49,130,206,0.15), var(--card-shadow);
+}
+.section-card.done .section-header{position:relative;}
+.section-card.done .section-header::after{
+  content:'✓ Done';
+  position:absolute;right:1rem;
+  background:#c6f6d5;color:#276749;
+  font-size:0.7rem;font-weight:700;
+  padding:0.2rem 0.6rem;border-radius:20px;
+}
+body.dark .section-card.done .section-header::after{background:#1a4731;color:#68d391;}
+
+.section-header{
+  background:linear-gradient(135deg,var(--accent-light),var(--accent-light));
+  border-bottom:2px solid var(--accent-border);
+  padding:1rem 1.5rem;
+  display:flex;
+  align-items:center;
+  gap:0.8rem;
+  cursor:pointer;
+  user-select:none;
+  transition:background 0.2s;
+}
+.section-header:hover{filter:brightness(0.97);}
+.section-num{
+  background:linear-gradient(135deg,#2b6cb0,#3182ce);
+  color:#fff;
+  width:32px;height:32px;
+  border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.8rem;font-weight:700;
+  flex-shrink:0;
+}
+.section-header h2{
+  font-size:1.05rem;
+  font-weight:700;
+  color:var(--heading);
+  flex:1;
+}
+.section-chevron{color:var(--accent);font-size:1rem;transition:transform 0.3s;margin-left:auto;}
+.section-body{padding:1.5rem;display:block;}
+
+/* ===== AIM BOX ===== */
+.aim-box{background:linear-gradient(135deg,var(--accent-light),#e6fffa);border:1px solid var(--accent-border);border-left:4px solid #3182ce;border-radius:0 12px 12px 0;padding:1rem 1.2rem;font-size:0.95rem;color:var(--text);font-weight:500;}
+/* ===== THEORY ===== */
+.theory-block{margin-bottom:1.4rem;padding-bottom:1.2rem;border-bottom:1px solid var(--border);}
+.theory-block:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.theory-block h3{font-size:0.92rem;font-weight:700;color:var(--accent);margin-bottom:0.6rem;display:flex;align-items:center;gap:0.4rem;}
+.theory-block p{font-size:0.88rem;color:var(--text-muted);line-height:1.8;}
+.theory-block p strong{color:var(--accent);}
+.highlight-box{background:var(--accent-light);border:1px solid var(--accent-border);border-radius:10px;padding:0.9rem 1rem;margin-top:0.7rem;font-size:0.85rem;color:var(--heading);line-height:1.8;}
+/* ===== KEY CONCEPTS ===== */
+.concepts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:0.8rem;}
+.concept-item{background:var(--accent-light);border:1px solid var(--accent-border);border-radius:10px;padding:0.7rem 1rem;font-size:0.84rem;color:var(--text);display:flex;align-items:flex-start;gap:0.5rem;transition:transform 0.2s,box-shadow 0.2s;}
+.concept-item:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(49,130,206,0.15);}
+.concept-item::before{content:"?";flex-shrink:0;}
+/* ===== ALGORITHM ===== */
+.algo-steps{list-style:none;counter-reset:step;}
+.algo-steps li{counter-increment:step;display:flex;align-items:flex-start;gap:0.8rem;margin-bottom:0.8rem;font-size:0.88rem;color:var(--text);padding:0.6rem 0.8rem;border-radius:10px;transition:background 0.2s;}
+.algo-steps li:hover{background:var(--accent-light);}
+.algo-steps li::before{content:counter(step);background:linear-gradient(135deg,#2b6cb0,#3182ce);color:#fff;min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;flex-shrink:0;margin-top:0.1rem;}
+.algo-steps li span{font-weight:600;color:var(--accent);}
+/* ===== CODE BLOCKS ===== */
+.code-wrapper{position:relative;margin-bottom:1rem;border-radius:10px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.2);}
+.code-label{background:#2d3748;color:#90cdf4;font-size:0.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:0.5rem 1rem;display:flex;align-items:center;justify-content:space-between;}
+.copy-btn{background:rgba(99,179,237,0.2);border:1px solid rgba(99,179,237,0.3);color:#90cdf4;padding:0.25rem 0.7rem;border-radius:4px;font-size:0.65rem;cursor:pointer;font-family:'Poppins',sans-serif;transition:all 0.2s;}
+.copy-btn:hover{background:rgba(99,179,237,0.4);transform:scale(1.05);}
+pre{background:#1e1e2e;padding:1.4rem;overflow-x:auto;margin:0;}
+pre code{font-family:'Fira Code',monospace;font-size:0.82rem;line-height:1.9;color:#cdd6f4;}
+.kw{color:#cba6f7;}.pp{color:#f38ba8;}.str{color:#a6e3a1;}.cm{color:#6c7086;font-style:italic;}.fn{color:#89b4fa;}.num{color:#fab387;}.op{color:#89dceb;}
+/* ===== IO TABLE ===== */
+.io-table{width:100%;border-collapse:collapse;font-size:0.87rem;}
+.io-table th{background:linear-gradient(135deg,#2b6cb0,#3182ce);color:#fff;padding:0.7rem 1rem;text-align:left;font-weight:600;}
+.io-table th:first-child{border-radius:8px 0 0 0;}.io-table th:last-child{border-radius:0 8px 0 0;}
+.io-table td{padding:0.65rem 1rem;border-bottom:1px solid var(--border);color:var(--text);}
+.io-table tr:nth-child(even) td{background:var(--accent-light);}
+.io-table tr:last-child td{border-bottom:none;}
+.io-table tr{transition:background 0.15s;}.io-table tr:hover td{background:var(--accent-light);}
+.badge-strong{background:#c6f6d5;color:#276749;padding:0.2rem 0.6rem;border-radius:20px;font-size:0.75rem;font-weight:600;}
+.badge-weak{background:#fed7d7;color:#9b2c2c;padding:0.2rem 0.6rem;border-radius:20px;font-size:0.75rem;font-weight:600;}
+/* ===== OUTPUT EXPLANATION ===== */
+.flow-step{display:flex;align-items:flex-start;gap:0.8rem;margin-bottom:0.7rem;font-size:0.87rem;color:var(--text);padding:0.5rem;border-radius:8px;transition:background 0.2s;}
+.flow-step:hover{background:var(--accent-light);}
+.flow-icon{background:var(--accent-light);border:1px solid var(--accent-border);border-radius:8px;padding:0.3rem 0.5rem;font-size:0.9rem;flex-shrink:0;}
+/* ===== PRECAUTIONS ===== */
+.precaution-item{display:flex;align-items:flex-start;gap:0.6rem;margin-bottom:0.7rem;font-size:0.87rem;color:var(--text);padding:0.6rem 0.8rem;border-radius:8px;background:var(--accent-light);border:1px solid var(--accent-border);}
+.precaution-item::before{content:"??";flex-shrink:0;}
+/* ===== VIVA Q&A ===== */
+.qa-item{border:1px solid var(--border);border-radius:12px;margin-bottom:0.8rem;overflow:hidden;transition:border-color 0.2s,box-shadow 0.2s;}
+.qa-item:hover{border-color:var(--accent);box-shadow:0 2px 12px rgba(49,130,206,0.1);}
+.qa-q{background:var(--accent-light);padding:0.85rem 1rem;font-size:0.88rem;font-weight:600;color:var(--heading);cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;transition:background 0.2s;}
+.qa-toggle{color:var(--accent);font-size:1rem;transition:transform 0.3s;}
+.qa-a{background:var(--surface);padding:0.9rem 1rem;font-size:0.86rem;color:var(--text-muted);line-height:1.75;display:none;border-top:1px solid var(--border);animation:fadeIn 0.2s ease;}
+.qa-a.open{display:block;}.qa-a strong{color:var(--accent);}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:translateY(0);}}
+/* ===== MCQ ===== */
+.mcq-item{background:var(--accent-light);border:1px solid var(--accent-border);border-radius:14px;padding:1.1rem;margin-bottom:0.9rem;transition:box-shadow 0.2s;}
+.mcq-item:hover{box-shadow:0 4px 16px rgba(49,130,206,0.12);}
+.mcq-q{font-size:0.88rem;font-weight:600;color:var(--heading);margin-bottom:0.8rem;}
+.mcq-opts{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;}
+.mcq-opt{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:0.55rem 0.9rem;font-size:0.82rem;cursor:pointer;transition:all 0.2s;color:var(--text-muted);text-align:left;font-family:'Poppins',sans-serif;}
+.mcq-opt:hover:not(.disabled){background:var(--accent-light);border-color:var(--accent);color:var(--heading);transform:translateY(-1px);}
+.mcq-opt.correct{background:#c6f6d5;border-color:#48bb78;color:#276749;font-weight:600;}
+.mcq-opt.wrong{background:#fed7d7;border-color:#f56565;color:#9b2c2c;}
+.mcq-opt.disabled{cursor:default;}
+.mcq-fb{font-size:0.78rem;margin-top:0.5rem;padding:0.35rem 0.7rem;border-radius:6px;display:none;}
+.mcq-fb.show{display:block;animation:fadeIn 0.2s ease;}
+.mcq-fb.ok{background:#c6f6d5;color:#276749;}.mcq-fb.no{background:#fed7d7;color:#9b2c2c;}
+/* ===== RAPID REVISION ===== */
+.rapid-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0.5rem;}
+.rapid-item{background:linear-gradient(135deg,var(--accent-light),#e6fffa);border:1px solid var(--accent-border);border-radius:8px;padding:0.55rem 0.8rem;font-size:0.8rem;color:var(--heading);display:flex;align-items:flex-start;gap:0.4rem;font-weight:500;transition:transform 0.2s,box-shadow 0.2s;}
+.rapid-item:hover{transform:translateY(-2px);box-shadow:0 4px 10px rgba(49,130,206,0.12);}
+.rapid-item::before{content:"?";flex-shrink:0;}
+/* ===== SCROLL TOP ===== */
+.scroll-top{position:fixed;bottom:5.5rem;right:1.5rem;background:linear-gradient(135deg,#2b6cb0,#3182ce);border:none;color:#fff;width:44px;height:44px;border-radius:50%;font-size:1.2rem;cursor:pointer;box-shadow:0 4px 20px rgba(66,153,225,0.4);transition:all 0.3s;z-index:200;display:none;align-items:center;justify-content:center;}
+.scroll-top.visible{display:flex;}
+.scroll-top:hover{transform:translateY(-3px);}
+.dark-toggle{position:fixed;bottom:1.5rem;right:1.5rem;background:linear-gradient(135deg,#2b6cb0,#3182ce);border:none;color:#fff;width:44px;height:44px;border-radius:50%;font-size:1.1rem;cursor:pointer;box-shadow:0 4px 20px rgba(66,153,225,0.4);transition:all 0.3s;z-index:200;display:flex;align-items:center;justify-content:center;}
+.dark-toggle:hover{transform:scale(1.1);}
+.pomodoro{position:fixed;top:1rem;right:1rem;background:var(--surface);border:1px solid var(--accent-border);border-radius:16px;padding:0.6rem 1rem;display:flex;align-items:center;gap:0.6rem;box-shadow:var(--card-shadow);z-index:300;font-size:0.82rem;color:var(--text);transition:background 0.3s,border-color 0.3s;}
+.pomodoro-time{font-family:"Fira Code",monospace;font-size:1rem;font-weight:700;color:var(--accent);min-width:48px;text-align:center;}
+.pomodoro-btn{background:var(--accent-light);border:1px solid var(--accent-border);color:var(--accent);border-radius:8px;padding:0.2rem 0.6rem;font-size:0.72rem;cursor:pointer;font-family:"Poppins",sans-serif;transition:all 0.2s;font-weight:600;}
+.pomodoro-btn:hover{background:var(--accent);color:#fff;}
+.pomodoro-label{font-size:0.7rem;color:var(--text-muted);font-weight:500;}
+.pomodoro.break .pomodoro-time{color:#48bb78;}
+.mini-nav{position:fixed;left:1rem;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:0.4rem;z-index:200;}
+.mini-nav-dot{width:10px;height:10px;border-radius:50%;background:var(--border);border:2px solid var(--border);cursor:pointer;transition:all 0.3s;position:relative;}
+.mini-nav-dot.active{background:var(--accent);border-color:var(--accent);transform:scale(1.4);}
+.mini-nav-dot:hover{background:var(--accent);border-color:var(--accent);}
+.mini-nav-dot::after{content:attr(data-label);position:absolute;left:18px;top:50%;transform:translateY(-50%);background:var(--surface);border:1px solid var(--border);color:var(--text);font-size:0.7rem;font-family:"Poppins",sans-serif;padding:0.2rem 0.5rem;border-radius:6px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity 0.2s;box-shadow:0 2px 8px rgba(0,0,0,0.1);}
+.mini-nav-dot:hover::after{opacity:1;}
+.cover-icon{font-size:4rem;margin-bottom:1rem;position:relative;z-index:1;animation:float 3s ease-in-out infinite;}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+.cover-badge{animation:pulse-border 2s ease-in-out infinite;}
+@keyframes pulse-border{0%,100%{box-shadow:0 0 0 0 rgba(99,179,237,0.3);}50%{box-shadow:0 0 0 6px rgba(99,179,237,0);}}
+.particle{position:absolute;border-radius:50%;background:rgba(99,179,237,0.15);animation:drift linear infinite;pointer-events:none;}
+@keyframes drift{0%{transform:translateY(100vh) rotate(0deg);opacity:0;}10%{opacity:1;}90%{opacity:1;}100%{transform:translateY(-100px) rotate(720deg);opacity:0;}}
+@media(max-width:768px){.mini-nav{display:none;}.pomodoro{top:auto;bottom:5.5rem;right:1rem;left:1rem;justify-content:center;}.scroll-top{bottom:9rem;}}
+@media(max-width:600px){.mcq-opts{grid-template-columns:1fr;}.concepts-grid{grid-template-columns:1fr;}.rapid-grid{grid-template-columns:1fr;}.cover-meta{flex-direction:column;align-items:center;}}
+</style>
+</head>
+<body>
+
+<!-- ===== POMODORO TIMER ===== -->
+<div class="pomodoro no-print" id="pomodoro">
+  <span class="pomodoro-label" id="pomo-label">🍅 Focus</span>
+  <span class="pomodoro-time" id="pomo-time">25:00</span>
+  <button class="pomodoro-btn" id="pomo-btn" onclick="togglePomo()">▶ Start</button>
+  <button class="pomodoro-btn" onclick="resetPomo()" title="Reset">↺</button>
+</div>
+
+<!-- ===== MINI NAV ===== -->
+<nav class="mini-nav no-print" id="miniNav"></nav>
+
+<!-- ===== COVER PAGE ===== -->
+<div class="cover">
+  <div class="cover-badge">Network & Information Security — 316317</div>
+  <div class="cover-icon">🔐</div>
+  <h1>Practical No. 4<br/><span>Strong Password Authentication</span></h1>
+  <p class="cover-sub">Write a utility using C/Shell programming to create strong password authentication</p>
+  <div class="cover-divider"></div>
+  <div class="cover-meta">
+    <div class="cover-meta-item">
+      <div class="label">Course Code</div>
+      <div class="value">316317</div>
+    </div>
+    <div class="cover-meta-item">
+      <div class="label">Subject</div>
+      <div class="value">Network & Information Security</div>
+    </div>
+    <div class="cover-meta-item">
+      <div class="label">Practical No.</div>
+      <div class="value">04</div>
+    </div>
+    <div class="cover-meta-item">
+      <div class="label">Scheme</div>
+      <div class="value">K Scheme — MSBTE</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div class="main">
+
+<!-- 1. AIM -->
+<div class="section-card" id="sec-1">
+  <div class="section-header" onclick="markDone(this)">
+    <div class="section-num">1</div>
+    <h2>🎯 Aim</h2>
+  </div>
+  <div class="section-body">
+    <div class="aim-box">
+      To write a utility program in <strong>C language</strong> that validates a password for strong authentication. The password must be <strong>more than 8 characters</strong> and must contain a combination of <strong>digits</strong>, <strong>letters</strong> (uppercase + lowercase), and <strong>special characters</strong> (#, %, &amp;, @).
+    </div>
+  </div>
+</div>
+
+<!-- 2. THEORY -->
+<div class="section-card" id="sec-2">
+  <div class="section-header" onclick="markDone(this)">
+    <div class="section-num">2</div>
+    <h2>📖 Theory</h2>
+  </div>
+  <div class="section-body">
+
+    <div class="theory-block">
+      <h3>🔑 What is Authentication?</h3>
+      <p>
+        <strong>Authentication</strong> is the process of verifying the identity of a user, device, or system before granting access to resources. It answers the question: <em>"Are you who you claim to be?"</em><br/><br/>
+        Authentication is the <strong>first line of defense</strong> in any security system. Without proper authentication, unauthorized users can gain access to sensitive data and systems.
+      </p>
+      <div class="highlight-box">
+        📌 <strong>3 Factors of Authentication:</strong><br/>
+        • <strong>Something you know</strong> — Password, PIN<br/>
+        • <strong>Something you have</strong> — OTP, Smart card, Token<br/>
+        • <strong>Something you are</strong> — Fingerprint, Face ID (Biometrics)
+      </div>
+    </div>
+
+    <div class="theory-block">
+      <h3>🔒 What is Password Security?</h3>
+      <p>
+        A <strong>password</strong> is a secret string of characters used to authenticate a user. Password security refers to the practices and policies that ensure passwords are strong enough to resist attacks.<br/><br/>
+        A <strong>weak password</strong> (like "1234" or "password") can be cracked in seconds. A <strong>strong password</strong> with mixed characters takes years or even centuries to crack using brute force.
+      </p>
+    </div>
+
+    <div class="theory-block">
+      <h3>💥 What is a Brute Force Attack?</h3>
+      <p>
+        A <strong>brute force attack</strong> is a trial-and-error method where an attacker systematically tries <strong>every possible combination</strong> of characters until the correct password is found.<br/><br/>
+        For a 4-digit numeric PIN: only 10,000 combinations — cracked in seconds.<br/>
+        For an 8-character mixed password: 95⁸ ≈ <strong>6.6 trillion combinations</strong> — takes much longer.
+      </p>
+      <div class="highlight-box">
+        📌 <strong>Why strong passwords resist brute force:</strong> Each additional character type (uppercase, special chars) multiplies the number of possible combinations exponentially.
+      </div>
+    </div>
+
+    <div class="theory-block">
+      <h3>📖 What is a Dictionary Attack?</h3>
+      <p>
+        A <strong>dictionary attack</strong> uses a pre-built list of common words, phrases, and passwords (like "password123", "admin", "qwerty") to guess the password. It is faster than brute force but only works against <strong>common or predictable passwords</strong>.<br/><br/>
+        Strong passwords that avoid dictionary words and include random special characters are <strong>immune to dictionary attacks</strong>.
+      </p>
+    </div>
+
+    <div class="theory-block">
+      <h3>📋 Password Policy</h3>
+      <p>
+        A <strong>password policy</strong> is a set of rules that enforces the creation of strong passwords. Organizations implement password policies to protect their systems. Common rules include:
+      </p>
+      <div class="highlight-box">
+        • Minimum length of 8 characters<br/>
+        • Must contain uppercase and lowercase letters<br/>
+        • Must contain at least one digit (0–9)<br/>
+        • Must contain at least one special character (#, %, &amp;, @)<br/>
+        • Must not contain the username or common words<br/>
+        • Must be changed every 90 days
+      </div>
+    </div>
+
+    <div class="theory-block">
+      <h3>🛠️ C Language Functions Used</h3>
+      <p>
+        The program uses standard C library functions from <strong>&lt;ctype.h&gt;</strong> and <strong>&lt;string.h&gt;</strong>:
+      </p>
+      <div class="highlight-box">
+        • <strong>strlen(pwd)</strong> — returns length of the password string<br/>
+        • <strong>isupper(ch)</strong> — returns non-zero if character is uppercase (A–Z)<br/>
+        • <strong>islower(ch)</strong> — returns non-zero if character is lowercase (a–z)<br/>
+        • <strong>isdigit(ch)</strong> — returns non-zero if character is a digit (0–9)<br/>
+        • <strong>strchr(str, ch)</strong> — searches for character in string; returns pointer if found, NULL if not
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 3. KEY CONCEPTS -->
+<div class="section-card" id="sec-3">
+  <div class="section-header" onclick="markDone(this)">
+    <div class="section-num">3</div>
+    <h2>🧠 Key Concepts</h2>
+  </div>
+  <div class="section-body">
+    <div class="concepts-grid">
+      <div class="concept-item">Password must be <strong>more than 8 characters</strong> long</div>
+      <div class="concept-item">Must contain at least one <strong>uppercase letter</strong> (A–Z)</div>
+      <div class="concept-item">Must contain at least one <strong>lowercase letter</strong> (a–z)</div>
+      <div class="concept-item">Must contain at least one <strong>digit</strong> (0–9)</div>
+      <div class="concept-item">Must contain at least one <strong>special character</strong> (#, %, &amp;, @)</div>
+      <div class="concept-item"><strong>isupper()</strong> and <strong>islower()</strong> from &lt;ctype.h&gt;</div>
+      <div class="concept-item"><strong>isdigit()</strong> checks for numeric characters</div>
+      <div class="concept-item"><strong>strchr()</strong> checks for special characters</div>
+      <div class="concept-item"><strong>strlen()</strong> checks password length</div>
+      <div class="concept-item">All conditions must be <strong>true simultaneously</strong></div>
+      <div class="concept-item">Weak password → <strong>reject with reason</strong></div>
+      <div class="concept-item">Strong password → <strong>accept and confirm</strong></div>
+    </div>
+  </div>
+</div>
+
+<!-- 4. ALGORITHM -->
+<div class="section-card" id="sec-4">
+  <div class="section-header" onclick="markDone(this)">
+    <div class="section-num">4</div>
+    <h2>⚙️ Algorithm</h2>
+  </div>
+  <div class="section-body">
+    <ol class="algo-steps">
+      <li><span>START</span></li>
+      <li>Declare character array <span>password[50]</span> and integer flags: <span>hasUpper, hasLower, hasDigit, hasSpecial</span> — all initialized to 0</li>
+      <li>Define special characters string: <span>specials = "#%&amp;@"</span></li>
+      <li>Prompt user: <span>"Enter password:"</span> and read input using <span>scanf()</span></li>
+      <li>Check <span>strlen(password) &gt; 8</span> — if false, print "Too short" and exit</li>
+      <li>Loop through each character of the password using a <span>for loop</span></li>
+      <li>Inside loop: if <span>isupper(ch)</span> → set hasUpper = 1</li>
+      <li>Inside loop: if <span>islower(ch)</span> → set hasLower = 1</li>
+      <li>Inside loop: if <span>isdigit(ch)</span> → set hasDigit = 1</li>
+      <li>Inside loop: if <span>strchr(specials, ch) != NULL</span> → set hasSpecial = 1</li>
+      <li>After loop: check if <span>hasUpper &amp;&amp; hasLower &amp;&amp; hasDigit &amp;&amp; hasSpecial</span> are all 1</li>
+      <li>If all conditions true → print <span>"✅ Strong Password!"</span></li>
+      <li>If any condition false → print specific <span>failure reason</span></li>
+      <li><span>END</span></li>
+    </ol>
+  </div>
+</div>
+
+<!-- 5. C PROGRAM -->
+<div class="section-card" id="sec-5">
+  <div class="section-header" onclick="markDone(this)">
+    <div class="section-num">5</div>
+    <h2>💻 Program Code</h2>
+  </div>
+  <div class="section-body">
+
+    <p style="font-size:0.88rem;color:#4a5568;margin-bottom:1rem;">The following C program validates a password against all strong password rules. It checks length, uppercase, lowercase, digit, and special character requirements.</p>
+
+    <div class="code-wrapper">
+      <div class="code-label">
+        <span>📄 password_validator.c — C Program</span>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+      <pre><code><span class="cm">/*
+ * Practical 4 — Strong Password Authentication
+ * Course: Network & Information Security (316317)
+ * Description: Validates password strength using C
+ */</span>
+
+<span class="pp">#include &lt;stdio.h&gt;</span>
+<span class="pp">#include &lt;string.h&gt;</span>
+<span class="pp">#include &lt;ctype.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">isStrongPassword</span>(<span class="kw">const char</span> *pwd) {
+
+    <span class="kw">int</span> len       = strlen(pwd);
+    <span class="kw">int</span> hasUpper   = <span class="num">0</span>;
+    <span class="kw">int</span> hasLower   = <span class="num">0</span>;
+    <span class="kw">int</span> hasDigit   = <span class="num">0</span>;
+    <span class="kw">int</span> hasSpecial = <span class="num">0</span>;
+    <span class="kw">const char</span> *specials = <span class="str">"#%&amp;@"</span>;
+
+    <span class="cm">/* Rule 1: Length must be more than 8 */</span>
+    <span class="kw">if</span> (len &lt;= <span class="num">8</span>) {
+        printf(<span class="str">"❌ Too short! Password must be more than 8 characters.\n"</span>);
+        <span class="kw">return</span> <span class="num">0</span>;
+    }
+
+    <span class="cm">/* Rule 2-5: Check each character */</span>
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">0</span>; i &lt; len; i++) {
+        <span class="kw">char</span> ch = pwd[i];
+
+        <span class="kw">if</span>      (isupper(ch))          hasUpper   = <span class="num">1</span>;
+        <span class="kw">else if</span> (islower(ch))          hasLower   = <span class="num">1</span>;
+        <span class="kw">else if</span> (isdigit(ch))          hasDigit   = <span class="num">1</span>;
+        <span class="kw">else if</span> (strchr(specials, ch)) hasSpecial = <span class="num">1</span>;
+    }
+
+    <span class="cm">/* Check all rules and report missing ones */</span>
+    <span class="kw">if</span> (!hasUpper)   { printf(<span class="str">"❌ Missing uppercase letter (A-Z).\n"</span>);      <span class="kw">return</span> <span class="num">0</span>; }
+    <span class="kw">if</span> (!hasLower)   { printf(<span class="str">"❌ Missing lowercase letter (a-z).\n"</span>);      <span class="kw">return</span> <span class="num">0</span>; }
+    <span class="kw">if</span> (!hasDigit)   { printf(<span class="str">"❌ Missing digit (0-9).\n"</span>);               <span class="kw">return</span> <span class="num">0</span>; }
+    <span class="kw">if</span> (!hasSpecial) { printf(<span class="str">"❌ Missing special character (#, %%, &amp;, @).\n"</span>); <span class="kw">return</span> <span class="num">0</span>; }
+
+    <span class="kw">return</span> <span class="num">1</span>; <span class="cm">/* All rules passed */</span>
+}
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">char</span> password[<span class="num">50</span>];
+
+    printf(<span class="str">"========================================\n"</span>);
+    printf(<span class="str">"   Strong Password Authentication Tool\n"</span>);
+    printf(<span class="str">"========================================\n"</span>);
+    printf(<span class="str">"Enter password: "</span>);
+    scanf(<span class="str">"%s"</span>, password);
+    printf(<span class="str">"\n--- Checking Password Strength ---\n"</span>);
+
+    <span class="kw">if</span> (isStrongPassword(password)) {
+        printf(<span class="str">"✅ STRONG PASSWORD! Access Granted.\n"</span>);
+    } <span class="kw">else</span> {
+        printf(<span class="str">"⚠️  WEAK PASSWORD! Please try again.\n"</span>);
+    }
+
+    printf(<span class="str">"========================================\n"</span>);
+    <span class="kw">return</span> <span class="num">0</span>;
+}</code></pre>
+    </div>
+
+    <p style="font-size:0.88rem;color:#4a5568;margin:1rem 0 0.8rem;font-weight:600;">🐚 Bonus: Shell Script Version</p>
+
+    <div class="code-wrapper">
+      <div class="code-label">
+        <span>📄 password_check.sh — Shell Script (Bash)</span>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+      <pre><code><span class="cm">#!/bin/bash
+# Practical 4 — Strong Password Validator (Shell Script)</span>
+
+echo <span class="str">"Enter password: "</span>
+read -s password   <span class="cm"># -s hides input</span>
+echo
+
+len=${#password}   <span class="cm"># get length</span>
+
+<span class="cm"># Rule 1: Length check</span>
+<span class="kw">if</span> [ $len -le 8 ]; <span class="kw">then</span>
+    echo <span class="str">"❌ Too short! Must be more than 8 characters."</span>
+    exit 1
+<span class="kw">fi</span>
+
+<span class="cm"># Rule 2-5: Check character types using regex</span>
+<span class="kw">if</span> ! echo <span class="str">"$password"</span> | grep -q <span class="str">'[A-Z]'</span>; <span class="kw">then</span>
+    echo <span class="str">"❌ Missing uppercase letter."</span>; exit 1
+<span class="kw">fi</span>
+
+<span class="kw">if</span> ! echo <span class="str">"$password"</span> | grep -q <span class="str">'[a-z]'</span>; <span class="kw">then</span>
+    echo <span class="str">"❌ Missing lowercase letter."</span>; exit 1
+<span class="kw">fi</span>
+
+<span class="kw">if</span> ! echo <span class="str">"$password"</span> | grep -q <span class="str">'[0-9]'</span>; <span class="kw">then</span>
+    echo <span class="str">"❌ Missing digit."</span>; exit 1
+<span class="kw">fi</span>
+
+<span class="kw">if</span> ! echo <span class="str">"$password"</span> | grep -q <span class="str">'[#%&amp;@]'</span>; <span class="kw">then</span>
+    echo <span class="str">"❌ Missing special character (#, %, &amp;, @)."</span>; exit 1
+<span class="kw">fi</span>
+
+echo <span class="str">"✅ STRONG PASSWORD! Access Granted."</span></code></pre>
+    </div>
+
+  </div>
+</div>
+
+<!-- 6. SAMPLE I/O -->
+<div class="section-card" id="sec-6">
+  <div class="section-header" onclick="markDone(this)">
+    <div class="section-num">6</div>
+    <h2>🧪 Sample Input / Output</h2>
+  </div>
+  <div class="section-body">
+    <table class="io-table">
+      <thead>
+        <tr>
+          <th>Input Password</th>
+          <th>Length</th>
+          <th>Result</th>
+          <th>Reason</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>Abc@1234</code></td>
+          <td>8 chars</td>
+          <td><span class="badge-weak">Weak</span></td>
+          <td>Length is exactly 8 — must be <strong>more than</strong> 8</td>
+        </tr>
+        <tr>
+          <td><code>Abc@12345</code></td>
+          <td>9 chars</td>
+          <td><span class="badge-strong">Strong ✅</span></td>
+          <td>Has uppercase, lowercase, digit, special char, length &gt; 8</td>
+        </tr>
+        <tr>
+          <td><code>abc</code></td>
+          <td>3 chars</td>
+          <td><span class="badge-weak">Weak</span></td>
+          <td>Too short, no uppercase, no digit, no special char</td>
+        </tr>
+        <tr>
+          <td><code>password123</code></td>
+          <td>11 chars</td>
+          <td><span class="badge-weak">Weak</span></td>
+          <td>Missing uppercase letter and special character</td>
+        </tr>
+        <tr>
+          <td><code>PASSWORD@1</code></td>
+          <td>10 chars</td>
+          <td><span class="badge-weak">Weak</span></td>
+          <td>Missing lowercase letter</td>
+        </tr>
+        <tr>
+          <td><code>MyP@ss#99!</code></td>
+          <td>10 chars</td>
+          <td><span class="badge-strong">Strong ✅</span></td>
+          <td>All conditions satisfied</td>
+        </tr>
+        <tr>
+          <td><code>Hello12345</code></td>
+          <td>10 chars</td>
+          <td><span class="badge-weak">Weak</span></td>
+          <td>Missing special character (#, %, &amp;, @)</td>
+        </tr>
+        <tr>
+          <td><code>Admin&amp;2024</code></td>
+          <td>10 chars</td>
+          <td><span class="badge-strong">Strong ✅</span></td>
+          <td>Has A (upper), dmin (lower), 2024 (digit), &amp; (special)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 7. OUTPUT EXPLANATION -->
+<div class="section-card" id="sec-7">
+  <div class="section-header" onclick="markDone(this)">
+    <div class="section-num">7</div>
+    <h2>🔍 Output Explanation</h2>
+  </div>
+  <div class="section-body">
+    <p style="font-size:0.87rem;color:#4a5568;margin-bottom:1rem;">For input <strong>Abc@12345</strong> — step-by-step execution:</p>
+    <div class="flow-step"><div class="flow-icon">📥</div><div><strong>Input received:</strong> "Abc@12345" — stored in char array password[50]</div></div>
+    <div class="flow-step"><div class="flow-icon">📏</div><div><strong>Length check:</strong> strlen("Abc@12345") = 9 → 9 &gt; 8 ✅ — passes</div></div>
+    <div class="flow-step"><div class="flow-icon">🔄</div><div><strong>Loop starts:</strong> iterates through each character: A, b, c, @, 1, 2, 3, 4, 5</div></div>
+    <div class="flow-step"><div class="flow-icon">🔠</div><div><strong>'A':</strong> isupper('A') = true → hasUpper = 1</div></div>
+    <div class="flow-step"><div class="flow-icon">🔡</div><div><strong>'b','c':</strong> islower() = true → hasLower = 1</div></div>
+    <div class="flow-step"><div class="flow-icon">🔣</div><div><strong>'@':</strong> strchr("#%&amp;@", '@') ≠ NULL → hasSpecial = 1</div></div>
+    <div class="flow-step"><div class="flow-icon">🔢</div><div><strong>'1'–'5':</strong> isdigit() = true → hasDigit = 1</div></div>
+    <div class="flow-step"><div class="flow-icon">✅</div><div><strong>Final check:</strong> hasUpper(1) &amp;&amp; hasLower(1) &amp;&amp; hasDigit(1) &amp;&amp; hasSpecial(1) = ALL TRUE</div></div>
+    <div class="flow-step"><div class="flow-icon">🎉</div><div><strong>Output:</strong> "✅ STRONG PASSWORD! Access Granted."</div></div>
+  </div>
+</div>
+
+<!-- 8. PRECAUTIONS -->
+<div class="section-card" id="sec-8">
+  <div class="section-header" onclick="markDone(this)">
+    <div class="section-num">8</div>
+    <h2>⚠️ Precautions</h2>
+  </div>
+  <div class="section-body">
+    <div class="precaution-item">Use <strong>scanf("%s", password)</strong> carefully — it stops at whitespace. Use <strong>fgets()</strong> if spaces are allowed in passwords.</div>
+    <div class="precaution-item">Always initialize flag variables (<strong>hasUpper, hasLower</strong>, etc.) to <strong>0</strong> before the loop.</div>
+    <div class="precaution-item">The condition is <strong>length &gt; 8</strong> (strictly greater than), not &gt;= 8. A password of exactly 8 characters is rejected.</div>
+    <div class="precaution-item">Include both <strong>&lt;ctype.h&gt;</strong> (for isupper, islower, isdigit) and <strong>&lt;string.h&gt;</strong> (for strlen, strchr) headers.</div>
+    <div class="precaution-item">Never store passwords in <strong>plain text</strong> in real applications — always hash them using SHA-256 or bcrypt.</div>
+    <div class="precaution-item">In the shell script, use <strong>read -s</strong> to hide password input from the terminal screen.</div>
+    <div class="precaution-item">Avoid using <strong>common words</strong> or personal information (name, birthdate) in passwords even if they pass validation.</div>
+    <div class="precaution-item">The special characters are limited to <strong>#, %, &amp;, @</strong> as per the practical requirement — extend the specials string for real-world use.</div>
+  </div>
+</div>
+
+</div><!-- end main -->
+
+<div class="main" style="padding-top:0;">
+
+<!-- 9. VIVA Q&A -->
+<div class="section-card" id="sec-9">
+  <div class="section-header" onclick="markDone(this)">
+    <div class="section-num">9</div>
+    <h2>🧠 Viva Questions &amp; Answers</h2>
+  </div>
+  <div class="section-body">
+
+    <div class="qa-item">
+      <div class="qa-q" onclick="toggleQA(this)">Q1. What is Authentication? <span class="qa-toggle">▾</span></div>
+      <div class="qa-a">Authentication is the process of <strong>verifying the identity</strong> of a user or system before granting access. It confirms "you are who you claim to be." Common methods: password, OTP, biometrics.</div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q" onclick="toggleQA(this)">Q2. What is a Strong Password? <span class="qa-toggle">▾</span></div>
+      <div class="qa-a">A strong password has: <strong>more than 8 characters</strong>, at least one <strong>uppercase letter</strong> (A–Z), one <strong>lowercase letter</strong> (a–z), one <strong>digit</strong> (0–9), and one <strong>special character</strong> (#, %, &amp;, @). It avoids dictionary words and personal info.</div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q" onclick="toggleQA(this)">Q3. What is the difference between Authentication and Authorization? <span class="qa-toggle">▾</span></div>
+      <div class="qa-a"><strong>Authentication</strong> verifies <em>who you are</em> (identity check — login with password). <strong>Authorization</strong> determines <em>what you can do</em> (access control — admin vs. regular user). Authentication always happens before authorization.</div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q" onclick="toggleQA(this)">Q4. What is a Brute Force Attack? <span class="qa-toggle">▾</span></div>
+      <div class="qa-a">A brute force attack tries <strong>every possible combination</strong> of characters until the correct password is found. A 4-digit PIN has 10,000 combinations (cracked instantly). An 8+ character mixed password has trillions of combinations — making brute force impractical.</div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q" onclick="toggleQA(this)">Q5. What is a Dictionary Attack? <span class="qa-toggle">▾</span></div>
+      <div class="qa-a">A dictionary attack uses a <strong>pre-built list of common passwords</strong> (like "password", "admin123", "qwerty") to guess the password. It's faster than brute force but fails against random, complex passwords that don't contain common words.</div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q" onclick="toggleQA(this)">Q6. What does isupper() function do in C? <span class="qa-toggle">▾</span></div>
+      <div class="qa-a"><strong>isupper(ch)</strong> is a function from <code>&lt;ctype.h&gt;</code> that returns a <strong>non-zero value</strong> if the character <code>ch</code> is an uppercase letter (A–Z), and <strong>0</strong> if it is not. Example: isupper('A') = non-zero, isupper('a') = 0.</div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q" onclick="toggleQA(this)">Q7. What does strchr() function do? <span class="qa-toggle">▾</span></div>
+      <div class="qa-a"><strong>strchr(str, ch)</strong> from <code>&lt;string.h&gt;</code> searches for character <code>ch</code> in string <code>str</code>. It returns a <strong>pointer to the first occurrence</strong> if found, or <strong>NULL</strong> if not found. Used here to check if a character is a special character.</div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q" onclick="toggleQA(this)">Q8. Why is password length important? <span class="qa-toggle">▾</span></div>
+      <div class="qa-a">Longer passwords have <strong>exponentially more combinations</strong>. Each additional character multiplies the search space. An 8-character password with 95 possible characters has 95⁸ ≈ 6.6 trillion combinations. A 12-character password has 95¹² ≈ 540 quadrillion combinations.</div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q" onclick="toggleQA(this)">Q9. What is Password Salting? <span class="qa-toggle">▾</span></div>
+      <div class="qa-a"><strong>Password salting</strong> adds a random string (salt) to a password <strong>before hashing</strong> it. This ensures two identical passwords produce different hashes, preventing <strong>rainbow table attacks</strong>. Example: "password" + "xK9m" → hash("passwordxK9m").</div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q" onclick="toggleQA(this)">Q10. What header files are used in this program and why? <span class="qa-toggle">▾</span></div>
+      <div class="qa-a"><strong>&lt;stdio.h&gt;</strong> — for printf() and scanf(). <strong>&lt;string.h&gt;</strong> — for strlen() and strchr(). <strong>&lt;ctype.h&gt;</strong> — for isupper(), islower(), isdigit(). All three are required for this password validation program.</div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q" onclick="toggleQA(this)">Q11. What is Multi-Factor Authentication (MFA)? <span class="qa-toggle">▾</span></div>
+      <div class="qa-a"><strong>MFA</strong> requires two or more verification factors: something you <strong>know</strong> (password), something you <strong>have</strong> (OTP/token), something you <strong>are</strong> (biometric). Even if a password is stolen, MFA prevents unauthorized access.</div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q" onclick="toggleQA(this)">Q12. What is the difference between isdigit() and isnumber()? <span class="qa-toggle">▾</span></div>
+      <div class="qa-a"><strong>isdigit(ch)</strong> is a standard C function from &lt;ctype.h&gt; that checks if a character is a decimal digit (0–9). <strong>isnumber()</strong> is not a standard C function — it does not exist in standard C. Always use <strong>isdigit()</strong> in C programs.</div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q" onclick="toggleQA(this)">Q13. Why should passwords never be stored in plain text? <span class="qa-toggle">▾</span></div>
+      <div class="qa-a">If a database is breached and passwords are in plain text, all accounts are immediately compromised. Passwords should be stored as <strong>hashed values</strong> (using SHA-256, bcrypt). Even if the hash is stolen, the original password cannot be easily recovered.</div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q" onclick="toggleQA(this)">Q14. What is the purpose of the -s flag in shell script's read command? <span class="qa-toggle">▾</span></div>
+      <div class="qa-a">The <strong>-s flag</strong> in <code>read -s password</code> makes the input <strong>silent</strong> — characters typed are not displayed on the terminal. This prevents shoulder surfing (someone watching your screen) from seeing the password as it's typed.</div>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q" onclick="toggleQA(this)">Q15. What is a Rainbow Table Attack? <span class="qa-toggle">▾</span></div>
+      <div class="qa-a">A rainbow table attack uses <strong>precomputed hash values</strong> for millions of common passwords. The attacker compares stolen hashes against the table to find matches instantly. <strong>Password salting</strong> defeats rainbow table attacks because each salt produces a unique hash.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 10. MCQs -->
+<div class="section-card" id="sec-10">
+  <div class="section-header" onclick="markDone(this)">
+    <div class="section-num">10</div>
+    <h2>🧠 MCQ Practice</h2>
+  </div>
+  <div class="section-body">
+
+    <div class="mcq-item">
+      <div class="mcq-q">1. What is the minimum length requirement for a strong password in this practical?</div>
+      <div class="mcq-opts">
+        <button class="mcq-opt" onclick="chk(this,false)">Exactly 8 characters</button>
+        <button class="mcq-opt" onclick="chk(this,true)">More than 8 characters</button>
+        <button class="mcq-opt" onclick="chk(this,false)">At least 6 characters</button>
+        <button class="mcq-opt" onclick="chk(this,false)">At least 10 characters</button>
+      </div>
+      <div class="mcq-fb"></div>
+    </div>
+
+    <div class="mcq-item">
+      <div class="mcq-q">2. Which C function checks if a character is an uppercase letter?</div>
+      <div class="mcq-opts">
+        <button class="mcq-opt" onclick="chk(this,false)">isUpper()</button>
+        <button class="mcq-opt" onclick="chk(this,true)">isupper()</button>
+        <button class="mcq-opt" onclick="chk(this,false)">checkUpper()</button>
+        <button class="mcq-opt" onclick="chk(this,false)">isCapital()</button>
+      </div>
+      <div class="mcq-fb"></div>
+    </div>
+
+    <div class="mcq-item">
+      <div class="mcq-q">3. Which header file provides isupper(), islower(), and isdigit()?</div>
+      <div class="mcq-opts">
+        <button class="mcq-opt" onclick="chk(this,false)">string.h</button>
+        <button class="mcq-opt" onclick="chk(this,false)">stdio.h</button>
+        <button class="mcq-opt" onclick="chk(this,true)">ctype.h</button>
+        <button class="mcq-opt" onclick="chk(this,false)">stdlib.h</button>
+      </div>
+      <div class="mcq-fb"></div>
+    </div>
+
+    <div class="mcq-item">
+      <div class="mcq-q">4. What does strchr(specials, ch) return if the character is NOT found?</div>
+      <div class="mcq-opts">
+        <button class="mcq-opt" onclick="chk(this,false)">0</button>
+        <button class="mcq-opt" onclick="chk(this,false)">-1</button>
+        <button class="mcq-opt" onclick="chk(this,true)">NULL</button>
+        <button class="mcq-opt" onclick="chk(this,false)">false</button>
+      </div>
+      <div class="mcq-fb"></div>
+    </div>
+
+    <div class="mcq-item">
+      <div class="mcq-q">5. Which attack tries every possible password combination?</div>
+      <div class="mcq-opts">
+        <button class="mcq-opt" onclick="chk(this,false)">Dictionary Attack</button>
+        <button class="mcq-opt" onclick="chk(this,true)">Brute Force Attack</button>
+        <button class="mcq-opt" onclick="chk(this,false)">Phishing Attack</button>
+        <button class="mcq-opt" onclick="chk(this,false)">Rainbow Table Attack</button>
+      </div>
+      <div class="mcq-fb"></div>
+    </div>
+
+    <div class="mcq-item">
+      <div class="mcq-q">6. What is the special characters string used in this practical?</div>
+      <div class="mcq-opts">
+        <button class="mcq-opt" onclick="chk(this,false)">!@#$</button>
+        <button class="mcq-opt" onclick="chk(this,true)">#%&amp;@</button>
+        <button class="mcq-opt" onclick="chk(this,false)">*&amp;^%</button>
+        <button class="mcq-opt" onclick="chk(this,false)">@!#*</button>
+      </div>
+      <div class="mcq-fb"></div>
+    </div>
+
+    <div class="mcq-item">
+      <div class="mcq-q">7. What does the -s flag do in shell script's read command?</div>
+      <div class="mcq-opts">
+        <button class="mcq-opt" onclick="chk(this,false)">Saves input to file</button>
+        <button class="mcq-opt" onclick="chk(this,true)">Hides input from terminal (silent mode)</button>
+        <button class="mcq-opt" onclick="chk(this,false)">Skips input validation</button>
+        <button class="mcq-opt" onclick="chk(this,false)">Sets string type</button>
+      </div>
+      <div class="mcq-fb"></div>
+    </div>
+
+    <div class="mcq-item">
+      <div class="mcq-q">8. Authentication verifies _____, while Authorization determines _____.</div>
+      <div class="mcq-opts">
+        <button class="mcq-opt" onclick="chk(this,false)">What you can do / Who you are</button>
+        <button class="mcq-opt" onclick="chk(this,true)">Who you are / What you can do</button>
+        <button class="mcq-opt" onclick="chk(this,false)">Your password / Your username</button>
+        <button class="mcq-opt" onclick="chk(this,false)">Your role / Your identity</button>
+      </div>
+      <div class="mcq-fb"></div>
+    </div>
+
+    <div class="mcq-item">
+      <div class="mcq-q">9. Which function returns the length of a string in C?</div>
+      <div class="mcq-opts">
+        <button class="mcq-opt" onclick="chk(this,false)">length()</button>
+        <button class="mcq-opt" onclick="chk(this,false)">size()</button>
+        <button class="mcq-opt" onclick="chk(this,true)">strlen()</button>
+        <button class="mcq-opt" onclick="chk(this,false)">count()</button>
+      </div>
+      <div class="mcq-fb"></div>
+    </div>
+
+    <div class="mcq-item">
+      <div class="mcq-q">10. Which of the following is a STRONG password?</div>
+      <div class="mcq-opts">
+        <button class="mcq-opt" onclick="chk(this,false)">password123</button>
+        <button class="mcq-opt" onclick="chk(this,false)">ABC12345</button>
+        <button class="mcq-opt" onclick="chk(this,true)">Admin@2024#</button>
+        <button class="mcq-opt" onclick="chk(this,false)">hello</button>
+      </div>
+      <div class="mcq-fb"></div>
+    </div>
+
+    <div class="mcq-item">
+      <div class="mcq-q">11. What is password salting used for?</div>
+      <div class="mcq-opts">
+        <button class="mcq-opt" onclick="chk(this,false)">Making passwords longer</button>
+        <button class="mcq-opt" onclick="chk(this,true)">Preventing rainbow table attacks</button>
+        <button class="mcq-opt" onclick="chk(this,false)">Encrypting passwords</button>
+        <button class="mcq-opt" onclick="chk(this,false)">Storing passwords in plain text</button>
+      </div>
+      <div class="mcq-fb"></div>
+    </div>
+
+    <div class="mcq-item">
+      <div class="mcq-q">12. Which attack uses a pre-built list of common passwords?</div>
+      <div class="mcq-opts">
+        <button class="mcq-opt" onclick="chk(this,true)">Dictionary Attack</button>
+        <button class="mcq-opt" onclick="chk(this,false)">Brute Force Attack</button>
+        <button class="mcq-opt" onclick="chk(this,false)">SQL Injection</button>
+        <button class="mcq-opt" onclick="chk(this,false)">Phishing</button>
+      </div>
+      <div class="mcq-fb"></div>
+    </div>
+
+    <div class="mcq-item">
+      <div class="mcq-q">13. What does MFA stand for?</div>
+      <div class="mcq-opts">
+        <button class="mcq-opt" onclick="chk(this,false)">Multiple File Access</button>
+        <button class="mcq-opt" onclick="chk(this,true)">Multi-Factor Authentication</button>
+        <button class="mcq-opt" onclick="chk(this,false)">Managed Firewall Access</button>
+        <button class="mcq-opt" onclick="chk(this,false)">Master File Authentication</button>
+      </div>
+      <div class="mcq-fb"></div>
+    </div>
+
+    <div class="mcq-item">
+      <div class="mcq-q">14. What does isdigit('5') return in C?</div>
+      <div class="mcq-opts">
+        <button class="mcq-opt" onclick="chk(this,false)">0</button>
+        <button class="mcq-opt" onclick="chk(this,false)">false</button>
+        <button class="mcq-opt" onclick="chk(this,true)">Non-zero (true)</button>
+        <button class="mcq-opt" onclick="chk(this,false)">NULL</button>
+      </div>
+      <div class="mcq-fb"></div>
+    </div>
+
+    <div class="mcq-item">
+      <div class="mcq-q">15. Which header provides strlen() and strchr()?</div>
+      <div class="mcq-opts">
+        <button class="mcq-opt" onclick="chk(this,false)">ctype.h</button>
+        <button class="mcq-opt" onclick="chk(this,false)">stdio.h</button>
+        <button class="mcq-opt" onclick="chk(this,true)">string.h</button>
+        <button class="mcq-opt" onclick="chk(this,false)">math.h</button>
+      </div>
+      <div class="mcq-fb"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 11. RAPID REVISION -->
+<div class="section-card" id="sec-11">
+  <div class="section-header" onclick="markDone(this)">
+    <div class="section-num">11</div>
+    <h2>⚡ Quick Revision</h2>
+  </div>
+  <div class="section-body">
+    <div class="rapid-grid">
+      <div class="rapid-item">Authentication = verify identity</div>
+      <div class="rapid-item">Authorization = verify permissions</div>
+      <div class="rapid-item">Strong pwd = length &gt; 8 chars</div>
+      <div class="rapid-item">Must have uppercase (A–Z)</div>
+      <div class="rapid-item">Must have lowercase (a–z)</div>
+      <div class="rapid-item">Must have digit (0–9)</div>
+      <div class="rapid-item">Must have special: #, %, &amp;, @</div>
+      <div class="rapid-item">isupper() → checks uppercase</div>
+      <div class="rapid-item">islower() → checks lowercase</div>
+      <div class="rapid-item">isdigit() → checks digit</div>
+      <div class="rapid-item">strchr() → checks special char</div>
+      <div class="rapid-item">strlen() → returns string length</div>
+      <div class="rapid-item">All from &lt;ctype.h&gt; / &lt;string.h&gt;</div>
+      <div class="rapid-item">Brute force = tries all combos</div>
+      <div class="rapid-item">Dictionary = uses word list</div>
+      <div class="rapid-item">Rainbow table = precomputed hashes</div>
+      <div class="rapid-item">Salting = defeats rainbow tables</div>
+      <div class="rapid-item">Never store passwords in plain text</div>
+      <div class="rapid-item">read -s = silent input in shell</div>
+      <div class="rapid-item">MFA = 2+ verification factors</div>
+      <div class="rapid-item">strchr returns NULL if not found</div>
+      <div class="rapid-item">All 4 flags must be 1 = strong</div>
+      <div class="rapid-item">CIA Triad: Confidentiality, Integrity, Availability</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end main 2 -->
+
+<!-- DARK TOGGLE -->
+<button class="dark-toggle no-print" id="darkToggle" onclick="toggleDark()" title="Toggle Dark Mode">🌙</button>
+<!-- SCROLL TOP -->
+<button class="scroll-top no-print" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+// ===== DARK MODE =====
+const darkToggle = document.getElementById('darkToggle');
+function toggleDark(){
+  document.body.classList.toggle('dark');
+  darkToggle.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
+  localStorage.setItem('dark', document.body.classList.contains('dark'));
+}
+if(localStorage.getItem('dark') === 'true'){ document.body.classList.add('dark'); darkToggle.textContent='☀️'; }
+
+// ===== SCROLL PROGRESS =====
+const bar = document.getElementById('progress-bar');
+window.addEventListener('scroll',()=>{
+  const pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+  bar.style.width = pct + '%';
+  document.getElementById('scrollTopBtn').classList.toggle('visible', window.scrollY > 300);
+  updateActiveSection();
+});
+
+// ===== SECTION ANIMATIONS =====
+const cards = document.querySelectorAll('.section-card');
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{threshold:0.08});
+cards.forEach(c=>observer.observe(c));
+
+// ===== MINI NAV =====
+const navLabels = ['Aim','Theory','Concepts','Algorithm','Code','I/O','Explanation','Precautions','Viva Q&A','MCQs','Revision'];
+const miniNav = document.getElementById('miniNav');
+navLabels.forEach((label,i)=>{
+  const dot = document.createElement('div');
+  dot.className = 'mini-nav-dot';
+  dot.setAttribute('data-label', label);
+  dot.onclick = ()=>{ const el=document.getElementById('sec-'+(i+1)); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); };
+  miniNav.appendChild(dot);
+});
+function updateActiveSection(){
+  const dots = miniNav.querySelectorAll('.mini-nav-dot');
+  let active = 0;
+  cards.forEach((c,i)=>{
+    const rect = c.getBoundingClientRect();
+    if(rect.top < window.innerHeight*0.5) active = i;
+  });
+  dots.forEach((d,i)=>d.classList.toggle('active', i===active));
+}
+
+// ===== MARK DONE =====
+function markDone(header){
+  const card = header.closest('.section-card');
+  card.classList.toggle('done');
+}
+
+// ===== POMODORO =====
+let pomoInterval, pomoSeconds = 25*60, pomoRunning = false, pomoBreak = false;
+const pomoTime = document.getElementById('pomo-time');
+const pomoBtn  = document.getElementById('pomo-btn');
+const pomoLabel= document.getElementById('pomo-label');
+const pomoCont = document.getElementById('pomodoro');
+function formatTime(s){ return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'); }
+function togglePomo(){
+  if(pomoRunning){
+    clearInterval(pomoInterval); pomoRunning=false; pomoBtn.textContent='▶ Resume';
+  } else {
+    pomoRunning=true; pomoBtn.textContent='⏸ Pause';
+    pomoInterval = setInterval(()=>{
+      pomoSeconds--;
+      pomoTime.textContent = formatTime(pomoSeconds);
+      if(pomoSeconds<=0){
+        clearInterval(pomoInterval); pomoRunning=false;
+        if(!pomoBreak){
+          pomoBreak=true; pomoSeconds=5*60;
+          pomoLabel.textContent='☕ Break'; pomoCont.classList.add('break');
+          pomoBtn.textContent='▶ Start Break';
+          if(Notification.permission==='granted') new Notification('🍅 Focus done! Take a 5-min break.');
+        } else {
+          pomoBreak=false; pomoSeconds=25*60;
+          pomoLabel.textContent='🍅 Focus'; pomoCont.classList.remove('break');
+          pomoBtn.textContent='▶ Start Focus';
+        }
+      }
+    },1000);
+  }
+}
+function resetPomo(){
+  clearInterval(pomoInterval); pomoRunning=false; pomoBreak=false;
+  pomoSeconds=25*60; pomoTime.textContent='25:00';
+  pomoLabel.textContent='🍅 Focus'; pomoCont.classList.remove('break');
+  pomoBtn.textContent='▶ Start';
+}
+if('Notification' in window && Notification.permission==='default') Notification.requestPermission();
+
+// ===== COVER PARTICLES =====
+const cover = document.querySelector('.cover');
+if(cover){
+  for(let i=0;i<12;i++){
+    const p=document.createElement('div'); p.className='particle';
+    const sz=Math.random()*60+20;
+    p.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;animation-duration:${8+Math.random()*12}s;animation-delay:${Math.random()*8}s;`;
+    cover.appendChild(p);
+  }
+}
+
+// ===== VIVA Q&A =====
+function toggleQA(el){
+  const ans=el.nextElementSibling;
+  const tog=el.querySelector('.qa-toggle');
+  ans.classList.toggle('open');
+  tog.style.transform=ans.classList.contains('open')?'rotate(180deg)':'rotate(0deg)';
+}
+
+// ===== MCQ =====
+function chk(btn,isCorrect){
+  const item=btn.closest('.mcq-item');
+  if(item.querySelector('.disabled')) return;
+  const opts=item.querySelectorAll('.mcq-opt');
+  const fb=item.querySelector('.mcq-fb');
+  opts.forEach(o=>o.classList.add('disabled'));
+  if(isCorrect){
+    btn.classList.add('correct');
+    fb.textContent='✅ Correct!'; fb.className='mcq-fb show ok';
+  } else {
+    btn.classList.add('wrong');
+    opts.forEach(o=>{ if(o.onclick.toString().includes('true')) o.classList.add('correct'); });
+    fb.textContent='❌ Wrong! Correct answer is highlighted.'; fb.className='mcq-fb show no';
+  }
+}
+
+// ===== COPY CODE =====
+function copyCode(btn){
+  const code=btn.closest('.code-wrapper').querySelector('code').innerText;
+  navigator.clipboard.writeText(code).then(()=>{
+    btn.textContent='Copied!'; setTimeout(()=>btn.textContent='Copy',2000);
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Payment Flow – Trackify</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;600;700&display=swap');
+  @page { size: A4 portrait; margin: 20mm; }
+  @media print { body { margin: 0; } }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'EB Garamond', Garamond, 'Times New Roman', serif;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20mm;
+  }
+  h1 { font-size: 18pt; font-weight: 700; text-align: center; margin-bottom: 4pt; }
+  p.sub { font-size: 12pt; color: #444; text-align: center; margin-bottom: 12pt; }
+  svg text { font-family: 'EB Garamond', Garamond, 'Times New Roman', serif; }
+</style>
+</head>
+<body>
+<h1>Payment Flow Diagram</h1>
+<p class="sub">Trackify – Razorpay Maintenance Fee Payment Process</p>
+<svg width="520" height="960" viewBox="0 0 520 960" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="a" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L0,8 L10,4 z" fill="#222"/>
+    </marker>
+  </defs>
+
+  <ellipse cx="260" cy="34" rx="100" ry="26" fill="#222"/>
+  <text x="260" y="39" text-anchor="middle" font-size="14" fill="#fff" font-weight="bold">START</text>
+  <line x1="260" y1="60" x2="260" y2="82" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <rect x="110" y="84" width="300" height="52" rx="8" fill="#f5f5f5" stroke="#333" stroke-width="1.5"/>
+  <text x="260" y="106" text-anchor="middle" font-size="13" font-weight="bold">Resident Opens Payments Page</text>
+  <text x="260" y="124" text-anchor="middle" font-size="12" fill="#555">/dashboard/payments</text>
+  <line x1="260" y1="136" x2="260" y2="158" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <rect x="110" y="160" width="300" height="52" rx="8" fill="#f5f5f5" stroke="#333" stroke-width="1.5"/>
+  <text x="260" y="182" text-anchor="middle" font-size="13" font-weight="bold">View Pending Dues</text>
+  <text x="260" y="200" text-anchor="middle" font-size="12" fill="#555">Maintenance · Penalty · Other</text>
+  <line x1="260" y1="212" x2="260" y2="234" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <rect x="110" y="236" width="300" height="52" rx="8" fill="#f5f5f5" stroke="#333" stroke-width="1.5"/>
+  <text x="260" y="258" text-anchor="middle" font-size="13" font-weight="bold">Click "Pay Now"</text>
+  <text x="260" y="276" text-anchor="middle" font-size="12" fill="#555">Select amount and payment type</text>
+  <line x1="260" y1="288" x2="260" y2="310" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <rect x="110" y="312" width="300" height="52" rx="8" fill="#f5f5f5" stroke="#333" stroke-width="1.5"/>
+  <text x="260" y="334" text-anchor="middle" font-size="13" font-weight="bold">POST /api/razorpay/create-order</text>
+  <text x="260" y="352" text-anchor="middle" font-size="12" fill="#555">Server creates Razorpay order</text>
+  <line x1="260" y1="364" x2="260" y2="386" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <rect x="110" y="388" width="300" height="52" rx="8" fill="#f5f5f5" stroke="#333" stroke-width="1.5"/>
+  <text x="260" y="410" text-anchor="middle" font-size="13" font-weight="bold">Save Pending Record in DB</text>
+  <text x="260" y="428" text-anchor="middle" font-size="12" fill="#555">payments table · status = pending</text>
+  <line x1="260" y1="440" x2="260" y2="462" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <rect x="110" y="464" width="300" height="52" rx="8" fill="#f5f5f5" stroke="#333" stroke-width="1.5"/>
+  <text x="260" y="486" text-anchor="middle" font-size="13" font-weight="bold">Open Razorpay Checkout</text>
+  <text x="260" y="504" text-anchor="middle" font-size="12" fill="#555">UPI · Cards · Net Banking · Wallets</text>
+  <line x1="260" y1="516" x2="260" y2="538" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <!-- D1: Payment completed? -->
+  <polygon points="260,540 420,576 260,612 100,576" fill="#f5f5f5" stroke="#333" stroke-width="1.5"/>
+  <text x="260" y="571" text-anchor="middle" font-size="13" font-weight="bold">Payment Completed?</text>
+  <line x1="100" y1="576" x2="40" y2="576" stroke="#222" stroke-width="1.8"/>
+  <rect x="10" y="556" width="30" height="40" rx="4" fill="#ffe0e0" stroke="#c00" stroke-width="1"/>
+  <text x="25" y="580" text-anchor="middle" font-size="9" fill="#c00" transform="rotate(90,25,576)">status=failed</text>
+  <text x="66" y="568" text-anchor="middle" font-size="12" fill="#c00" font-weight="bold">No</text>
+  <line x1="260" y1="612" x2="260" y2="634" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+  <text x="278" y="627" font-size="12" fill="#080" font-weight="bold">Yes</text>
+
+  <rect x="110" y="636" width="300" height="52" rx="8" fill="#f5f5f5" stroke="#333" stroke-width="1.5"/>
+  <text x="260" y="658" text-anchor="middle" font-size="13" font-weight="bold">POST /api/razorpay/verify-payment</text>
+  <text x="260" y="676" text-anchor="middle" font-size="12" fill="#555">Verify HMAC-SHA256 signature</text>
+  <line x1="260" y1="688" x2="260" y2="710" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <!-- D2: Signature valid? -->
+  <polygon points="260,712 420,748 260,784 100,748" fill="#f5f5f5" stroke="#333" stroke-width="1.5"/>
+  <text x="260" y="743" text-anchor="middle" font-size="13" font-weight="bold">Signature Valid?</text>
+  <line x1="100" y1="748" x2="40" y2="748" stroke="#222" stroke-width="1.8"/>
+  <rect x="10" y="728" width="30" height="40" rx="4" fill="#ffe0e0" stroke="#c00" stroke-width="1"/>
+  <text x="25" y="752" text-anchor="middle" font-size="9" fill="#c00" transform="rotate(90,25,748)">Fraud Alert</text>
+  <text x="66" y="740" text-anchor="middle" font-size="12" fill="#c00" font-weight="bold">No</text>
+  <line x1="260" y1="784" x2="260" y2="806" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+  <text x="278" y="799" font-size="12" fill="#080" font-weight="bold">Yes</text>
+
+  <rect x="110" y="808" width="300" height="52" rx="8" fill="#f5f5f5" stroke="#333" stroke-width="1.5"/>
+  <text x="260" y="830" text-anchor="middle" font-size="13" font-weight="bold">Update DB: status = completed</text>
+  <text x="260" y="848" text-anchor="middle" font-size="12" fill="#555">Save payment_id · paid_at timestamp</text>
+  <line x1="260" y1="860" x2="260" y2="882" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <rect x="110" y="884" width="300" height="44" rx="8" fill="#f5f5f5" stroke="#333" stroke-width="1.5"/>
+  <text x="260" y="906" text-anchor="middle" font-size="13" font-weight="bold">Generate &amp; Email Receipt</text>
+  <line x1="260" y1="928" x2="260" y2="940" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <ellipse cx="260" cy="950" rx="100" ry="26" fill="#222"/>
+  <text x="260" y="955" text-anchor="middle" font-size="14" fill="#fff" font-weight="bold">PAYMENT DONE</text>
+</svg>
+</body>
+</html>

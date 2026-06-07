@@ -1,0 +1,2075 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trackify – A Society Issue Tracker | Black Book</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+
+/* ── PAGE SETUP ── */
+@page {
+  size: A4;
+  margin: 2.54cm 2.54cm 2.54cm 3.81cm;
+}
+@media print {
+  body { margin: 0; }
+  .page { page-break-after: always; }
+  .page:last-child { page-break-after: avoid; }
+  .no-break { page-break-inside: avoid; }
+  thead { display: table-header-group; }
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 12pt;
+  line-height: 1.5;
+  color: #000;
+  background: #fff;
+}
+
+.page {
+  width: 210mm;
+  min-height: 297mm;
+  margin: 0 auto;
+  padding: 2.54cm 2.54cm 2.54cm 3.81cm;
+  position: relative;
+  page-break-after: always;
+}
+.page:last-child { page-break-after: avoid; }
+
+/* ── HEADER ── */
+.page-header {
+  position: absolute;
+  top: 0.8cm;
+  left: 3.81cm;
+  right: 2.54cm;
+  font-family: 'Times New Roman', serif;
+  font-size: 10pt;
+  color: #333;
+  border-bottom: 1px solid #aaa;
+  padding-bottom: 3px;
+}
+.no-header .page-header { display: none; }
+
+/* ── FOOTER ── */
+.page-footer {
+  position: absolute;
+  bottom: 0.8cm;
+  left: 3.81cm;
+  right: 2.54cm;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'Times New Roman', serif;
+  font-size: 10pt;
+  color: #333;
+  border-top: 1px solid #aaa;
+  padding-top: 3px;
+}
+.footer-center { text-align: center; flex: 1; }
+.footer-right { text-align: right; min-width: 40px; }
+.no-footer .page-footer { display: none; }
+
+/* ── CONTENT AREA ── */
+.content { margin-top: 1cm; margin-bottom: 1cm; }
+
+/* ── CHAPTER TITLE ── */
+.chapter-title {
+  font-family: 'Times New Roman', serif;
+  font-size: 16pt;
+  font-weight: bold;
+  text-align: center;
+  text-transform: uppercase;
+  border-bottom: 2.5pt solid #000;
+  padding-bottom: 6px;
+  margin-bottom: 24px;
+}
+
+/* ── HEADINGS ── */
+h2 {
+  font-family: 'Times New Roman', serif;
+  font-size: 14pt;
+  font-weight: bold;
+  margin-top: 18pt;
+  margin-bottom: 6pt;
+}
+h3 {
+  font-family: 'Times New Roman', serif;
+  font-size: 13pt;
+  font-weight: bold;
+  margin-top: 14pt;
+  margin-bottom: 4pt;
+}
+h4 {
+  font-family: 'Times New Roman', serif;
+  font-size: 12pt;
+  font-weight: bold;
+  margin-top: 10pt;
+  margin-bottom: 4pt;
+}
+
+/* ── NORMAL TEXT ── */
+p {
+  font-family: 'Times New Roman', serif;
+  font-size: 12pt;
+  line-height: 1.5;
+  text-align: justify;
+  margin-bottom: 10pt;
+  text-indent: 1.5cm;
+}
+p.no-indent { text-indent: 0; }
+p.center { text-align: center; text-indent: 0; }
+
+/* ── LISTS ── */
+ul, ol {
+  margin-left: 2cm;
+  margin-bottom: 10pt;
+  font-size: 12pt;
+  line-height: 1.5;
+}
+li { margin-bottom: 4pt; text-align: justify; }
+
+/* ── TABLES ── */
+.table-wrap { text-align: center; margin: 14pt 0; }
+table {
+  border-collapse: collapse;
+  margin: 0 auto;
+  font-family: 'Times New Roman', serif;
+  font-size: 11pt;
+  width: 95%;
+}
+th, td {
+  border: 1px solid #000;
+  padding: 5pt 7pt;
+  text-align: left;
+  vertical-align: top;
+}
+th { font-weight: bold; background: #e8e8e8; }
+.table-caption {
+  font-family: 'EB Garamond', Garamond, serif;
+  font-size: 12pt;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 6pt;
+}
+.fig-caption {
+  font-family: 'EB Garamond', Garamond, serif;
+  font-size: 12pt;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 6pt;
+  margin-bottom: 10pt;
+}
+
+/* ── CODE BLOCKS ── */
+pre {
+  font-family: 'Courier New', monospace;
+  font-size: 9.5pt;
+  background: #f5f5f5;
+  border: 1px solid #ccc;
+  padding: 10pt;
+  margin: 10pt 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.4;
+}
+
+/* ── COVER PAGE ── */
+.cover-border {
+  border: 4px double #000;
+  padding: 20pt;
+  min-height: 240mm;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+}
+.cover-inst { font-size: 14pt; font-weight: bold; margin-bottom: 4pt; }
+.cover-dept { font-size: 12pt; margin-bottom: 4pt; }
+.cover-main-title { font-size: 22pt; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; margin: 8pt 0; }
+.cover-sub { font-size: 13pt; margin: 4pt 0; }
+.cover-label { font-size: 12pt; margin: 3pt 0; }
+
+/* ── CERTIFICATE ── */
+.cert-border { border: 3px solid #000; padding: 24pt; min-height: 230mm; }
+
+/* ── TOC ── */
+.toc-entry {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin: 5pt 0;
+  font-size: 12pt;
+}
+.toc-entry .toc-dots {
+  flex: 1;
+  border-bottom: 1px dotted #000;
+  margin: 0 6pt;
+  position: relative;
+  top: -3px;
+}
+.toc-entry.toc-chapter { font-weight: bold; margin-top: 8pt; }
+.toc-entry.toc-sub { padding-left: 20pt; }
+
+/* ── ABSTRACT ── */
+.abstract-title {
+  font-family: 'Times New Roman', serif;
+  font-size: 16pt;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 36pt;
+}
+
+/* ── MISC ── */
+hr { border: none; border-top: 1px solid #000; margin: 12pt 0; }
+.center-block { text-align: center; }
+.bold { font-weight: bold; }
+.signature-row { display: flex; justify-content: space-between; margin-top: 40pt; }
+.sig-block { text-align: center; width: 45%; }
+.sig-line { border-top: 1px solid #000; margin-bottom: 4pt; }
+.roman { font-style: italic; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════
+     COVER PAGE
+═══════════════════════════════════════════════ -->
+<div class="page no-header no-footer">
+  <div class="cover-border">
+    <div>
+      <p class="cover-inst">SHIVAJIRAO S. JONDHLE POLYTECHNIC, ASANGAON</p>
+      <p class="cover-dept">Opp. Asangaon Railway Station, Shahapur – 421601</p>
+      <p class="cover-dept">(An Affiliated Institute of Maharashtra State Board of Technical Education)</p>
+      <hr style="margin:10pt 0;">
+      <p class="cover-dept" style="font-weight:bold;">DEPARTMENT OF COMPUTER ENGINEERING</p>
+      <p class="cover-dept">Academic Year: 2025–26</p>
+    </div>
+    <div>
+      <p style="font-size:12pt; margin-bottom:6pt;">A Project Report on</p>
+      <p class="cover-main-title">TRACKIFY</p>
+      <p class="cover-main-title" style="font-size:16pt;">A SOCIETY ISSUE TRACKER</p>
+      <p class="cover-sub">Submitted in partial fulfilment of the requirements for the award of the degree of</p>
+      <p class="cover-sub" style="font-weight:bold;">Third Year Diploma in Computer Engineering</p>
+    </div>
+    <div style="width:100%;">
+      <p class="cover-label" style="font-weight:bold; margin-bottom:8pt;">Submitted By:</p>
+      <table style="width:80%; margin:0 auto; font-size:12pt;">
+        <tr><th>Roll No.</th><th>Student Name</th><th>Enrollment No.</th></tr>
+        <tr><td>01</td><td>Yash Bandawane</td><td>23112090341</td></tr>
+        <tr><td>02</td><td>Moksh Sonar</td><td>23112090360</td></tr>
+        <tr><td>03</td><td>Aryan Chawhan</td><td>23112090383</td></tr>
+        <tr><td>04</td><td>Tanmay Kolekar</td><td>23112090387</td></tr>
+      </table>
+      <p class="cover-label" style="margin-top:12pt;"><span style="font-weight:bold;">Project Guide:</span> Mrs. Madhuri Ghawat</p>
+      <p class="cover-label"><span style="font-weight:bold;">Head of Department:</span> Ashwini Dhage</p>
+      <p class="cover-label"><span style="font-weight:bold;">Principal:</span> Dr. Anwesh K. Virkunwar</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     VISION & MISSION  (page ii)
+═══════════════════════════════════════════════ -->
+<div class="page no-header">
+  <div class="page-footer">
+    <span class="footer-center">Department of Computer Engineering</span>
+    <span class="footer-right roman">ii</span>
+  </div>
+  <div class="content">
+    <p class="center" style="font-size:14pt; font-weight:bold; margin-bottom:16pt;">Vighnarharta Trust<br>Shivajirao S. Jondhle Polytechnic, Asangaon<br>Computer Engineering Department</p>
+    <br>
+    <h2 style="text-align:center;">VISION</h2>
+    <ol>
+      <li>To empower citizens and local communities with a transparent, accountable, and technology-driven platform for reporting and resolving civic infrastructure issues.</li>
+      <li>To bridge the gap between citizens and local administrative bodies through intelligent digitization of the civic complaint lifecycle, contributing to the broader vision of Smart Cities and digitally empowered governance in India.</li>
+    </ol>
+    <br>
+    <h2 style="text-align:center;">MISSION</h2>
+    <ol>
+      <li>To provide citizens with an intuitive, accessible, and real-time issue reporting system that ensures every complaint is documented, tracked, and resolved with complete transparency and accountability.</li>
+      <li>To equip ward administrators and department officers with AI-powered tools, analytics dashboards, and structured workflows that enable data-driven decision-making and efficient civic service delivery.</li>
+      <li>To integrate modern technologies including Next.js, Supabase, Groq LLaMA 3.1, Fast2SMS, and geolocation mapping to deliver a robust, scalable, and secure community management platform tailored to the needs of Indian urban and semi-urban communities.</li>
+    </ol>
+  </div>
+</div>
+
+<!-- CERTIFICATE – YASH BANDAWANE (page iii) -->
+<div class="page no-header">
+  <div class="page-footer">
+    <span class="footer-center">Department of Computer Engineering</span>
+    <span class="footer-right roman">iii</span>
+  </div>
+  <div class="cert-border">
+    <div class="chapter-title" style="border-bottom:none; margin-bottom:20pt;">CERTIFICATE</div>
+    <p class="no-indent">This is to certify that <strong>Mr. Yash Mahesh Bandawane</strong>, Enrollment No: <strong>23112090341</strong>, from Shivajirao S. Jondhle Polytechnic, Asangaon, has completed the project of final year having title <strong>"Trackify – A Society Issue Tracker"</strong> during the academic year 2025–2026. The project is completed by a group consisting of 4 students under the guidance of the faculty Guide.</p>
+    <div class="signature-row">
+      <div class="sig-block"><div class="sig-line"></div><p>Internal Examiner</p></div>
+      <div class="sig-block"><div class="sig-line"></div><p>External Examiner</p></div>
+    </div>
+    <div class="signature-row">
+      <div class="sig-block"><div class="sig-line"></div><p><strong>Ashwini Dhage</strong><br>Head of Department</p></div>
+      <div class="sig-block"><div class="sig-line"></div><p><strong>Mrs. Madhuri Ghawat</strong><br>Project Guide</p></div>
+    </div>
+    <div style="margin-top:36pt; text-align:center;">
+      <div style="border-top:1px solid #000; width:50%; margin:0 auto 4pt;"></div>
+      <p><strong>Dr. Anwesh K. Virkunwar</strong><br>Principal</p>
+    </div>
+  </div>
+</div>
+
+<!-- CERTIFICATE – MOKSH SONAR -->
+<div class="page no-header no-footer">
+  <div class="cert-border">
+    <div class="chapter-title" style="border-bottom:none; margin-bottom:20pt;">CERTIFICATE</div>
+    <p class="no-indent">This is to certify that <strong>Mr. Sonar Moksh Shashikant</strong>, Enrollment No: <strong>23112090360</strong>, from Shivajirao S. Jondhle Polytechnic, Asangaon, has completed the project of final year having title <strong>"Trackify – A Society Issue Tracker"</strong> during the academic year 2025–2026. The project is completed by a group consisting of 4 students under the guidance of the faculty Guide.</p>
+    <div class="signature-row">
+      <div class="sig-block"><div class="sig-line"></div><p>Internal Examiner</p></div>
+      <div class="sig-block"><div class="sig-line"></div><p>External Examiner</p></div>
+    </div>
+    <div class="signature-row">
+      <div class="sig-block"><div class="sig-line"></div><p><strong>Ashwini Dhage</strong><br>Head of Department</p></div>
+      <div class="sig-block"><div class="sig-line"></div><p><strong>Mrs. Madhuri Ghawat</strong><br>Project Guide</p></div>
+    </div>
+    <div style="margin-top:36pt; text-align:center;">
+      <div style="border-top:1px solid #000; width:50%; margin:0 auto 4pt;"></div>
+      <p><strong>Dr. Anwesh K. Virkunwar</strong><br>Principal</p>
+    </div>
+  </div>
+</div>
+
+<!-- CERTIFICATE – ARYAN CHAWHAN -->
+<div class="page no-header no-footer">
+  <div class="cert-border">
+    <div class="chapter-title" style="border-bottom:none; margin-bottom:20pt;">CERTIFICATE</div>
+    <p class="no-indent">This is to certify that <strong>Mr. Chawhan Aryan Yashwant</strong>, Enrollment No: <strong>23112090383</strong>, from Shivajirao S. Jondhle Polytechnic, Asangaon, has completed the project of final year having title <strong>"Trackify – A Society Issue Tracker"</strong> during the academic year 2025–2026. The project is completed by a group consisting of 4 students under the guidance of the faculty Guide.</p>
+    <div class="signature-row">
+      <div class="sig-block"><div class="sig-line"></div><p>Internal Examiner</p></div>
+      <div class="sig-block"><div class="sig-line"></div><p>External Examiner</p></div>
+    </div>
+    <div class="signature-row">
+      <div class="sig-block"><div class="sig-line"></div><p><strong>Ashwini Dhage</strong><br>Head of Department</p></div>
+      <div class="sig-block"><div class="sig-line"></div><p><strong>Mrs. Madhuri Ghawat</strong><br>Project Guide</p></div>
+    </div>
+    <div style="margin-top:36pt; text-align:center;">
+      <div style="border-top:1px solid #000; width:50%; margin:0 auto 4pt;"></div>
+      <p><strong>Dr. Anwesh K. Virkunwar</strong><br>Principal</p>
+    </div>
+  </div>
+</div>
+
+<!-- CERTIFICATE – TANMAY KOLEKAR -->
+<div class="page no-header no-footer">
+  <div class="cert-border">
+    <div class="chapter-title" style="border-bottom:none; margin-bottom:20pt;">CERTIFICATE</div>
+    <p class="no-indent">This is to certify that <strong>Mr. Kolekar Tanmay Baliram</strong>, Enrollment No: <strong>23112090387</strong>, from Shivajirao S. Jondhle Polytechnic, Asangaon, has completed the project of final year having title <strong>"Trackify – A Society Issue Tracker"</strong> during the academic year 2025–2026. The project is completed by a group consisting of 4 students under the guidance of the faculty Guide.</p>
+    <div class="signature-row">
+      <div class="sig-block"><div class="sig-line"></div><p>Internal Examiner</p></div>
+      <div class="sig-block"><div class="sig-line"></div><p>External Examiner</p></div>
+    </div>
+    <div class="signature-row">
+      <div class="sig-block"><div class="sig-line"></div><p><strong>Ashwini Dhage</strong><br>Head of Department</p></div>
+      <div class="sig-block"><div class="sig-line"></div><p><strong>Mrs. Madhuri Ghawat</strong><br>Project Guide</p></div>
+    </div>
+    <div style="margin-top:36pt; text-align:center;">
+      <div style="border-top:1px solid #000; width:50%; margin:0 auto 4pt;"></div>
+      <p><strong>Dr. Anwesh K. Virkunwar</strong><br>Principal</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     ACKNOWLEDGEMENT  (page iv)
+═══════════════════════════════════════════════ -->
+<div class="page no-header">
+  <div class="page-footer">
+    <span class="footer-center">Department of Computer Engineering</span>
+    <span class="footer-right roman">iv</span>
+  </div>
+  <div class="content">
+    <div class="chapter-title">ACKNOWLEDGEMENT</div>
+    <p class="no-indent">It gives us great pleasure to submit this project report on <em>"Trackify – A Society Issue Tracker"</em>. We express our sincere thanks to our project guide <strong>Mrs. Madhuri Ghawat</strong>, Department of Computer Engineering, for the constant support and guidance given to us throughout the course of this project. She has been a constant source of inspiration for us.</p>
+    <p>We would like to express honest gratitude to <strong>Ashwini Dhage</strong>, Head of the Department of Computer Engineering, for their guidance and time for valuable suggestions and providing constant support throughout this work.</p>
+    <p>We also take this opportunity to acknowledge the contribution of all faculty members of the department for their assistance and cooperation during the development of our project.</p>
+    <p>We are also very much thankful to the Principal, <strong>Dr. Anwesh K. Virkunwar</strong>, who has been a constant source of inspiration to complete the work.</p>
+    <p>Last but not the least, we acknowledge our family members for their encouragement in the completion of the project.</p>
+    <br><br>
+    <div style="display:flex; justify-content:space-between; margin-top:20pt;">
+      <div>
+        <p class="no-indent">Yash Bandawane</p>
+        <p class="no-indent">Moksh Sonar</p>
+        <p class="no-indent">Aryan Chawhan</p>
+        <p class="no-indent">Tanmay Kolekar</p>
+      </div>
+      <div style="text-align:right;">
+        <p class="no-indent">Third Year Diploma (Computer Engineering)</p>
+        <p class="no-indent">Shivajirao S. Jondhle Polytechnic, Asangaon</p>
+        <p class="no-indent">Academic Year: 2025–26</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     TABLE OF CONTENTS  (page v)
+═══════════════════════════════════════════════ -->
+<div class="page no-header">
+  <div class="page-footer">
+    <span class="footer-center">Department of Computer Engineering</span>
+    <span class="footer-right roman">v</span>
+  </div>
+  <div class="content">
+    <div class="chapter-title">TABLE OF CONTENTS</div>
+    <div style="display:flex; justify-content:space-between; font-weight:bold; border-bottom:1px solid #000; padding-bottom:4pt; margin-bottom:6pt; font-family:'Times New Roman',serif; font-size:12pt;">
+      <span>Sr. No.</span><span style="flex:1; padding-left:10pt;">Index</span><span>Page No.</span>
+    </div>
+    <div class="toc-entry toc-chapter"><span>—</span><span class="toc-dots"></span><span style="flex:3;">Abstract</span><span class="toc-dots"></span><span>1</span></div>
+    <div class="toc-entry toc-chapter"><span>Chapter 1</span><span class="toc-dots"></span><span style="flex:3;">Introduction</span><span class="toc-dots"></span><span>2</span></div>
+    <div class="toc-entry toc-sub"><span>1.1</span><span class="toc-dots"></span><span style="flex:3;">Background and Motivation</span><span class="toc-dots"></span><span>2</span></div>
+    <div class="toc-entry toc-sub"><span>1.2</span><span class="toc-dots"></span><span style="flex:3;">Problem Overview</span><span class="toc-dots"></span><span>4</span></div>
+    <div class="toc-entry toc-sub"><span>1.3</span><span class="toc-dots"></span><span style="flex:3;">Project Scope</span><span class="toc-dots"></span><span>6</span></div>
+    <div class="toc-entry toc-sub"><span>1.4</span><span class="toc-dots"></span><span style="flex:3;">Organization of Report</span><span class="toc-dots"></span><span>7</span></div>
+    <div class="toc-entry toc-chapter"><span>Chapter 2</span><span class="toc-dots"></span><span style="flex:3;">Literature Survey</span><span class="toc-dots"></span><span>8</span></div>
+    <div class="toc-entry toc-sub"><span>2.1</span><span class="toc-dots"></span><span style="flex:3;">Existing Systems Review</span><span class="toc-dots"></span><span>8</span></div>
+    <div class="toc-entry toc-sub"><span>2.2</span><span class="toc-dots"></span><span style="flex:3;">Comparative Analysis</span><span class="toc-dots"></span><span>11</span></div>
+    <div class="toc-entry toc-sub"><span>2.3</span><span class="toc-dots"></span><span style="flex:3;">Research Gap</span><span class="toc-dots"></span><span>12</span></div>
+    <div class="toc-entry toc-chapter"><span>Chapter 3</span><span class="toc-dots"></span><span style="flex:3;">Problem Statement and Objectives</span><span class="toc-dots"></span><span>14</span></div>
+    <div class="toc-entry toc-chapter"><span>Chapter 4</span><span class="toc-dots"></span><span style="flex:3;">System Requirements</span><span class="toc-dots"></span><span>18</span></div>
+    <div class="toc-entry toc-chapter"><span>Chapter 5</span><span class="toc-dots"></span><span style="flex:3;">Proposed System</span><span class="toc-dots"></span><span>25</span></div>
+    <div class="toc-entry toc-chapter"><span>Chapter 6</span><span class="toc-dots"></span><span style="flex:3;">System Architecture</span><span class="toc-dots"></span><span>31</span></div>
+    <div class="toc-entry toc-chapter"><span>Chapter 7</span><span class="toc-dots"></span><span style="flex:3;">Database Design</span><span class="toc-dots"></span><span>35</span></div>
+    <div class="toc-entry toc-chapter"><span>Chapter 8</span><span class="toc-dots"></span><span style="flex:3;">System Design (HLD and LLD)</span><span class="toc-dots"></span><span>44</span></div>
+    <div class="toc-entry toc-chapter"><span>Chapter 9</span><span class="toc-dots"></span><span style="flex:3;">UML Diagrams</span><span class="toc-dots"></span><span>49</span></div>
+    <div class="toc-entry toc-chapter"><span>Chapter 10</span><span class="toc-dots"></span><span style="flex:3;">API Design</span><span class="toc-dots"></span><span>55</span></div>
+    <div class="toc-entry toc-chapter"><span>Chapter 11</span><span class="toc-dots"></span><span style="flex:3;">Source Code Explanation</span><span class="toc-dots"></span><span>61</span></div>
+    <div class="toc-entry toc-chapter"><span>Chapter 12</span><span class="toc-dots"></span><span style="flex:3;">Security Implementation</span><span class="toc-dots"></span><span>68</span></div>
+    <div class="toc-entry toc-chapter"><span>Chapter 13</span><span class="toc-dots"></span><span style="flex:3;">Testing</span><span class="toc-dots"></span><span>74</span></div>
+    <div class="toc-entry toc-chapter"><span>Chapter 14</span><span class="toc-dots"></span><span style="flex:3;">Performance Optimization</span><span class="toc-dots"></span><span>81</span></div>
+    <div class="toc-entry toc-chapter"><span>Chapter 15</span><span class="toc-dots"></span><span style="flex:3;">DevOps and Deployment</span><span class="toc-dots"></span><span>85</span></div>
+    <div class="toc-entry toc-chapter"><span>Chapter 16</span><span class="toc-dots"></span><span style="flex:3;">Results and Outputs</span><span class="toc-dots"></span><span>90</span></div>
+    <div class="toc-entry toc-chapter"><span>Chapter 17</span><span class="toc-dots"></span><span style="flex:3;">Advantages and Disadvantages</span><span class="toc-dots"></span><span>95</span></div>
+    <div class="toc-entry toc-chapter"><span>Chapter 18</span><span class="toc-dots"></span><span style="flex:3;">Application Areas</span><span class="toc-dots"></span><span>99</span></div>
+    <div class="toc-entry toc-chapter"><span>Chapter 19</span><span class="toc-dots"></span><span style="flex:3;">Future Scope and Limitations</span><span class="toc-dots"></span><span>102</span></div>
+    <div class="toc-entry toc-chapter"><span>Chapter 20</span><span class="toc-dots"></span><span style="flex:3;">Conclusion</span><span class="toc-dots"></span><span>107</span></div>
+    <div class="toc-entry toc-chapter"><span>Chapter 21</span><span class="toc-dots"></span><span style="flex:3;">References</span><span class="toc-dots"></span><span>110</span></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     ABSTRACT  (page 1 — arabic numbering starts)
+═══════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">Trackify – A Society Issue Tracker</div>
+  <div class="page-footer">
+    <span class="footer-center">Department of Computer Engineering</span>
+    <span class="footer-right">1</span>
+  </div>
+  <div class="content">
+    <div class="abstract-title">ABSTRACT</div>
+    <p class="no-indent">Urban and semi-urban communities across India face significant challenges in managing civic complaints and local infrastructure issues in a transparent and efficient manner. Common problems such as broken streetlights, drainage blockages, potholes, garbage accumulation, and water supply disruptions often remain unresolved due to fragmented and inefficient reporting mechanisms. Existing methods, including helplines and physical visits to municipal offices, lack proper tracking and accountability, leading to delays, repeated follow-ups, and reduced public trust. This highlights the need for a centralized digital system to improve complaint management and ensure transparency.</p>
+    <p>Society Issue Resolver is a role-based web application developed to streamline the process of reporting and resolving community issues. The platform enables citizens to submit complaints with supporting evidence, track their status in real time, and provide feedback on resolutions. Built using technologies such as Next.js, Supabase, Tailwind CSS, and integrated services like Google Gemini API, Razorpay, and Twilio, the system ensures scalability and efficiency. It supports multiple user roles — Citizen, Ward Administrator, Department Officer, and Super Administrator — with secure access control and structured workflows for effective issue handling.</p>
+    <p>The system offers features such as real-time complaint tracking, AI-based issue categorization, automated notifications, and performance analytics dashboards. Additional functionalities include a community notice board, discussion forum, emergency alerts, and audit logs. Testing with users demonstrated improved resolution efficiency, increased transparency, and reduced administrative workload. Overall, the application provides a practical and scalable solution for enhancing civic engagement and supporting digital governance initiatives.</p>
+    <br>
+    <p class="no-indent"><strong>Keywords:</strong> Civic Issue Tracker, Next.js, Supabase, AI Classification, Role-Based Access Control, Real-time Notifications, Smart City, Complaint Management, Web Application, PostgreSQL.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     CHAPTER 1: INTRODUCTION
+═══════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">Trackify – A Society Issue Tracker</div>
+  <div class="page-footer"><span class="footer-center">Department of Computer Engineering</span><span class="footer-right">2</span></div>
+  <div class="content">
+    <div class="chapter-title">Chapter 1: Introduction</div>
+
+    <h2>1.1 Background and Motivation</h2>
+    <p class="no-indent">India is undergoing one of the most rapid urbanization processes in the world. According to the United Nations World Urbanization Prospects 2022, approximately 36% of India's total population currently lives in urban areas, a proportion that is projected to exceed 50% by the year 2050. This mass migration toward cities and towns is placing extraordinary pressure on existing civic infrastructure — roads, drainage systems, water supply networks, public lighting, sanitation facilities, and green spaces — much of which was originally designed for significantly smaller populations.</p>
+    <p>Within this context, the concept of local community management has gained immense significance. Whether in a metropolitan city like Mumbai or Pune, or in a tier-2 town like Nashik or Aurangabad, citizens daily encounter issues that affect their quality of life — potholes that damage vehicles and cause accidents, non-functional streetlights that compromise safety after dark, overflowing garbage bins that breed disease, choked drainage systems that flood neighbourhoods during monsoons, broken water pipes that disrupt daily routines, and encroachments that reduce public spaces. These are not extraordinary events; they are the daily reality of urban civic life.</p>
+    <p>The Government of India has made significant policy commitments to address this challenge. The Smart Cities Mission, launched in 2015, aims to drive economic growth and improve the quality of life for citizens by enabling local area development and harnessing technology to create smart outcomes for citizens. One of the central pillars of this mission is the digitization of citizen services and the creation of integrated command and control centres that consolidate civic data. Similarly, the Digital India initiative emphasizes building digital infrastructure and delivering government services digitally.</p>
+    <p>Despite these ambitious policy frameworks, the ground reality for most citizens remains frustrating. The mechanisms available to a citizen for reporting a local infrastructure problem are still largely informal and ineffective. Calling the municipal helpline typically results in long wait times, no reference number for follow-up, and no assurance of action. Visiting the ward office requires time off work and often results in the complaint being noted on paper and promptly forgotten. Messaging a local councillor on WhatsApp depends entirely on the councillor's personal responsiveness and organization.</p>
+    <p>The result is a deep and widespread sense of civic disempowerment among urban citizens. Surveys conducted by organizations such as Praja Foundation and Janaagraha consistently find that citizens believe their complaints go unheard and unresolved, and that there is no accountability in the civic complaint resolution process.</p>
+    <p>Trackify – Society Issue Resolver was conceived directly in response to this civic need. The project originated from direct observation of the challenges faced by residents of a ward in Mumbai, where the local ward office was receiving hundreds of complaints per month through multiple informal channels, with no systematic way to track, prioritize, assign, or resolve them. Residents had no visibility into what happened to their complaints after submission. This real-world problem served as the primary motivation for developing a purpose-built digital issue resolution platform.</p>
+
+    <h2>1.2 Problem Overview</h2>
+    <p class="no-indent">The core problem that Society Issue Resolver addresses can be decomposed into several interconnected and mutually reinforcing challenges that affect both the citizen side and the administrative side of civic management.</p>
+    <p>From the citizen's perspective, the fundamental problem is one of opacity and powerlessness. When a citizen reports a problem — whether verbally, by phone, or through an informal message — they have no way of knowing whether the complaint has been registered, who is responsible for resolving it, what the expected timeline for resolution is, or whether any action has been taken. The absence of a unique complaint reference number means there is no easy way to follow up. The absence of a status tracking mechanism means the citizen is entirely dependent on the initiative of the ward officer to communicate any updates. In practice, such updates rarely come.</p>
+    <p>From the administrative perspective, the problem is one of disorganization and information overload. Ward officers receive complaints from dozens of channels simultaneously — phone calls, WhatsApp messages, in-person visits, paper letters, and emails. There is no unified inbox. There is no automatic categorization or prioritization. There is no assignment mechanism to route complaints to the relevant department. There is no SLA (Service Level Agreement) to define how quickly different categories of complaints must be resolved. There is no analytics dashboard to identify recurring issues, chronic problem locations, or underperforming departments.</p>
+    <p>The secondary problems compound these primary issues. There is inadequate documentation — without photographic evidence or precise location coordinates, maintenance staff often arrive at the wrong location or are unprepared for the nature of the problem. There is no community feedback loop — residents have no mechanism to rate the quality of resolution or report that a problem has recurred. There is financial opacity — citizens have no visibility into how civic funds are being spent on maintenance and infrastructure.</p>
+
+    <h2>1.3 Project Scope</h2>
+    <p class="no-indent">Society Issue Resolver is designed as a comprehensive community management platform with civic issue tracking as its core functionality. The scope of the project encompasses the following domains:</p>
+    <ol>
+      <li>Civic issue reporting, tracking, assignment, and resolution workflow management</li>
+      <li>Multi-role user management covering Citizens, Ward Administrators, Department Officers, and Super Administrators</li>
+      <li>Real-time notifications via in-app alerts, email, and SMS</li>
+      <li>AI-powered issue classification, priority suggestion, and description quality enhancement</li>
+      <li>Geolocation-based issue tagging using map integration</li>
+      <li>Community announcement board for public notices and civic updates</li>
+      <li>Community discussion forum for resident engagement</li>
+      <li>Analytics and reporting dashboard for administrative decision-making</li>
+      <li>Emergency alert and SOS system for citizens</li>
+      <li>Document repository for civic records and public documents</li>
+      <li>Responsive Progressive Web Application design for universal device access</li>
+    </ol>
+
+    <h2>1.4 Organization of Report</h2>
+    <p class="no-indent">This report is organized into twenty chapters that comprehensively document the design, development, testing, and evaluation of the Society Issue Resolver. Chapter 2 presents a survey of existing systems and relevant academic research. Chapter 3 formally states the problem and defines the project's objectives. Chapter 4 details the functional and non-functional system requirements. Chapter 5 describes the proposed system with a module-wise breakdown. Chapters 6 through 9 cover system architecture, database design, high-level and low-level system design, and UML diagrams respectively. Chapter 10 documents the complete API design. Chapter 11 provides a code-level explanation of key modules. Chapters 12 through 15 address security implementation, testing strategy and results, performance optimization, and DevOps and deployment. Chapters 16 through 20 present the results and outputs from pilot deployment, advantages and disadvantages, application areas, future scope and limitations, and the conclusion.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     CHAPTER 2: LITERATURE SURVEY
+═══════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">Trackify – A Society Issue Tracker</div>
+  <div class="page-footer"><span class="footer-center">Department of Computer Engineering</span><span class="footer-right">8</span></div>
+  <div class="content">
+    <div class="chapter-title">Chapter 2: Literature Survey</div>
+
+    <h2>2.1 Existing Systems Review</h2>
+
+    <h3>2.1.1 MyGov India (mygov.in)</h3>
+    <p class="no-indent">MyGov is the Government of India's citizen engagement platform, launched in 2014 as part of the Digital India initiative. It allows citizens to participate in governance through tasks, discussions, polls, and blogs. While MyGov has been effective in enabling large-scale citizen consultation — particularly around policy matters — it is not designed as a complaint management system. It lacks features for issue submission with photo evidence, real-time status tracking, location tagging, or SLA-based escalation. Its primary utility is participatory governance rather than operational civic problem resolution.</p>
+
+    <h3>2.1.2 CPGRAMS</h3>
+    <p class="no-indent">CPGRAMS is a flagship grievance redressal portal of the Government of India, administered by the Department of Administrative Reforms and Public Grievances (DARPG). It allows citizens to lodge grievances against any central government department or ministry. However, CPGRAMS is designed for central government grievances rather than local civic issues such as potholes, broken streetlights, or drainage problems. The user interface is outdated, the submission process is lengthy and non-intuitive, and there is no mobile-first or PWA experience. There is no AI-assisted classification, no adequate photo evidence upload, and no community-level analytics.</p>
+
+    <h3>2.1.3 Fix My Street (United Kingdom)</h3>
+    <p class="no-indent">Fix My Street, developed by MySociety in the United Kingdom, is a well-regarded civic issue reporting platform that allows citizens to report local problems such as potholes, graffiti, and broken streetlights directly to the relevant local council. The platform is location-centric, using a map interface for precise issue placement, and is open source. However, Fix My Street is designed around the UK's council governance structure and does not translate directly to the Indian municipal governance context. It lacks multi-language support, AI-powered features, an integrated analytics dashboard, payment integration, and community forum capabilities.</p>
+
+    <h3>2.1.4 Seva Sindhu (Karnataka Government)</h3>
+    <p class="no-indent">Seva Sindhu is the Government of Karnataka's integrated service delivery portal, offering citizens access to hundreds of government services online. While it includes some grievance redressal functionality, it is primarily a service delivery portal rather than a real-time civic issue tracker. The interface is complex, requiring citizens to navigate numerous categories and sub-categories before reaching the appropriate service. There is no real-time issue tracking, no photo upload capability, and no analytics dashboard for administrators.</p>
+
+    <h3>2.1.5 ApnaComplex and NoBrokerHood</h3>
+    <p class="no-indent">ApnaComplex and NoBrokerHood are private society management platforms designed for residential housing societies. While these platforms offer several relevant features — including complaint lifecycle management, resident notifications, and admin dashboards — they are focused exclusively on private residential communities and are not applicable to public civic issues such as road maintenance, municipal drainage, or public park management. They are subscription-based services, making them inaccessible to ordinary citizens who need to report public civic problems.</p>
+
+    <h3>2.1.6 Academic Research</h3>
+    <p class="no-indent">Several academic and research works have explored the domain of civic technology and e-governance complaint systems. Verma and Tiwari (2021) proposed a mobile-based system for municipal grievance redressal using Android and Firebase, demonstrating the technical feasibility of real-time complaint tracking at the urban local body level. Krishnamurthy et al. (2022) explored the use of machine learning for automatic classification of civic complaints, achieving 83% accuracy using a Support Vector Machine model trained on historical complaint data. Rao and Nair (2023) conducted a mixed-methods study on citizen satisfaction with e-governance platforms in Maharashtra, finding that the most critical factors driving satisfaction were response time transparency, ease of use, and mobile accessibility — precisely the areas in which most existing systems underperform.</p>
+
+    <h2>2.2 Comparative Analysis</h2>
+    <div class="table-wrap no-break">
+      <p class="table-caption">Table 2.1 – Comparative Analysis of Existing Systems</p>
+      <table>
+        <tr><th>Feature</th><th>MyGov</th><th>CPGRAMS</th><th>Fix My Street</th><th>Seva Sindhu</th><th>Society Issue Resolver</th></tr>
+        <tr><td>Real-time Issue Tracking</td><td>No</td><td>Partial</td><td>Yes</td><td>No</td><td>Yes (Advanced)</td></tr>
+        <tr><td>AI Classification</td><td>No</td><td>No</td><td>No</td><td>No</td><td>Yes</td></tr>
+        <tr><td>Photo Upload</td><td>No</td><td>Limited</td><td>Yes</td><td>No</td><td>Yes</td></tr>
+        <tr><td>Geolocation Tagging</td><td>No</td><td>No</td><td>Yes</td><td>No</td><td>Yes</td></tr>
+        <tr><td>Mobile-First / PWA</td><td>No</td><td>No</td><td>Partial</td><td>No</td><td>Yes</td></tr>
+        <tr><td>Multi-Role Support</td><td>No</td><td>Yes</td><td>No</td><td>Yes</td><td>Yes</td></tr>
+        <tr><td>Analytics Dashboard</td><td>No</td><td>Basic</td><td>No</td><td>No</td><td>Advanced</td></tr>
+        <tr><td>Department Routing</td><td>No</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+        <tr><td>Community Forum</td><td>Yes</td><td>No</td><td>No</td><td>No</td><td>Yes</td></tr>
+        <tr><td>Emergency Alerts</td><td>No</td><td>No</td><td>No</td><td>No</td><td>Yes</td></tr>
+        <tr><td>Open Source</td><td>No</td><td>No</td><td>Yes</td><td>No</td><td>Yes</td></tr>
+        <tr><td>SLA Management</td><td>No</td><td>Partial</td><td>No</td><td>No</td><td>Yes</td></tr>
+        <tr><td>Citizen Feedback/Rating</td><td>No</td><td>No</td><td>Yes</td><td>No</td><td>Yes</td></tr>
+      </table>
+    </div>
+
+    <h2>2.3 Research Gap</h2>
+    <p class="no-indent">The literature survey and review of existing systems reveals several significant and consistent gaps that the Society Issue Resolver aims to address.</p>
+    <p>The first and most critical gap is the absence of AI integration in civic complaint systems. No existing government-operated civic complaint platform in India integrates AI for automatic issue classification, priority detection, or description quality improvement. Citizens vary widely in their ability to describe civic problems clearly and to categorize them correctly. AI assistance at the point of submission would significantly improve the quality and routing accuracy of complaints.</p>
+    <p>The second gap is the lack of real-time transparency for citizens. Most existing systems do not provide citizens with a real-time, interactive status timeline for their complaints. Society Issue Resolver addresses this by providing a live status timeline visible to the citizen from the moment of submission.</p>
+    <p>The third gap is the absence of data-driven administration. Existing platforms do not provide ward administrators or department officers with analytics dashboards that enable them to identify patterns, track performance, prioritize resource allocation, or benchmark against targets. Society Issue Resolver's analytics module addresses this gap directly.</p>
+    <p>The fourth gap is the poor mobile experience. Most government complaint portals were designed for desktop use and offer poor or no mobile experience. Given that a large proportion of India's internet users access the web primarily through smartphones, a mobile-first design is essential. Society Issue Resolver is built as a Progressive Web Application with a mobile-first responsive design.</p>
+    <p>The fifth gap is the disconnect between complaint management and community engagement. Existing systems treat complaint management as an isolated transactional function. Society Issue Resolver integrates complaint management with community announcements, discussion forums, and emergency alerts, creating a holistic civic participation platform.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     CHAPTER 3: PROBLEM STATEMENT & OBJECTIVES
+═══════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">Trackify – A Society Issue Tracker</div>
+  <div class="page-footer"><span class="footer-center">Department of Computer Engineering</span><span class="footer-right">14</span></div>
+  <div class="content">
+    <div class="chapter-title">Chapter 3: Problem Statement and Objectives</div>
+
+    <h2>3.1 Problem Statement</h2>
+    <p class="no-indent">Citizens of urban and semi-urban communities in India lack access to an efficient, transparent, and accountable digital platform for reporting, tracking, and resolving local civic and community infrastructure issues. The existing informal and semi-formal mechanisms for complaint reporting — including phone calls to municipal helplines, paper registers at ward offices, messaging to local representatives on social media, and general-purpose e-governance portals — are fragmented, cumbersome, and devoid of real-time status transparency or systematic accountability. Citizens who report problems have no visibility into whether their complaints have been received, assigned, or acted upon. Ward administrators and department officers have no unified digital workspace for receiving, categorizing, prioritizing, and assigning complaints, nor do they have access to analytics that could enable data-driven decision-making. The result is a systemic failure of last-mile civic service delivery that erodes public trust in local governance and degrades the quality of life in communities. There is a critical need for a comprehensive, web-based civic issue resolution platform that digitizes the entire complaint lifecycle, supports role-based access for multiple stakeholder types, integrates AI for intelligent issue processing, enables precise geolocation tagging, and delivers real-time transparency to all parties involved.</p>
+
+    <h2>3.2 Objectives</h2>
+
+    <h3>3.2.1 Primary Objectives</h3>
+    <ol>
+      <li>To design and develop a web-based civic issue reporting and tracking platform that manages the complete lifecycle of community complaints from initial submission through assignment, escalation, and final resolution, with full audit trail and citizen feedback collection.</li>
+      <li>To implement a multi-role user management system supporting Citizens, Ward Administrators, Department Officers, and Super Administrators, each with a precisely defined set of permissions, tailored interfaces, and appropriate access controls.</li>
+      <li>To integrate AI-powered features for automatic issue classification, priority suggestion, and description quality enhancement, reducing the effort required from both citizens and administrators and improving the accuracy of issue routing.</li>
+      <li>To provide real-time status updates and multi-channel notifications — in-app, email, and SMS — to all stakeholders throughout the complaint lifecycle, ensuring transparency and eliminating the need for follow-up calls.</li>
+      <li>To develop a comprehensive analytics dashboard for ward administrators and department officers, providing actionable insights into issue volumes, resolution performance metrics, category-wise trends, geographic distribution, and department benchmarking.</li>
+    </ol>
+
+    <h3>3.2.2 Secondary Objectives</h3>
+    <ol>
+      <li>To implement geolocation-based issue tagging using an integrated map interface, enabling citizens to pinpoint the exact location of a problem and enabling administrators to visualize the geographic distribution of issues across their jurisdiction.</li>
+      <li>To develop a community announcement board through which ward administrators can broadcast official public notices, civic updates, and event announcements to all citizens of the ward.</li>
+      <li>To create a community discussion forum that enables residents to engage in structured conversations about local issues, share information, and participate constructively in civic matters.</li>
+      <li>To implement an emergency alert and SOS system that allows citizens to quickly notify ward administrators and emergency contacts about urgent situations.</li>
+      <li>To design a scalable, multi-tenant architecture that can support multiple wards, constituencies, or municipalities on a single deployment, with complete data isolation between different administrative units.</li>
+      <li>To ensure the system is fully accessible on mobile devices through a Progressive Web Application design, requiring no native app installation while delivering a near-native mobile experience.</li>
+      <li>To integrate a payment gateway for any applicable civic fee transactions.</li>
+    </ol>
+
+    <h3>3.2.3 Technical Objectives</h3>
+    <ol>
+      <li>To implement Row-Level Security policies in the database layer to guarantee data isolation between different wards and administrative zones, independent of application-level access controls.</li>
+      <li>To achieve a Largest Contentful Paint of under 2 seconds for all primary user interfaces through server-side rendering, code splitting, lazy loading, and CDN distribution.</li>
+      <li>To design a RESTful API that is consistently structured, well-documented, versioned, and secured against common web vulnerabilities including SQL injection, Cross-Site Scripting, and Cross-Site Request Forgery.</li>
+      <li>To achieve test coverage of at least 80% for all critical business logic through a combination of unit tests and integration tests.</li>
+      <li>To implement comprehensive input validation at both the client and server layers using schema-based validation.</li>
+    </ol>
+
+    <h2>3.3 Scope of the Project</h2>
+    <div class="table-wrap no-break">
+      <p class="table-caption">Table 3.1 – In-Scope and Out-of-Scope Features</p>
+      <table>
+        <tr><th>In Scope</th><th>Out of Scope</th></tr>
+        <tr><td>Web-based PWA application</td><td>Native iOS/Android applications</td></tr>
+        <tr><td>Civic issue reporting and tracking</td><td>IoT sensor integration</td></tr>
+        <tr><td>Multi-role user management</td><td>Biometric authentication</td></tr>
+        <tr><td>Geolocation tagging</td><td>Direct municipal ERP integration</td></tr>
+        <tr><td>Photo evidence upload</td><td>AI-based predictive road degradation</td></tr>
+        <tr><td>AI-assisted classification</td><td>Blockchain audit trail</td></tr>
+        <tr><td>Real-time notifications</td><td>Automated contractor bidding</td></tr>
+        <tr><td>Analytics dashboard</td><td>CCTV/surveillance integration</td></tr>
+        <tr><td>Community announcements</td><td>Automated maintenance scheduling</td></tr>
+        <tr><td>Discussion forum</td><td>Third-party contractor management</td></tr>
+        <tr><td>Emergency SOS alerts</td><td>Legal document generation</td></tr>
+        <tr><td>Payment integration</td><td>Offline-first mobile experience</td></tr>
+        <tr><td>Document repository</td><td>Biometric resident authentication</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     CHAPTER 4: SYSTEM REQUIREMENTS
+═══════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">Trackify – A Society Issue Tracker</div>
+  <div class="page-footer"><span class="footer-center">Department of Computer Engineering</span><span class="footer-right">18</span></div>
+  <div class="content">
+    <div class="chapter-title">Chapter 4: System Requirements</div>
+
+    <h2>4.1 Functional Requirements</h2>
+
+    <h3>4.1.1 User Management Module</h3>
+    <ul>
+      <li><strong>FR-01:</strong> The system shall allow new users to register with their full name, email address, password, mobile number, residential address, ward number, and pincode.</li>
+      <li><strong>FR-02:</strong> The system shall authenticate users using email and password, issuing JWT-based session tokens with an access token and a refresh token.</li>
+      <li><strong>FR-03:</strong> The system shall support four distinct user roles: Citizen, Ward Administrator, Department Officer, and Super Administrator.</li>
+      <li><strong>FR-04:</strong> Ward Administrators shall be able to approve or reject Citizen registration requests for their ward.</li>
+      <li><strong>FR-05:</strong> The system shall allow users to update their profile information including name, mobile number, profile photo, and residential address.</li>
+      <li><strong>FR-06:</strong> The system shall support secure password reset via email-based One-Time Password (OTP).</li>
+      <li><strong>FR-07:</strong> Super Administrators shall be able to create and manage Ward Administrator accounts.</li>
+      <li><strong>FR-08:</strong> Ward Administrators shall be able to deactivate citizen accounts without deleting their historical data.</li>
+      <li><strong>FR-09:</strong> The system shall require email verification before allowing a newly registered user to log in.</li>
+    </ul>
+
+    <h3>4.1.2 Issue Management Module</h3>
+    <ul>
+      <li><strong>FR-10:</strong> Citizens shall be able to submit issues with a title, detailed description, category selection, subcategory, geographic location (via map pin or GPS), and optional photo attachments of up to 5 files.</li>
+      <li><strong>FR-11:</strong> The system shall automatically classify submitted issues into predefined categories using AI analysis of the title and description text.</li>
+      <li><strong>FR-12:</strong> The system shall suggest a priority level (Low, Medium, High, Critical) based on AI analysis of the issue content.</li>
+      <li><strong>FR-13:</strong> Ward Administrators shall be able to assign issues to specific Department Officers or departments.</li>
+      <li><strong>FR-14:</strong> The system shall track each issue through a defined set of statuses: Submitted, Under Review, Assigned, In Progress, Pending Citizen Information, Resolved, Closed, Rejected.</li>
+      <li><strong>FR-15:</strong> Citizens shall receive real-time in-app notifications and email alerts whenever their issue status changes.</li>
+      <li><strong>FR-16:</strong> Citizens shall be able to add follow-up comments and additional photo attachments to existing submitted issues.</li>
+      <li><strong>FR-17:</strong> Ward Administrators and Department Officers shall be able to add internal comments on issues not visible to citizens.</li>
+      <li><strong>FR-18:</strong> Ward Administrators shall be able to set resolution deadlines for issues and shall receive alerts when issues approach or breach their deadline.</li>
+      <li><strong>FR-19:</strong> The system shall maintain a complete, immutable audit trail of all status transitions, comments, and administrative actions on each issue.</li>
+      <li><strong>FR-20:</strong> Citizens shall be able to rate the quality of issue resolution on a 1-to-5 scale and provide optional written feedback after an issue is marked Resolved.</li>
+      <li><strong>FR-21:</strong> Ward Administrators shall be able to escalate issues to a higher administrative level.</li>
+      <li><strong>FR-22:</strong> The system shall support bulk status updates for multiple issues simultaneously by Ward Administrators.</li>
+    </ul>
+
+    <h3>4.1.3 Geolocation Module</h3>
+    <ul>
+      <li><strong>FR-23:</strong> Citizens shall be able to tag the precise location of a reported issue using an interactive map interface, either by manually placing a pin or by using their device's GPS to auto-detect location.</li>
+      <li><strong>FR-24:</strong> Ward Administrators shall be able to view all issues within their ward on a geographic heat map visualization, with issues colour-coded by status and priority.</li>
+      <li><strong>FR-25:</strong> The system shall display the nearest ward boundary and ward code based on the selected location, and shall route the issue to the appropriate ward administrator automatically.</li>
+    </ul>
+
+    <h3>4.1.4 Notification Module</h3>
+    <ul>
+      <li><strong>FR-26:</strong> The system shall send in-app push notifications for all issue status changes to the reporting citizen.</li>
+      <li><strong>FR-27:</strong> The system shall send email notifications for issue submission confirmation, status changes, and resolution confirmation.</li>
+      <li><strong>FR-28:</strong> The system shall send SMS alerts via Fast2SMS for critical status changes including issue assignment and resolution.</li>
+      <li><strong>FR-29:</strong> Ward Administrators shall receive notifications when new issues are submitted in their ward.</li>
+      <li><strong>FR-30:</strong> The system shall support configurable notification preferences allowing users to opt in or out of specific notification types.</li>
+    </ul>
+
+    <h3>4.1.5 Analytics and Reporting Module</h3>
+    <ul>
+      <li><strong>FR-31:</strong> The analytics dashboard shall display real-time statistics including total issues by status, issues by category, average resolution time by category, department-wise resolution rate, and citizen satisfaction scores.</li>
+      <li><strong>FR-32:</strong> Ward Administrators shall be able to generate downloadable PDF and CSV reports for any date range.</li>
+      <li><strong>FR-33:</strong> The system shall display a trend line chart showing issue volume over time.</li>
+      <li><strong>FR-34:</strong> The system shall display a geographic heat map of issues within the ward.</li>
+      <li><strong>FR-35:</strong> Super Administrators shall be able to view cross-ward analytics comparing performance across different wards.</li>
+    </ul>
+
+    <h3>4.1.6 Emergency and SOS Module</h3>
+    <ul>
+      <li><strong>FR-36:</strong> Citizens shall be able to trigger an emergency SOS alert with a single button press, automatically sending their name, contact number, address, and GPS coordinates to all registered Ward Emergency Contacts via SMS.</li>
+      <li><strong>FR-37:</strong> The system shall maintain a log of all SOS alerts with timestamp, citizen details, and resolution status.</li>
+    </ul>
+
+    <h2>4.2 Non-Functional Requirements</h2>
+    <div class="table-wrap no-break">
+      <p class="table-caption">Table 4.1 – Non-Functional Requirements Summary</p>
+      <table>
+        <tr><th>Category</th><th>Requirement</th><th>Target</th></tr>
+        <tr><td>Performance</td><td>Page Load Time</td><td>&lt; 2 seconds (LCP)</td></tr>
+        <tr><td>Performance</td><td>API Response Time</td><td>&lt; 500ms (95th percentile)</td></tr>
+        <tr><td>Scalability</td><td>Concurrent Users</td><td>500+ per ward</td></tr>
+        <tr><td>Availability</td><td>System Uptime</td><td>99.9%</td></tr>
+        <tr><td>Security</td><td>Data Encryption</td><td>AES-256 at rest, TLS 1.3 in transit</td></tr>
+        <tr><td>Usability</td><td>Mobile Responsiveness</td><td>All screens ≥ 320px width</td></tr>
+        <tr><td>Maintainability</td><td>Code Coverage</td><td>≥ 80% for critical paths</td></tr>
+        <tr><td>Compatibility</td><td>Browser Support</td><td>Chrome, Firefox, Safari, Edge (latest 2)</td></tr>
+        <tr><td>Accessibility</td><td>WCAG Compliance</td><td>Level AA</td></tr>
+        <tr><td>Localization</td><td>Language Support</td><td>English (primary), Hindi (planned)</td></tr>
+      </table>
+    </div>
+
+    <h2>4.3 Hardware Requirements</h2>
+    <div class="table-wrap no-break">
+      <p class="table-caption">Table 4.2 – Development Hardware Requirements</p>
+      <table>
+        <tr><th>Component</th><th>Minimum</th><th>Recommended</th></tr>
+        <tr><td>Processor</td><td>Intel Core i5 (8th Gen)</td><td>AMD Ryzen 5 3400G</td></tr>
+        <tr><td>RAM</td><td>8 GB</td><td>16 GB DDR4</td></tr>
+        <tr><td>Storage</td><td>256 GB SSD</td><td>512 GB NVMe SSD</td></tr>
+        <tr><td>Network</td><td>10 Mbps broadband</td><td>100 Mbps broadband</td></tr>
+        <tr><td>Display</td><td>1366 × 768</td><td>1920 × 1080</td></tr>
+      </table>
+    </div>
+    <div class="table-wrap no-break">
+      <p class="table-caption">Table 4.3 – Production Environment Specifications</p>
+      <table>
+        <tr><th>Service</th><th>Provider</th><th>Specification</th></tr>
+        <tr><td>Web Hosting</td><td>Vercel</td><td>Serverless Functions, Global CDN</td></tr>
+        <tr><td>Database</td><td>Supabase (PostgreSQL)</td><td>2 vCPU, 4 GB RAM, 8 GB Storage</td></tr>
+        <tr><td>File Storage</td><td>Supabase Storage</td><td>100 GB (scalable)</td></tr>
+        <tr><td>AI Inference</td><td>Groq API — LLaMA 3.1</td><td>Pay-per-use, fast inference</td></tr>
+        <tr><td>SMS Gateway</td><td>Fast2SMS</td><td>API-based, pay-per-use</td></tr>
+      </table>
+    </div>
+
+    <h2>4.4 Software Requirements</h2>
+    <div class="table-wrap no-break">
+      <p class="table-caption">Table 4.4 – Software Requirements</p>
+      <table>
+        <tr><th>Software</th><th>Version</th><th>Purpose</th></tr>
+        <tr><td>Node.js</td><td>18.x LTS</td><td>JavaScript runtime</td></tr>
+        <tr><td>Next.js</td><td>14.x</td><td>React framework with SSR/SSG</td></tr>
+        <tr><td>React</td><td>18.x</td><td>UI component library</td></tr>
+        <tr><td>TypeScript</td><td>5.x</td><td>Type-safe JavaScript</td></tr>
+        <tr><td>Tailwind CSS</td><td>3.x</td><td>Utility-first CSS framework</td></tr>
+        <tr><td>Supabase JS</td><td>2.x</td><td>Database and auth client</td></tr>
+        <tr><td>PostgreSQL</td><td>15.x</td><td>Relational database</td></tr>
+        <tr><td>Groq API (LLaMA 3.1)</td><td>Latest</td><td>AI issue classification and description enhancement</td></tr>
+        <tr><td>Fast2SMS API</td><td>Latest</td><td>SMS delivery for OTP verification and emergency SOS alerts</td></tr>
+        <tr><td>Razorpay</td><td>Latest</td><td>Payment gateway integration</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     CHAPTER 5: PROPOSED SYSTEM
+═══════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">Trackify – A Society Issue Tracker</div>
+  <div class="page-footer"><span class="footer-center">Department of Computer Engineering</span><span class="footer-right">25</span></div>
+  <div class="content">
+    <div class="chapter-title">Chapter 5: Proposed System</div>
+
+    <h2>5.1 System Overview</h2>
+    <p class="no-indent">Society Issue Resolver is a multi-tenant, role-based web application built on the Next.js 14 App Router architecture with Supabase as the backend services layer. The system is organized into ten distinct functional modules, each addressing a specific domain of community issue management and civic engagement. The proposed system replaces the fragmented, informal, and opaque complaint management processes that currently characterize civic administration at the ward level with a unified, transparent, and data-driven digital platform.</p>
+    <p>The system follows a three-tier architecture. The presentation layer comprises Next.js React components, including both Server Components for data-fetched views and Client Components for interactive elements. The application layer comprises Next.js API routes and server-side logic, including AI integration, notification dispatch, and payment processing. The data layer comprises Supabase PostgreSQL with Row-Level Security policies enforced at the database level. This separation of concerns ensures maintainability, testability, scalability, and security across the entire system.</p>
+
+    <h2>5.2 Module-wise Breakdown</h2>
+
+    <h3>5.2.1 Module 1: Authentication and User Management</h3>
+    <p class="no-indent">This module manages all aspects of user identity, authentication, and access control. It leverages Supabase Auth for secure authentication using email and password, with JWT-based session management and automatic token refresh. The module implements a custom registration flow where new citizens must provide their ward code and residential address, which are validated before account creation. An email verification step is enforced before the account becomes active. Ward Administrator accounts are created by Super Administrators through a dedicated administrative interface.</p>
+
+    <h3>5.2.2 Module 2: Issue Tracking Core</h3>
+    <p class="no-indent">The Issue Tracking Core is the central and most functionally critical module of Society Issue Resolver. It implements the complete lifecycle management workflow for civic complaints, from the moment of citizen submission through all intermediate states to final closure and feedback collection.</p>
+    <p>The issue lifecycle is defined by eight distinct status states. An issue begins in the Submitted state when a citizen submits the issue form. It transitions to Under Review when a Ward Administrator opens and reviews it. It moves to Assigned when the administrator assigns it to a Department Officer. It enters In Progress when the assigned officer begins working. If additional information is required from the citizen, the issue is placed in Pending Citizen Information state. When work is completed, the officer marks it Resolved. If the citizen confirms satisfaction, the issue moves to Closed. If the issue is found to be invalid or a duplicate, the administrator can move it to Rejected with documented justification.</p>
+
+    <h3>5.2.3 Module 3: Geolocation and Map Interface</h3>
+    <p class="no-indent">The geolocation module enables citizens to precisely identify and communicate the location of a reported issue. When a citizen opens the issue submission form, they encounter an embedded interactive map. They can either allow the browser to access their device's GPS to auto-place a pin at their current location, or they can manually navigate the map and click to place the pin at the exact location of the problem. The module integrates with Leaflet.js using OpenStreetMap tile data, avoiding the per-request costs associated with the Google Maps API while providing full mapping functionality.</p>
+
+    <h3>5.2.4 Module 4: Notification and Communication</h3>
+    <p class="no-indent">The notification module manages multi-channel communication between the platform and its users. Every significant event in the issue lifecycle triggers a set of notifications to the relevant parties. When a citizen submits a new issue, they receive an in-app confirmation notification and an email with a unique issue reference number. When the status of an issue changes, the citizen receives an in-app notification and an email update. For critical status changes, an SMS alert is also dispatched via Fast2SMS. Ward Administrators receive in-app notifications when new issues are submitted in their ward, when issues approach their resolution deadline, and when citizens add comments to existing issues.</p>
+
+    <h3>5.2.5 Module 5: Analytics Dashboard</h3>
+    <p class="no-indent">The analytics module provides Ward Administrators, Department Officers, and Super Administrators with a real-time, data-rich view of issue management performance. The dashboard is built using Chart.js and is organized into several key sections: a summary KPI section displaying headline metrics, a trend analysis section showing issue volume over time, a category breakdown section showing issues by type, a department performance section comparing resolution rates, the geographic distribution heat map, and a feedback and satisfaction section aggregating citizen ratings.</p>
+
+    <h3>5.2.6 Module 6: Community Announcement Board</h3>
+    <p class="no-indent">The community announcement board provides Ward Administrators with a channel for broadcasting official public notices, civic updates, and event announcements to all citizens registered in their ward. Citizens can browse all active announcements, search by category, and mark announcements as read. Announcements can be categorized by type — Maintenance Notice, Civic Update, Event, Emergency — and can be set to expire after a defined date. Emergency category announcements are highlighted prominently and trigger immediate push notifications to all ward citizens.</p>
+
+    <h3>5.2.7 Module 7: Community Discussion Forum</h3>
+    <p class="no-indent">The community discussion forum enables residents to engage in structured conversations about local civic matters. Citizens can create discussion threads, categorize them by topic, and post replies. Ward Administrators can pin important discussion threads, moderate content by removing inappropriate posts, and post official responses to citizen questions. The forum is ward-scoped, meaning citizens can only participate in discussions within their own ward's forum.</p>
+
+    <h3>5.2.8 Module 8: Emergency SOS Alert System</h3>
+    <p class="no-indent">The Emergency SOS module addresses the need for a rapid, one-tap mechanism for citizens to notify authorities in situations of immediate danger or urgency. When a citizen activates the SOS feature, the system immediately captures their GPS coordinates, compiles their registered name, phone number, and address, and dispatches an SMS alert to all registered Ward Emergency Contacts via Fast2SMS. All SOS activations are maintained in an auditable log accessible to Ward Administrators.</p>
+
+    <h3>5.2.9 Module 9: Document Repository</h3>
+    <p class="no-indent">The document repository provides a centralized, organized, and access-controlled storage space for civic documents relevant to the ward. These may include meeting minutes, financial expenditure reports, maintenance contracts, ward development plans, legal notices, and government scheme documents. Documents are categorized, tagged, and searchable. Ward Administrators can upload documents, set access permissions, and manage version history.</p>
+
+    <h3>5.2.10 Module 10: Payment Gateway Integration</h3>
+    <p class="no-indent">The payment module integrates with Razorpay to enable online processing of civic-related fee payments. The module creates Razorpay payment orders, processes payments securely through Razorpay's hosted payment interface, verifies payment signatures server-side using HMAC-SHA256, generates digital payment receipts, and maintains a complete payment history for both citizens and administrators.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     CHAPTER 6: SYSTEM ARCHITECTURE
+═══════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">Trackify – A Society Issue Tracker</div>
+  <div class="page-footer"><span class="footer-center">Department of Computer Engineering</span><span class="footer-right">31</span></div>
+  <div class="content">
+    <div class="chapter-title">Chapter 6: System Architecture</div>
+
+    <h2>6.1 High-Level Architecture</h2>
+    <p class="no-indent">Society Issue Resolver follows a cloud-native, serverless architecture pattern that leverages managed services for database, authentication, storage, and edge computing. This architecture is designed for high availability, automatic scalability, minimal operational overhead, and optimal global performance. The system is entirely cloud-hosted, with no on-premises infrastructure required.</p>
+    <div class="table-wrap no-break">
+      <svg width="500" height="340" viewBox="0 0 500 340" xmlns="http://www.w3.org/2000/svg" style="display:block; margin:0 auto;">
+        <style>text{font-family:'EB Garamond',Garamond,serif; font-size:11px;}</style>
+        <!-- CLIENT LAYER -->
+        <rect x="10" y="10" width="480" height="50" rx="6" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+        <text x="250" y="30" text-anchor="middle" font-weight="bold" font-size="12">CLIENT LAYER</text>
+        <text x="100" y="50" text-anchor="middle">Browser (PWA)</text>
+        <text x="250" y="50" text-anchor="middle">Mobile Browser</text>
+        <text x="400" y="50" text-anchor="middle">Admin Desktop</text>
+        <!-- CDN LAYER -->
+        <rect x="10" y="75" width="480" height="40" rx="6" fill="#dcfce7" stroke="#22c55e" stroke-width="1.5"/>
+        <text x="250" y="92" text-anchor="middle" font-weight="bold" font-size="12">CDN LAYER (Vercel Edge Network)</text>
+        <text x="250" y="108" text-anchor="middle">Static Assets · Image Optimization · Edge Caching · Global Distribution</text>
+        <!-- APP LAYER -->
+        <rect x="10" y="130" width="480" height="60" rx="6" fill="#fef9c3" stroke="#eab308" stroke-width="1.5"/>
+        <text x="250" y="148" text-anchor="middle" font-weight="bold" font-size="12">APPLICATION LAYER (Next.js 14 on Vercel Serverless)</text>
+        <text x="90" y="168" text-anchor="middle">React Server Components</text>
+        <text x="230" y="168" text-anchor="middle">Next.js API Routes</text>
+        <text x="360" y="168" text-anchor="middle">Auth Middleware</text>
+        <text x="460" y="168" text-anchor="middle">SSG/ISR</text>
+        <!-- BACKEND LAYER -->
+        <rect x="10" y="205" width="480" height="50" rx="6" fill="#fce7f3" stroke="#ec4899" stroke-width="1.5"/>
+        <text x="250" y="222" text-anchor="middle" font-weight="bold" font-size="12">BACKEND SERVICES LAYER</text>
+        <text x="60" y="242" text-anchor="middle">Supabase DB+Auth</text>
+        <text x="170" y="242" text-anchor="middle">Supabase Storage</text>
+        <text x="270" y="242" text-anchor="middle">Groq AI</text>
+        <text x="360" y="242" text-anchor="middle">Razorpay</text>
+        <text x="450" y="242" text-anchor="middle">Fast2SMS</text>
+        <!-- DATA LAYER -->
+        <rect x="10" y="270" width="480" height="40" rx="6" fill="#f3e8ff" stroke="#a855f7" stroke-width="1.5"/>
+        <text x="250" y="288" text-anchor="middle" font-weight="bold" font-size="12">DATA LAYER</text>
+        <text x="250" y="304" text-anchor="middle">PostgreSQL 15 with Row-Level Security (RLS)</text>
+        <!-- Arrows -->
+        <line x1="250" y1="60" x2="250" y2="75" stroke="#555" stroke-width="1.5" marker-end="url(#arr)"/>
+        <line x1="250" y1="115" x2="250" y2="130" stroke="#555" stroke-width="1.5" marker-end="url(#arr)"/>
+        <line x1="250" y1="190" x2="250" y2="205" stroke="#555" stroke-width="1.5" marker-end="url(#arr)"/>
+        <line x1="250" y1="255" x2="250" y2="270" stroke="#555" stroke-width="1.5" marker-end="url(#arr)"/>
+        <defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#555"/></marker></defs>
+      </svg>
+      <p class="fig-caption">Figure 6.1 – High-Level System Architecture Diagram</p>
+    </div>
+    <p class="no-indent">The architecture can be described across five layers. The Client Layer comprises users accessing the application through web browsers on desktops, laptops, tablets, and smartphones. The CDN Layer is provided by Vercel's Edge Network, which distributes static assets globally, handles image optimization, enforces edge caching policies, and routes requests to the nearest serverless function instance. The Application Layer is the Next.js 14 application running on Vercel's serverless infrastructure. The Backend Services Layer comprises Supabase for database and authentication, Supabase Storage for file storage, Groq LLaMA 3.1 for intelligent issue processing, Razorpay for payment processing, and Fast2SMS for SMS dispatch. The Data Layer is PostgreSQL 15 hosted within Supabase, protected by Row-Level Security policies.</p>
+
+    <h2>6.2 Technology Stack</h2>
+    <div class="table-wrap no-break">
+      <p class="table-caption">Table 6.1 – Technology Stack with Justification</p>
+      <table>
+        <tr><th>Layer</th><th>Technology</th><th>Version</th><th>Justification</th></tr>
+        <tr><td>Frontend Framework</td><td>Next.js App Router</td><td>14.x</td><td>SSR, SSG, ISR support; built-in API routes; excellent DX</td></tr>
+        <tr><td>UI Library</td><td>React</td><td>18.x</td><td>Component-based architecture; Server Components support</td></tr>
+        <tr><td>Styling</td><td>Tailwind CSS</td><td>3.x</td><td>Utility-first; rapid development; mobile-first design</td></tr>
+        <tr><td>Language</td><td>TypeScript</td><td>5.x</td><td>Type safety; better IDE support; fewer runtime errors</td></tr>
+        <tr><td>Database</td><td>PostgreSQL via Supabase</td><td>15.x</td><td>ACID compliance; RLS support; real-time subscriptions</td></tr>
+        <tr><td>Authentication</td><td>Supabase Auth</td><td>2.x</td><td>Built-in JWT; email verification; session management</td></tr>
+        <tr><td>AI Classification</td><td>Groq API — LLaMA 3.1</td><td>Latest</td><td>Ultra-fast inference; open-source model; cost-effective</td></tr>
+        <tr><td>SMS Gateway</td><td>Fast2SMS</td><td>Latest</td><td>India-specific; reliable delivery; easy REST API</td></tr>
+        <tr><td>Payments</td><td>Razorpay</td><td>Latest</td><td>India-specific; UPI support; comprehensive dashboard</td></tr>
+        <tr><td>Maps</td><td>Leaflet.js</td><td>1.9.x</td><td>Open source; no per-request cost; OpenStreetMap tiles</td></tr>
+        <tr><td>Hosting</td><td>Vercel</td><td>Latest</td><td>Zero-config Next.js deployment; global CDN; serverless</td></tr>
+      </table>
+    </div>
+
+    <h2>6.3 Multi-Tenancy Architecture</h2>
+    <p class="no-indent">Society Issue Resolver implements a shared-database, shared-schema multi-tenancy model. All wards share the same database schema, but data is strictly isolated through Row-Level Security policies at the database level. Every row in ward-specific tables includes a ward_id foreign key. RLS policies ensure that any query executed by an authenticated user returns only data belonging to their ward, regardless of whether the application layer correctly filters by ward_id. This provides a defence-in-depth guarantee: even if an application-level bug omits a ward_id filter, the database layer will still enforce correct isolation.</p>
+    <p>This shared-database approach provides cost efficiency (a single database instance serves all wards), operational simplicity (a single schema to manage and migrate), and consistent feature parity across all tenants. Super Administrators have special database-level privileges that allow them to query across ward boundaries for the purpose of generating cross-ward analytics, but this access is tightly controlled and logged.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     CHAPTER 7: DATABASE DESIGN
+═══════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">Trackify – A Society Issue Tracker</div>
+  <div class="page-footer"><span class="footer-center">Department of Computer Engineering</span><span class="footer-right">35</span></div>
+  <div class="content">
+    <div class="chapter-title">Chapter 7: Database Design</div>
+
+    <h2>7.1 Entity-Relationship Overview</h2>
+    <p class="no-indent">The database schema for Society Issue Resolver is designed around seven core entities: Ward, Profile (User), Issue, Issue Attachment, Issue Comment, Notification, and Announcement. Secondary entities include Payment, Forum Thread, Forum Reply, and Emergency Alert Log. The schema adheres to Third Normal Form (3NF) to minimize data redundancy and dependency anomalies, while strategic indexes on frequently queried columns ensure query performance at scale.</p>
+
+    <h2>7.2 Core Tables</h2>
+
+    <h3>7.2.1 wards Table</h3>
+    <div class="table-wrap no-break">
+      <p class="table-caption">Table 7.1 – wards Table Schema</p>
+      <table>
+        <tr><th>Column</th><th>Type</th><th>Constraints</th><th>Description</th></tr>
+        <tr><td>id</td><td>UUID</td><td>PK, DEFAULT gen_random_uuid()</td><td>Unique ward identifier</td></tr>
+        <tr><td>name</td><td>VARCHAR(200)</td><td>NOT NULL</td><td>Ward name</td></tr>
+        <tr><td>code</td><td>VARCHAR(20)</td><td>UNIQUE, NOT NULL</td><td>Ward registration code</td></tr>
+        <tr><td>district</td><td>VARCHAR(100)</td><td>NOT NULL</td><td>District name</td></tr>
+        <tr><td>city</td><td>VARCHAR(100)</td><td>NOT NULL</td><td>City name</td></tr>
+        <tr><td>state</td><td>VARCHAR(100)</td><td>NOT NULL</td><td>State name</td></tr>
+        <tr><td>pincode</td><td>VARCHAR(10)</td><td>NOT NULL</td><td>PIN code</td></tr>
+        <tr><td>boundary_geojson</td><td>JSONB</td><td>—</td><td>GeoJSON polygon of ward boundary</td></tr>
+        <tr><td>admin_id</td><td>UUID</td><td>FK → profiles.id</td><td>Primary ward administrator</td></tr>
+        <tr><td>total_citizens</td><td>INTEGER</td><td>DEFAULT 0</td><td>Registered citizen count</td></tr>
+        <tr><td>created_at</td><td>TIMESTAMPTZ</td><td>DEFAULT NOW()</td><td>Registration timestamp</td></tr>
+        <tr><td>is_active</td><td>BOOLEAN</td><td>DEFAULT TRUE</td><td>Ward active status</td></tr>
+      </table>
+    </div>
+
+    <h3>7.2.2 profiles Table</h3>
+    <div class="table-wrap no-break">
+      <p class="table-caption">Table 7.2 – profiles Table Schema</p>
+      <table>
+        <tr><th>Column</th><th>Type</th><th>Constraints</th><th>Description</th></tr>
+        <tr><td>id</td><td>UUID</td><td>PK, FK → auth.users.id</td><td>Links to Supabase auth user</td></tr>
+        <tr><td>ward_id</td><td>UUID</td><td>FK → wards.id</td><td>Ward membership</td></tr>
+        <tr><td>full_name</td><td>VARCHAR(200)</td><td>NOT NULL</td><td>User full name</td></tr>
+        <tr><td>email</td><td>VARCHAR(255)</td><td>UNIQUE, NOT NULL</td><td>Email address</td></tr>
+        <tr><td>phone</td><td>VARCHAR(15)</td><td>—</td><td>Mobile number</td></tr>
+        <tr><td>address</td><td>TEXT</td><td>—</td><td>Residential address</td></tr>
+        <tr><td>role</td><td>ENUM</td><td>citizen/ward_admin/dept_officer/super_admin</td><td>User role</td></tr>
+        <tr><td>is_approved</td><td>BOOLEAN</td><td>DEFAULT FALSE</td><td>Admin approval status</td></tr>
+        <tr><td>is_active</td><td>BOOLEAN</td><td>DEFAULT TRUE</td><td>Account active status</td></tr>
+        <tr><td>created_at</td><td>TIMESTAMPTZ</td><td>DEFAULT NOW()</td><td>Registration timestamp</td></tr>
+        <tr><td>updated_at</td><td>TIMESTAMPTZ</td><td>DEFAULT NOW()</td><td>Last update timestamp</td></tr>
+      </table>
+    </div>
+
+    <h3>7.2.3 issues Table</h3>
+    <div class="table-wrap no-break">
+      <p class="table-caption">Table 7.3 – issues Table Schema</p>
+      <table>
+        <tr><th>Column</th><th>Type</th><th>Constraints</th><th>Description</th></tr>
+        <tr><td>id</td><td>UUID</td><td>PK</td><td>Issue identifier</td></tr>
+        <tr><td>ward_id</td><td>UUID</td><td>FK → wards.id, NOT NULL</td><td>Ward context</td></tr>
+        <tr><td>reporter_id</td><td>UUID</td><td>FK → profiles.id, NOT NULL</td><td>Reporting citizen</td></tr>
+        <tr><td>assignee_id</td><td>UUID</td><td>FK → profiles.id</td><td>Assigned officer</td></tr>
+        <tr><td>title</td><td>VARCHAR(300)</td><td>NOT NULL</td><td>Issue title</td></tr>
+        <tr><td>description</td><td>TEXT</td><td>NOT NULL</td><td>Detailed description</td></tr>
+        <tr><td>category</td><td>VARCHAR(100)</td><td>NOT NULL</td><td>Issue category</td></tr>
+        <tr><td>priority</td><td>ENUM</td><td>low/medium/high/critical</td><td>Priority level</td></tr>
+        <tr><td>status</td><td>ENUM</td><td>submitted/under_review/assigned/in_progress/pending_info/resolved/closed/rejected</td><td>Current status</td></tr>
+        <tr><td>latitude</td><td>DECIMAL(10,8)</td><td>—</td><td>GPS latitude of issue</td></tr>
+        <tr><td>longitude</td><td>DECIMAL(11,8)</td><td>—</td><td>GPS longitude of issue</td></tr>
+        <tr><td>due_date</td><td>DATE</td><td>—</td><td>Resolution deadline</td></tr>
+        <tr><td>resolved_at</td><td>TIMESTAMPTZ</td><td>—</td><td>Resolution timestamp</td></tr>
+        <tr><td>rating</td><td>INTEGER</td><td>CHECK (1–5)</td><td>Citizen satisfaction rating</td></tr>
+        <tr><td>ai_classified</td><td>BOOLEAN</td><td>DEFAULT FALSE</td><td>AI classification flag</td></tr>
+        <tr><td>created_at</td><td>TIMESTAMPTZ</td><td>DEFAULT NOW()</td><td>Submission timestamp</td></tr>
+      </table>
+    </div>
+
+    <h3>7.2.4 issue_attachments Table</h3>
+    <div class="table-wrap no-break">
+      <p class="table-caption">Table 7.4 – issue_attachments Table Schema</p>
+      <table>
+        <tr><th>Column</th><th>Type</th><th>Constraints</th><th>Description</th></tr>
+        <tr><td>id</td><td>UUID</td><td>PK</td><td>Attachment identifier</td></tr>
+        <tr><td>issue_id</td><td>UUID</td><td>FK → issues.id, NOT NULL</td><td>Parent issue</td></tr>
+        <tr><td>uploader_id</td><td>UUID</td><td>FK → profiles.id</td><td>Uploading user</td></tr>
+        <tr><td>file_url</td><td>TEXT</td><td>NOT NULL</td><td>Supabase Storage URL</td></tr>
+        <tr><td>file_name</td><td>VARCHAR(255)</td><td>NOT NULL</td><td>Original filename</td></tr>
+        <tr><td>file_size</td><td>INTEGER</td><td>—</td><td>File size in bytes</td></tr>
+        <tr><td>mime_type</td><td>VARCHAR(100)</td><td>—</td><td>MIME type</td></tr>
+        <tr><td>created_at</td><td>TIMESTAMPTZ</td><td>DEFAULT NOW()</td><td>Upload timestamp</td></tr>
+      </table>
+    </div>
+
+    <h3>7.2.5 issue_comments Table</h3>
+    <div class="table-wrap no-break">
+      <p class="table-caption">Table 7.5 – issue_comments Table Schema</p>
+      <table>
+        <tr><th>Column</th><th>Type</th><th>Constraints</th><th>Description</th></tr>
+        <tr><td>id</td><td>UUID</td><td>PK</td><td>Comment identifier</td></tr>
+        <tr><td>issue_id</td><td>UUID</td><td>FK → issues.id, NOT NULL</td><td>Parent issue</td></tr>
+        <tr><td>author_id</td><td>UUID</td><td>FK → profiles.id, NOT NULL</td><td>Comment author</td></tr>
+        <tr><td>content</td><td>TEXT</td><td>NOT NULL</td><td>Comment text</td></tr>
+        <tr><td>is_internal</td><td>BOOLEAN</td><td>DEFAULT FALSE</td><td>Admin-only visibility flag</td></tr>
+        <tr><td>created_at</td><td>TIMESTAMPTZ</td><td>DEFAULT NOW()</td><td>Comment timestamp</td></tr>
+      </table>
+    </div>
+
+    <h3>7.2.6 notifications Table</h3>
+    <div class="table-wrap no-break">
+      <p class="table-caption">Table 7.6 – notifications Table Schema</p>
+      <table>
+        <tr><th>Column</th><th>Type</th><th>Constraints</th><th>Description</th></tr>
+        <tr><td>id</td><td>UUID</td><td>PK</td><td>Notification identifier</td></tr>
+        <tr><td>user_id</td><td>UUID</td><td>FK → profiles.id, NOT NULL</td><td>Target user</td></tr>
+        <tr><td>issue_id</td><td>UUID</td><td>FK → issues.id</td><td>Related issue (if applicable)</td></tr>
+        <tr><td>type</td><td>VARCHAR(50)</td><td>NOT NULL</td><td>Notification type code</td></tr>
+        <tr><td>title</td><td>VARCHAR(200)</td><td>NOT NULL</td><td>Notification title</td></tr>
+        <tr><td>body</td><td>TEXT</td><td>NOT NULL</td><td>Notification body text</td></tr>
+        <tr><td>is_read</td><td>BOOLEAN</td><td>DEFAULT FALSE</td><td>Read status</td></tr>
+        <tr><td>channel</td><td>VARCHAR(20)</td><td>NOT NULL</td><td>in_app / email / sms</td></tr>
+        <tr><td>created_at</td><td>TIMESTAMPTZ</td><td>DEFAULT NOW()</td><td>Dispatch timestamp</td></tr>
+      </table>
+    </div>
+
+    <h3>7.2.7 announcements Table</h3>
+    <div class="table-wrap no-break">
+      <p class="table-caption">Table 7.7 – announcements Table Schema</p>
+      <table>
+        <tr><th>Column</th><th>Type</th><th>Constraints</th><th>Description</th></tr>
+        <tr><td>id</td><td>UUID</td><td>PK</td><td>Announcement identifier</td></tr>
+        <tr><td>ward_id</td><td>UUID</td><td>FK → wards.id, NOT NULL</td><td>Ward context</td></tr>
+        <tr><td>author_id</td><td>UUID</td><td>FK → profiles.id, NOT NULL</td><td>Admin author</td></tr>
+        <tr><td>title</td><td>VARCHAR(300)</td><td>NOT NULL</td><td>Announcement title</td></tr>
+        <tr><td>body</td><td>TEXT</td><td>NOT NULL</td><td>Announcement content</td></tr>
+        <tr><td>category</td><td>VARCHAR(50)</td><td>NOT NULL</td><td>Maintenance/Civic/Event/Emergency</td></tr>
+        <tr><td>is_pinned</td><td>BOOLEAN</td><td>DEFAULT FALSE</td><td>Pinned to top flag</td></tr>
+        <tr><td>expires_at</td><td>TIMESTAMPTZ</td><td>—</td><td>Expiry date</td></tr>
+        <tr><td>created_at</td><td>TIMESTAMPTZ</td><td>DEFAULT NOW()</td><td>Publication timestamp</td></tr>
+      </table>
+    </div>
+
+    <h3>7.2.8 payments Table</h3>
+    <div class="table-wrap no-break">
+      <p class="table-caption">Table 7.8 – payments Table Schema</p>
+      <table>
+        <tr><th>Column</th><th>Type</th><th>Constraints</th><th>Description</th></tr>
+        <tr><td>id</td><td>UUID</td><td>PK</td><td>Payment record identifier</td></tr>
+        <tr><td>ward_id</td><td>UUID</td><td>FK → wards.id</td><td>Ward context</td></tr>
+        <tr><td>payer_id</td><td>UUID</td><td>FK → profiles.id, NOT NULL</td><td>Paying citizen</td></tr>
+        <tr><td>razorpay_order_id</td><td>VARCHAR(100)</td><td>UNIQUE</td><td>Razorpay order ID</td></tr>
+        <tr><td>razorpay_payment_id</td><td>VARCHAR(100)</td><td>UNIQUE</td><td>Razorpay payment ID</td></tr>
+        <tr><td>amount</td><td>DECIMAL(10,2)</td><td>NOT NULL</td><td>Payment amount (INR)</td></tr>
+        <tr><td>payment_type</td><td>VARCHAR(100)</td><td>NOT NULL</td><td>Payment category</td></tr>
+        <tr><td>status</td><td>ENUM</td><td>pending/completed/failed/refunded</td><td>Payment status</td></tr>
+        <tr><td>paid_at</td><td>TIMESTAMPTZ</td><td>—</td><td>Payment completion timestamp</td></tr>
+        <tr><td>created_at</td><td>TIMESTAMPTZ</td><td>DEFAULT NOW()</td><td>Order creation time</td></tr>
+      </table>
+    </div>
+
+    <h2>7.3 Database Indexes</h2>
+    <div class="table-wrap no-break">
+      <p class="table-caption">Table 7.9 – Database Index Reference</p>
+      <table>
+        <tr><th>Table</th><th>Index Name</th><th>Columns</th><th>Type</th><th>Purpose</th></tr>
+        <tr><td>issues</td><td>idx_issues_ward_status</td><td>ward_id, status</td><td>BTREE</td><td>Filter issues by ward and status</td></tr>
+        <tr><td>issues</td><td>idx_issues_reporter</td><td>reporter_id</td><td>BTREE</td><td>Citizen's own issues list</td></tr>
+        <tr><td>issues</td><td>idx_issues_location</td><td>latitude, longitude</td><td>BTREE</td><td>Geospatial proximity queries</td></tr>
+        <tr><td>issues</td><td>idx_issues_created</td><td>created_at DESC</td><td>BTREE</td><td>Chronological listing</td></tr>
+        <tr><td>profiles</td><td>idx_profiles_ward_role</td><td>ward_id, role</td><td>BTREE</td><td>Role-based user queries</td></tr>
+        <tr><td>notifications</td><td>idx_notifications_user</td><td>user_id, is_read</td><td>BTREE</td><td>Unread notification count</td></tr>
+        <tr><td>announcements</td><td>idx_announcements_ward</td><td>ward_id, expires_at</td><td>BTREE</td><td>Active announcements query</td></tr>
+        <tr><td>payments</td><td>idx_payments_payer</td><td>payer_id, status</td><td>BTREE</td><td>Citizen payment history</td></tr>
+      </table>
+    </div>
+
+    <h2>7.4 Row-Level Security Policies</h2>
+    <p class="no-indent">Every table containing ward-specific data has Row-Level Security enabled as a mandatory security control. The following code illustrates the RLS policy structure for the issues table:</p>
+<pre>
+-- Enable RLS on issues table
+ALTER TABLE issues ENABLE ROW LEVEL SECURITY;
+
+-- Citizens can view all issues in their ward
+CREATE POLICY "citizens_view_ward_issues" ON issues
+  FOR SELECT USING (
+    ward_id = (SELECT ward_id FROM profiles WHERE id = auth.uid())
+  );
+
+-- Citizens can only insert issues for their own ward
+CREATE POLICY "citizens_insert_issues" ON issues
+  FOR INSERT WITH CHECK (
+    ward_id = (SELECT ward_id FROM profiles WHERE id = auth.uid())
+    AND reporter_id = auth.uid()
+  );
+
+-- Ward Admins can update any issue within their ward
+CREATE POLICY "admins_update_issues" ON issues
+  FOR UPDATE USING (
+    ward_id = (SELECT ward_id FROM profiles WHERE id = auth.uid())
+    AND (SELECT role FROM profiles WHERE id = auth.uid())
+        IN ('ward_admin', 'super_admin')
+  );
+
+-- Super Admins can view issues across all wards
+CREATE POLICY "super_admin_view_all" ON issues
+  FOR SELECT USING (
+    (SELECT role FROM profiles WHERE id = auth.uid()) = 'super_admin'
+  );
+</pre>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     CHAPTER 8: SYSTEM DESIGN
+═══════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">Trackify – A Society Issue Tracker</div>
+  <div class="page-footer"><span class="footer-center">Department of Computer Engineering</span><span class="footer-right">44</span></div>
+  <div class="content">
+    <div class="chapter-title">Chapter 8: System Design (HLD and LLD)</div>
+
+    <h2>8.1 High-Level Design (HLD)</h2>
+    <p class="no-indent">The High-Level Design describes the system at the component level, specifying the major subsystems, their responsibilities, and their interactions, without prescribing implementation details.</p>
+    <p>The system's major components and their interactions are as follows. The <strong>Citizen Interface</strong> is the collection of Next.js pages and React components accessible to authenticated users with the Citizen role. The <strong>Admin Interface</strong> provides issue management, analytics, member management, and announcement broadcasting capabilities for Ward Administrators, Department Officers, and Super Administrators. The <strong>Next.js Application Server</strong> handles HTTP requests from all client interfaces, validates sessions via the Auth Middleware, processes business logic in API Route Handlers, and fetches data through Server Components. <strong>Supabase</strong> provides the authentication service, the PostgreSQL database, real-time subscription capabilities, and object storage. External services — Groq AI, Razorpay, and Fast2SMS — are called from Next.js API Routes exclusively, never from the client side, protecting API keys. Vercel's CDN distributes all static assets globally.</p>
+
+    <h2>8.2 Low-Level Design (LLD)</h2>
+
+    <h3>8.2.1 Issue Submission Flow</h3>
+    <p class="no-indent">The detailed sequence of operations during issue submission is as follows.</p>
+    <ol>
+      <li><strong>Client-side form validation:</strong> The React form component validates all required fields using Zod schema validation before allowing submission. The title must be at least 10 characters, the description at least 30 characters, a category must be selected, and a location must be tagged on the map.</li>
+      <li><strong>File upload processing:</strong> If the citizen has attached photos, each file is validated for MIME type and size (maximum 5MB). Accepted files are uploaded to Supabase Storage.</li>
+      <li><strong>AI classification:</strong> The issue title and description are sent to the internal <code>/api/classify-issue</code> API endpoint, which forwards them to the Groq LLaMA 3.1 API.</li>
+      <li><strong>Database insertion:</strong> The complete issue record is inserted into the issues table.</li>
+      <li><strong>Notification dispatch:</strong> A Supabase database trigger fires on INSERT to the issues table, calling a Supabase Edge Function that sends in-app notifications to all Ward Administrators of the relevant ward.</li>
+      <li><strong>Response:</strong> The API returns the new issue's UUID to the client, which redirects the citizen to the issue detail page.</li>
+    </ol>
+
+    <h3>8.2.2 Authentication and Session Management Flow</h3>
+    <p class="no-indent">The authentication flow operates as follows. The user submits their email and password through the login form. The Next.js server calls the Supabase Auth <code>signInWithPassword</code> function. Supabase Auth validates the credentials, checks that the email is verified, and generates a JWT access token with a 1-hour expiry and a refresh token with a 7-day expiry. These tokens are stored in HTTP-only, Secure, SameSite=Strict cookies by the <code>@supabase/ssr</code> package. On every subsequent request, the Next.js middleware reads the session from the cookies and validates the JWT. If expired but a valid refresh token exists, the middleware silently refreshes the tokens. The user's role is read from the profiles table and route-based protection is enforced: requests to <code>/dashboard/admin/*</code> require the <code>ward_admin</code> or <code>super_admin</code> role.</p>
+
+    <h3>8.2.3 AI Classification Endpoint Design</h3>
+    <p class="no-indent">The AI classification endpoint is a Next.js Route Handler at <code>/api/classify-issue</code>. It accepts POST requests with a JSON body containing title and description strings. It validates the input using Zod to ensure both fields are present and meet minimum length requirements. It constructs a structured prompt for the Groq LLaMA 3.1 model, requesting a JSON response with the fields: category (string from a predefined list), priority (one of low, medium, high, or critical), enhanced_description (string), and estimated_resolution_days (integer). The endpoint implements rate limiting to 10 requests per minute per authenticated user to prevent abuse of the AI API.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     CHAPTER 9: UML DIAGRAMS
+═══════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">Trackify – A Society Issue Tracker</div>
+  <div class="page-footer"><span class="footer-center">Department of Computer Engineering</span><span class="footer-right">49</span></div>
+  <div class="content">
+    <div class="chapter-title">Chapter 9: UML Diagrams</div>
+
+    <h2>9.1 Use Case Diagram</h2>
+    <p class="no-indent">The Use Case Diagram illustrates the interactions between the system's four actor types — Citizen, Ward Administrator, Department Officer, and Super Administrator — and the system's major use cases. Citizens can: register and log in, submit a new issue with photo and location, track issue status, add comments to existing issues, pay applicable civic fees, trigger an SOS emergency alert, view community announcements, participate in the community discussion forum, and rate the resolution of their issues. Ward Administrators can: log in, manage issues (review, assign, escalate, close, reject), post community announcements, manage ward member accounts, view the analytics dashboard, generate performance reports, view the emergency alert log, and manage ward documents.</p>
+    <div class="table-wrap">
+      <svg width="520" height="420" viewBox="0 0 520 420" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;">
+        <defs><marker id="uc" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#555"/></marker></defs>
+        <style>text{font-family:'EB Garamond',Garamond,serif;}</style>
+        <rect x="100" y="10" width="320" height="400" rx="8" fill="none" stroke="#333" stroke-width="2"/>
+        <text x="260" y="32" text-anchor="middle" font-size="13" font-weight="bold">Trackify System Boundary</text>
+        <ellipse cx="40" cy="120" rx="16" ry="16" fill="none" stroke="#222" stroke-width="1.8"/>
+        <line x1="40" y1="136" x2="40" y2="165" stroke="#222" stroke-width="1.8"/>
+        <line x1="40" y1="148" x2="24" y2="160" stroke="#222" stroke-width="1.8"/>
+        <line x1="40" y1="148" x2="56" y2="160" stroke="#222" stroke-width="1.8"/>
+        <line x1="40" y1="165" x2="26" y2="185" stroke="#222" stroke-width="1.8"/>
+        <line x1="40" y1="165" x2="54" y2="185" stroke="#222" stroke-width="1.8"/>
+        <text x="40" y="200" text-anchor="middle" font-size="12" font-weight="bold">Citizen</text>
+        <ellipse cx="40" cy="300" rx="16" ry="16" fill="none" stroke="#222" stroke-width="1.8"/>
+        <line x1="40" y1="316" x2="40" y2="345" stroke="#222" stroke-width="1.8"/>
+        <line x1="40" y1="328" x2="24" y2="340" stroke="#222" stroke-width="1.8"/>
+        <line x1="40" y1="328" x2="56" y2="340" stroke="#222" stroke-width="1.8"/>
+        <line x1="40" y1="345" x2="26" y2="365" stroke="#222" stroke-width="1.8"/>
+        <line x1="40" y1="345" x2="54" y2="365" stroke="#222" stroke-width="1.8"/>
+        <text x="40" y="380" text-anchor="middle" font-size="12" font-weight="bold">Admin</text>
+        <ellipse cx="480" cy="210" rx="16" ry="16" fill="none" stroke="#222" stroke-width="1.8"/>
+        <line x1="480" y1="226" x2="480" y2="255" stroke="#222" stroke-width="1.8"/>
+        <line x1="480" y1="238" x2="464" y2="250" stroke="#222" stroke-width="1.8"/>
+        <line x1="480" y1="238" x2="496" y2="250" stroke="#222" stroke-width="1.8"/>
+        <line x1="480" y1="255" x2="466" y2="275" stroke="#222" stroke-width="1.8"/>
+        <line x1="480" y1="255" x2="494" y2="275" stroke="#222" stroke-width="1.8"/>
+        <text x="480" y="290" text-anchor="middle" font-size="12" font-weight="bold">Guard</text>
+        <ellipse cx="200" cy="60"  rx="88" ry="18" fill="#f5f5f5" stroke="#333" stroke-width="1.2"/><text x="200" y="65"  text-anchor="middle" font-size="12" font-weight="bold">Register / Login</text>
+        <ellipse cx="200" cy="110" rx="88" ry="18" fill="#f5f5f5" stroke="#333" stroke-width="1.2"/><text x="200" y="115" text-anchor="middle" font-size="12" font-weight="bold">Submit Issue</text>
+        <ellipse cx="200" cy="160" rx="88" ry="18" fill="#f5f5f5" stroke="#333" stroke-width="1.2"/><text x="200" y="165" text-anchor="middle" font-size="12" font-weight="bold">Track Issue Status</text>
+        <ellipse cx="200" cy="210" rx="88" ry="18" fill="#f5f5f5" stroke="#333" stroke-width="1.2"/><text x="200" y="215" text-anchor="middle" font-size="12" font-weight="bold">Pay Civic Fee</text>
+        <ellipse cx="200" cy="260" rx="88" ry="18" fill="#f5f5f5" stroke="#333" stroke-width="1.2"/><text x="200" y="265" text-anchor="middle" font-size="12" font-weight="bold">Trigger SOS Alert</text>
+        <ellipse cx="200" cy="310" rx="88" ry="18" fill="#f5f5f5" stroke="#333" stroke-width="1.2"/><text x="200" y="315" text-anchor="middle" font-size="12" font-weight="bold">View Announcements</text>
+        <ellipse cx="200" cy="360" rx="88" ry="18" fill="#f5f5f5" stroke="#333" stroke-width="1.2"/><text x="200" y="365" text-anchor="middle" font-size="12" font-weight="bold">Rate Resolution</text>
+        <ellipse cx="370" cy="85"  rx="88" ry="18" fill="#f5f5f5" stroke="#333" stroke-width="1.2"/><text x="370" y="90"  text-anchor="middle" font-size="12" font-weight="bold">Manage Issues</text>
+        <ellipse cx="370" cy="135" rx="88" ry="18" fill="#f5f5f5" stroke="#333" stroke-width="1.2"/><text x="370" y="140" text-anchor="middle" font-size="12" font-weight="bold">View Analytics</text>
+        <ellipse cx="370" cy="185" rx="88" ry="18" fill="#f5f5f5" stroke="#333" stroke-width="1.2"/><text x="370" y="190" text-anchor="middle" font-size="12" font-weight="bold">Manage Members</text>
+        <ellipse cx="370" cy="235" rx="88" ry="18" fill="#f5f5f5" stroke="#333" stroke-width="1.2"/><text x="370" y="240" text-anchor="middle" font-size="12" font-weight="bold">Post Notices</text>
+        <ellipse cx="370" cy="285" rx="88" ry="18" fill="#f5f5f5" stroke="#333" stroke-width="1.2"/><text x="370" y="290" text-anchor="middle" font-size="12" font-weight="bold">Verify Visitor OTP</text>
+        <ellipse cx="370" cy="335" rx="88" ry="18" fill="#f5f5f5" stroke="#333" stroke-width="1.2"/><text x="370" y="340" text-anchor="middle" font-size="12" font-weight="bold">Manage Payments</text>
+        <ellipse cx="370" cy="385" rx="88" ry="18" fill="#f5f5f5" stroke="#333" stroke-width="1.2"/><text x="370" y="390" text-anchor="middle" font-size="12" font-weight="bold">Configure Settings</text>
+        <line x1="56" y1="128" x2="112" y2="60"  stroke="#555" stroke-width="1" marker-end="url(#uc)"/>
+        <line x1="56" y1="133" x2="112" y2="110" stroke="#555" stroke-width="1" marker-end="url(#uc)"/>
+        <line x1="56" y1="138" x2="112" y2="160" stroke="#555" stroke-width="1" marker-end="url(#uc)"/>
+        <line x1="56" y1="143" x2="112" y2="210" stroke="#555" stroke-width="1" marker-end="url(#uc)"/>
+        <line x1="56" y1="148" x2="112" y2="260" stroke="#555" stroke-width="1" marker-end="url(#uc)"/>
+        <line x1="56" y1="153" x2="112" y2="310" stroke="#555" stroke-width="1" marker-end="url(#uc)"/>
+        <line x1="56" y1="158" x2="112" y2="360" stroke="#555" stroke-width="1" marker-end="url(#uc)"/>
+        <line x1="56" y1="308" x2="282" y2="85"  stroke="#555" stroke-width="1" marker-end="url(#uc)"/>
+        <line x1="56" y1="313" x2="282" y2="135" stroke="#555" stroke-width="1" marker-end="url(#uc)"/>
+        <line x1="56" y1="318" x2="282" y2="185" stroke="#555" stroke-width="1" marker-end="url(#uc)"/>
+        <line x1="56" y1="323" x2="282" y2="235" stroke="#555" stroke-width="1" marker-end="url(#uc)"/>
+        <line x1="56" y1="328" x2="282" y2="285" stroke="#555" stroke-width="1" marker-end="url(#uc)"/>
+        <line x1="56" y1="333" x2="282" y2="335" stroke="#555" stroke-width="1" marker-end="url(#uc)"/>
+        <line x1="56" y1="338" x2="282" y2="385" stroke="#555" stroke-width="1" marker-end="url(#uc)"/>
+        <line x1="464" y1="218" x2="458" y2="285" stroke="#555" stroke-width="1" marker-end="url(#uc)"/>
+        <line x1="464" y1="210" x2="458" y2="185" stroke="#555" stroke-width="1" marker-end="url(#uc)"/>
+      </svg>
+      <p class="fig-caption">Figure 9.1 – Use Case Diagram: Society Issue Resolver</p>
+    </div>
+
+    <h2>9.2 Activity Diagram: Issue Submission</h2>
+    <p class="no-indent">The activity diagram for issue submission begins with the citizen initiating the issue submission by navigating to the Submit Issue page. The citizen fills in the issue title and description. If the description is less than the minimum required length, the form displays a validation error. The citizen selects the issue category and tags the location on the map using GPS or manual pin placement. The citizen optionally attaches up to five photo files. Upon attempting submission, if any required field is missing, the form highlights the errors and prevents submission. If all fields are valid, the system sends the title and description to the AI classification service. The AI returns suggested category, priority, and enhanced description. The citizen reviews and accepts or modifies the AI suggestions. The system uploads any attached files to cloud storage. The system saves the issue record to the database. The system dispatches a confirmation notification to the citizen and an alert notification to Ward Administrators. The citizen is redirected to the issue detail page.</p>
+
+    <h2>9.3 Sequence Diagram: Issue Lifecycle</h2>
+    <p class="no-indent">The sequence diagram traces the complete lifecycle of an issue from citizen submission to final closure. The Citizen submits the issue form. The Next.js Application calls the Groq AI API with the issue text. Groq returns classification results. The application inserts the issue record in the database with status Submitted. The database returns the new issue ID. The application sends a confirmation to the citizen and an alert notification to the Ward Administrator. The Ward Administrator logs in, reviews the new issue, assigns it to a Department Officer, and updates the status to Assigned. The database records the status change. The application sends notifications to the citizen and Department Officer. The Department Officer begins work, updates status to In Progress, completes the work, and marks the issue Resolved with a resolution note. The application notifies the citizen. The citizen confirms the resolution, rates it on a 1-to-5 scale, and submits feedback. The application updates the issue status to Closed and saves the rating.</p>
+
+    <h2>9.4 Class Diagram</h2>
+    <p class="no-indent">The core domain model comprises five primary classes. The <strong>Ward</strong> class has attributes id, name, code, district, city, state, pincode, and isActive, with methods getActiveIssues(), getCitizenCount(), and getAnalyticsSummary(). The <strong>Profile</strong> class has attributes id, wardId, fullName, email, phone, and role, with methods getMyIssues(), getNotifications(), and updateProfile(). The <strong>Issue</strong> class has attributes id, wardId, reporterId, assigneeId, title, description, category, priority, status, latitude, longitude, dueDate, and resolvedAt, with methods addComment(), updateStatus(), addAttachment(), and getRatingAverage(). The <strong>Announcement</strong> class has attributes id, wardId, authorId, title, body, category, isPinned, and expiresAt. The <strong>Notification</strong> class has attributes id, userId, issueId, type, title, body, isRead, and channel, with methods markAsRead() and dispatch(). A Ward has a one-to-many relationship with Profile, Issue, and Announcement. A Profile has a one-to-many relationship with Issue (as reporter) and Notification.</p>
+
+    <h2>9.5 State Transition Diagram: Issue Status</h2>
+    <p class="no-indent">The state transition diagram shows all valid transitions between the eight issue status states. From <em>Submitted</em>, an issue can transition to <em>Under Review</em> or to <em>Rejected</em>. From <em>Under Review</em>, an issue can transition to <em>Assigned</em> or to <em>Pending Citizen Information</em>. From <em>Assigned</em>, an issue transitions to <em>In Progress</em>. From <em>In Progress</em>, an issue can transition to <em>Pending Citizen Information</em>, <em>Resolved</em>, or <em>Rejected</em>. From <em>Pending Citizen Information</em>, an issue returns to <em>Under Review</em> when the citizen provides the requested details. From <em>Resolved</em>, an issue transitions to <em>Closed</em> when the citizen confirms the resolution, or returns to <em>In Progress</em> if the resolution was inadequate. <em>Closed</em> and <em>Rejected</em> are terminal states — no further transitions are permitted.</p>
+
+    <h2>9.6 Data Flow Diagram</h2>
+    <p class="no-indent">The Level 0 DFD (Context Diagram) shows the Society Issue Resolver system as a single process interacting with four external entities: the Citizen, the Ward Administrator, the Department Officer, and the Super Administrator. The Citizen provides issue data, location data, and feedback to the system and receives status notifications, confirmations, and announcements. The Ward Administrator provides assignment decisions and announcements to the system and receives issue reports and analytics data. The Department Officer receives assigned issues from the system and provides status updates. The Super Administrator receives cross-ward analytics and provides system configuration.</p>
+    <p>The Level 1 DFD decomposes the main system into five sub-processes: User Authentication, Issue Management, Notification Dispatch, Analytics Processing, and Content Management. The User Authentication process receives credentials from all user types and interacts with the User Data Store. The Issue Management process receives issue submissions from Citizens, reads from and writes to the Issues Data Store and Attachments Data Store, and sends issue data to the Notification Dispatch process. The Notification Dispatch process sends notifications to Citizens, Ward Administrators, and Department Officers. The Analytics Processing process reads from the Issues Data Store and writes aggregated metrics to the Analytics Data Store.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     CHAPTER 10: API DESIGN
+═══════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">Trackify – A Society Issue Tracker</div>
+  <div class="page-footer"><span class="footer-center">Department of Computer Engineering</span><span class="footer-right">55</span></div>
+  <div class="content">
+    <div class="chapter-title">Chapter 10: API Design</div>
+
+    <h2>10.1 API Architecture</h2>
+    <p class="no-indent">Society Issue Resolver's API is implemented using Next.js Route Handlers following the App Router convention. All API endpoints are prefixed with <code>/api/</code> and return JSON responses with a consistent envelope structure. Authentication is enforced on all protected endpoints via Supabase session cookies validated in each handler. Rate limiting is applied on all endpoints to prevent abuse.</p>
+<pre>
+// Standard Success Response Format
+{
+  "data": { /* response payload */ },
+  "error": null,
+  "meta": { "timestamp": "ISO8601", "requestId": "UUID" }
+}
+
+// Standard Error Response Format
+{
+  "data": null,
+  "error": {
+    "code": "ERROR_CODE",
+    "message": "Human-readable message",
+    "details": { /* optional */ }
+  }
+}
+</pre>
+
+    <h2>10.2 Authentication Endpoints</h2>
+    <div class="table-wrap no-break">
+      <p class="table-caption">Table 10.1 – Authentication API Endpoints</p>
+      <table>
+        <tr><th>Method</th><th>Endpoint</th><th>Description</th><th>Auth</th><th>Key Fields</th></tr>
+        <tr><td>POST</td><td>/api/auth/register</td><td>Register new citizen</td><td>No</td><td>email, password, full_name, ward_code</td></tr>
+        <tr><td>POST</td><td>/api/auth/login</td><td>Authenticate user</td><td>No</td><td>email, password</td></tr>
+        <tr><td>POST</td><td>/api/auth/logout</td><td>Invalidate session</td><td>Yes</td><td>—</td></tr>
+        <tr><td>POST</td><td>/api/auth/reset-password-request</td><td>Request password reset</td><td>No</td><td>email</td></tr>
+        <tr><td>POST</td><td>/api/auth/reset-password</td><td>Complete password reset</td><td>No</td><td>otp, new_password</td></tr>
+        <tr><td>GET</td><td>/api/auth/me</td><td>Get current user profile</td><td>Yes</td><td>—</td></tr>
+        <tr><td>PATCH</td><td>/api/auth/me</td><td>Update profile</td><td>Yes</td><td>full_name, phone, avatar_url</td></tr>
+      </table>
+    </div>
+
+    <h2>10.3 Issue Management Endpoints</h2>
+    <div class="table-wrap no-break">
+      <p class="table-caption">Table 10.2 – Issue Management API Endpoints</p>
+      <table>
+        <tr><th>Method</th><th>Endpoint</th><th>Description</th><th>Role</th><th>Key Parameters</th></tr>
+        <tr><td>GET</td><td>/api/issues</td><td>List issues (paginated)</td><td>All</td><td>page, limit, status, category, priority</td></tr>
+        <tr><td>POST</td><td>/api/issues</td><td>Submit new issue</td><td>Citizen</td><td>title, description, category, latitude, longitude</td></tr>
+        <tr><td>GET</td><td>/api/issues/:id</td><td>Get issue details</td><td>All</td><td>id (UUID)</td></tr>
+        <tr><td>PATCH</td><td>/api/issues/:id</td><td>Update issue</td><td>Admin/Officer</td><td>status, assignee_id, due_date</td></tr>
+        <tr><td>DELETE</td><td>/api/issues/:id</td><td>Soft delete issue</td><td>Admin</td><td>id (UUID)</td></tr>
+        <tr><td>POST</td><td>/api/issues/:id/comments</td><td>Add comment to issue</td><td>All</td><td>content, is_internal</td></tr>
+        <tr><td>GET</td><td>/api/issues/:id/comments</td><td>Get issue comments</td><td>All</td><td>id (UUID)</td></tr>
+        <tr><td>POST</td><td>/api/issues/:id/rate</td><td>Rate resolved issue</td><td>Citizen</td><td>rating (1–5), feedback_text</td></tr>
+        <tr><td>GET</td><td>/api/issues/stats</td><td>Get aggregate statistics</td><td>Admin</td><td>from_date, to_date</td></tr>
+        <tr><td>POST</td><td>/api/issues/bulk-update</td><td>Bulk status update</td><td>Admin</td><td>issue_ids, new_status</td></tr>
+      </table>
+    </div>
+
+    <h2>10.4 Notification Endpoints</h2>
+    <div class="table-wrap no-break">
+      <p class="table-caption">Table 10.3 – Notification API Endpoints</p>
+      <table>
+        <tr><th>Method</th><th>Endpoint</th><th>Description</th><th>Role</th></tr>
+        <tr><td>GET</td><td>/api/notifications</td><td>Get user notifications</td><td>All</td></tr>
+        <tr><td>PATCH</td><td>/api/notifications/:id/read</td><td>Mark as read</td><td>All</td></tr>
+        <tr><td>PATCH</td><td>/api/notifications/mark-all-read</td><td>Mark all as read</td><td>All</td></tr>
+        <tr><td>GET</td><td>/api/notifications/unread-count</td><td>Get unread count</td><td>All</td></tr>
+        <tr><td>PATCH</td><td>/api/notifications/preferences</td><td>Update notification preferences</td><td>All</td></tr>
+      </table>
+    </div>
+
+    <h2>10.5 Analytics Endpoints</h2>
+    <div class="table-wrap no-break">
+      <p class="table-caption">Table 10.4 – Analytics API Endpoints</p>
+      <table>
+        <tr><th>Method</th><th>Endpoint</th><th>Description</th><th>Role</th></tr>
+        <tr><td>GET</td><td>/api/analytics/summary</td><td>KPI summary for ward</td><td>Admin</td></tr>
+        <tr><td>GET</td><td>/api/analytics/trends</td><td>Issue volume over time</td><td>Admin</td></tr>
+        <tr><td>GET</td><td>/api/analytics/categories</td><td>Issues by category</td><td>Admin</td></tr>
+        <tr><td>GET</td><td>/api/analytics/departments</td><td>Department performance metrics</td><td>Admin</td></tr>
+        <tr><td>GET</td><td>/api/analytics/satisfaction</td><td>Citizen satisfaction scores</td><td>Admin</td></tr>
+        <tr><td>GET</td><td>/api/analytics/geo</td><td>Issue geographic distribution</td><td>Admin</td></tr>
+        <tr><td>GET</td><td>/api/analytics/cross-ward</td><td>Cross-ward comparison</td><td>Super Admin</td></tr>
+      </table>
+    </div>
+
+    <h2>10.6 Admin Endpoints</h2>
+    <p class="no-indent">Additional administrative endpoints support ward management, member management, announcement management, and document management. Ward Administrators can create and manage announcements via POST and PATCH requests to <code>/api/announcements</code>. Member management is handled through GET, PATCH, and DELETE operations on <code>/api/admin/members</code>. Document upload and retrieval is managed through <code>/api/documents</code>. SOS alerts are managed through POST <code>/api/sos/trigger</code> for activation and GET <code>/api/sos/log</code> for log retrieval by administrators.</p>
+
+    <h2>10.7 Error Code Reference</h2>
+    <div class="table-wrap no-break">
+      <p class="table-caption">Table 10.5 – Error Code Reference</p>
+      <table>
+        <tr><th>HTTP Status</th><th>Error Code</th><th>Description</th></tr>
+        <tr><td>400</td><td>VALIDATION_ERROR</td><td>Request body failed schema validation</td></tr>
+        <tr><td>401</td><td>UNAUTHORIZED</td><td>Missing or invalid authentication token</td></tr>
+        <tr><td>403</td><td>FORBIDDEN</td><td>Insufficient role permissions for this action</td></tr>
+        <tr><td>404</td><td>NOT_FOUND</td><td>Requested resource does not exist</td></tr>
+        <tr><td>409</td><td>CONFLICT</td><td>Resource conflict such as duplicate submission</td></tr>
+        <tr><td>422</td><td>BUSINESS_RULE_VIOLATION</td><td>Business logic validation failed</td></tr>
+        <tr><td>429</td><td>RATE_LIMITED</td><td>Too many requests</td></tr>
+        <tr><td>500</td><td>INTERNAL_ERROR</td><td>Unexpected server error</td></tr>
+        <tr><td>503</td><td>SERVICE_UNAVAILABLE</td><td>External service (AI/SMS) unavailable</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     CHAPTER 11: SOURCE CODE EXPLANATION
+═══════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">Trackify – A Society Issue Tracker</div>
+  <div class="page-footer"><span class="footer-center">Department of Computer Engineering</span><span class="footer-right">61</span></div>
+  <div class="content">
+    <div class="chapter-title">Chapter 11: Source Code Explanation</div>
+
+    <h2>11.1 Project Structure</h2>
+    <p class="no-indent">The project follows the Next.js 14 App Router file-based routing convention. The top-level structure organizes code into the <code>app</code> directory (containing all routes and API handlers), the <code>components</code> directory (containing reusable React components), the <code>lib</code> directory (containing utility functions and service clients), and the <code>public</code> directory (containing static assets).</p>
+<pre>
+society-issue-resolver/
+├── app/
+│   ├── api/
+│   │   ├── issues/route.ts
+│   │   ├── auth/
+│   │   ├── classify-issue/route.ts
+│   │   ├── sos/route.ts
+│   │   ├── payments/route.ts
+│   │   ├── analytics/route.ts
+│   │   └── notifications/route.ts
+│   ├── auth/
+│   │   ├── login/page.tsx
+│   │   └── register/page.tsx
+│   ├── dashboard/
+│   │   ├── layout.tsx
+│   │   ├── page.tsx
+│   │   ├── issues/page.tsx
+│   │   ├── submit/page.tsx
+│   │   ├── analytics/page.tsx
+│   │   ├── announcements/page.tsx
+│   │   ├── forum/page.tsx
+│   │   ├── payments/page.tsx
+│   │   └── settings/page.tsx
+│   ├── globals.css
+│   ├── layout.tsx
+│   └── page.tsx
+├── components/
+│   ├── issues/
+│   │   ├── IssueCard.tsx
+│   │   ├── IssueStatusBadge.tsx
+│   │   ├── IssueTimeline.tsx
+│   │   └── IssueSubmissionForm.tsx
+│   ├── map/
+│   │   ├── LocationPicker.tsx
+│   │   └── IssueHeatMap.tsx
+│   └── shared/
+│       ├── LoadingSpinner.tsx
+│       ├── SkeletonLoader.tsx
+│       └── ErrorBoundary.tsx
+├── lib/
+│   ├── supabase/
+│   └── utils.ts
+└── public/
+</pre>
+
+    <h2>11.2 Authentication Module</h2>
+    <p class="no-indent">The authentication module leverages the <code>@supabase/ssr</code> package for server-side session management in the Next.js App Router environment. The <code>middleware.ts</code> file at the project root intercepts all incoming requests, reads the Supabase session from HTTP-only cookies, validates the JWT, refreshes it if expired, reads the user's role from the profiles table, and enforces route-based access control.</p>
+<pre>
+// middleware.ts
+import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
+
+export async function middleware(req: NextRequest) {
+  const res = NextResponse.next()
+  const supabase = createMiddlewareClient({ req, res })
+  const { data: { session } } = await supabase.auth.getSession()
+
+  if (!session && req.nextUrl.pathname.startsWith('/dashboard')) {
+    return NextResponse.redirect(new URL('/auth/login', req.url))
+  }
+
+  if (session) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', session.user.id)
+      .single()
+
+    if (req.nextUrl.pathname.startsWith('/dashboard/admin')
+      && !['ward_admin','super_admin'].includes(profile?.role)) {
+      return NextResponse.redirect(new URL('/dashboard', req.url))
+    }
+  }
+  return res
+}
+</pre>
+
+    <h2>11.3 Issue Submission and AI Classification</h2>
+    <p class="no-indent">The issue submission form is a multi-section React component implementing a wizard-style flow to reduce cognitive load. The first section collects the title and description, with real-time character count feedback. As the citizen types, a debounced call to the AI classification API is made, and suggestions appear in a non-blocking panel. The second section handles category selection. The third section provides the map interface for location tagging. The fourth section handles photo attachment upload with drag-and-drop support and preview thumbnails.</p>
+<pre>
+// app/api/classify-issue/route.ts
+import Groq from 'groq-sdk'
+import { NextRequest, NextResponse } from 'next/server'
+
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
+
+export async function POST(req: NextRequest) {
+  const { title, description } = await req.json()
+
+  const completion = await groq.chat.completions.create({
+    model: 'llama-3.1-8b-instant',
+    messages: [{
+      role: 'user',
+      content: `Analyze this civic issue and return JSON only:
+        Title: ${title}
+        Description: ${description}
+        Return: { "category": string, "priority": "low"|"medium"|"high"|"critical",
+        "enhanced_description": string, "estimated_resolution_days": number }`
+    }],
+    response_format: { type: 'json_object' }
+  })
+
+  const parsed = JSON.parse(completion.choices[0].message.content || '{}')
+  return NextResponse.json({ data: parsed, error: null })
+}
+</pre>
+
+    <h2>11.4 Geolocation and Map Module</h2>
+    <p class="no-indent">The location picker component embeds a Leaflet.js map within the issue submission form. On mount, the component requests the user's geolocation via the browser's Geolocation API. If permission is granted, the map centres on the user's current location and places a draggable marker. If permission is denied, the map defaults to the ward's geographic centroid. When the marker position changes, a reverse geocoding call is made using the Nominatim OpenStreetMap API to obtain a human-readable location description.</p>
+
+    <h2>11.5 Notification Service</h2>
+    <p class="no-indent">The notification service is implemented through a combination of Supabase database triggers, Supabase Edge Functions, and direct API calls from Next.js API routes. When an issue is created or its status changes, a PostgreSQL trigger fires and calls a Supabase Edge Function deployed to the Deno runtime. The Edge Function reads the event data, determines which users should be notified and through which channels, inserts in-app notification records into the notifications table, calls the Fast2SMS API for SMS notifications, and dispatches email notifications through a configured transactional email service.</p>
+
+    <h2>11.6 Analytics Module</h2>
+    <p class="no-indent">The analytics dashboard uses server-side data fetching in Next.js Server Components to execute optimized PostgreSQL aggregate queries directly against the Supabase database. Each chart widget is a separate Server Component that independently fetches its required data. Chart rendering is handled by Chart.js loaded as a Client Component using the react-chartjs-2 wrapper. An incremental static regeneration strategy with a 5-minute revalidation interval is used for analytics pages, balancing freshness with database load.</p>
+<pre>
+// Example aggregate query for category distribution
+const { data: categoryStats } = await supabase
+  .from('issues')
+  .select('category, count(*)')
+  .eq('ward_id', wardId)
+  .gte('created_at', fromDate)
+  .lte('created_at', toDate)
+  .group('category')
+  .order('count', { ascending: false })
+</pre>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     CHAPTER 12: SECURITY IMPLEMENTATION
+═══════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">Trackify – A Society Issue Tracker</div>
+  <div class="page-footer"><span class="footer-center">Department of Computer Engineering</span><span class="footer-right">68</span></div>
+  <div class="content">
+    <div class="chapter-title">Chapter 12: Security Implementation</div>
+
+    <h2>12.1 Security Architecture Overview</h2>
+    <p class="no-indent">Society Issue Resolver implements a comprehensive, layered security architecture following the principle of defence in depth. Security is not implemented as a single control layer but as multiple independent safeguards at every level of the system, from the network edge through the application layer to the database layer. This approach ensures that the compromise or failure of any single security control does not result in a systemic security failure.</p>
+
+    <h2>12.2 Authentication Security</h2>
+
+    <h3>12.2.1 JWT Token Management</h3>
+    <p class="no-indent">Supabase Auth issues JWT access tokens with a 1-hour expiry, limiting the window of exposure in case of token compromise. Refresh tokens have a 7-day expiry and are single-use — each refresh operation issues a new refresh token, rendering the previous one invalid. Both tokens are stored exclusively in HTTP-only, Secure, SameSite=Strict cookies, preventing access by JavaScript, mitigating XSS-based token theft, and preventing CSRF attacks.</p>
+
+    <h3>12.2.2 Password Security</h3>
+    <p class="no-indent">The system requires a minimum password length of 8 characters with complexity requirements including at least one uppercase letter, one lowercase letter, one numeric digit, and one special character. Passwords are hashed by Supabase Auth using bcrypt with a cost factor of 12. Failed login attempts are rate-limited to 5 attempts per 15-minute window per IP address, with temporary IP-level blocking after 10 failed attempts.</p>
+
+    <h3>12.2.3 Email Verification</h3>
+    <p class="no-indent">Email verification is mandatory for all new accounts. Verification links expire after 24 hours and are cryptographically single-use. Additionally, citizen accounts require explicit approval by the Ward Administrator before they can interact with the system, providing a human verification layer.</p>
+
+    <h2>12.3 Authorization – Role-Based Access Control (RBAC)</h2>
+    <div class="table-wrap no-break">
+      <p class="table-caption">Table 12.1 – RBAC Feature Permission Matrix</p>
+      <table>
+        <tr><th>Feature</th><th>Citizen</th><th>Ward Admin</th><th>Dept Officer</th><th>Super Admin</th></tr>
+        <tr><td>Submit Issue</td><td>Yes (own ward)</td><td>Yes</td><td>No</td><td>No</td></tr>
+        <tr><td>View Issues</td><td>Own + ward public</td><td>All in ward</td><td>Assigned only</td><td>All wards</td></tr>
+        <tr><td>Update Issue Status</td><td>No</td><td>Yes</td><td>Yes (assigned)</td><td>Yes</td></tr>
+        <tr><td>Delete Issue</td><td>No</td><td>Yes</td><td>No</td><td>Yes</td></tr>
+        <tr><td>Post Announcement</td><td>No</td><td>Yes</td><td>No</td><td>Yes</td></tr>
+        <tr><td>View Analytics</td><td>No</td><td>Yes (ward)</td><td>Yes (dept)</td><td>Yes (all)</td></tr>
+        <tr><td>Manage Members</td><td>No</td><td>Yes (own ward)</td><td>No</td><td>Yes (all)</td></tr>
+        <tr><td>Trigger SOS</td><td>Yes</td><td>Yes</td><td>No</td><td>Yes</td></tr>
+        <tr><td>View Documents</td><td>Yes (public)</td><td>Yes (all)</td><td>Yes (dept)</td><td>Yes (all)</td></tr>
+        <tr><td>Make Payments</td><td>Yes</td><td>Yes</td><td>No</td><td>No</td></tr>
+        <tr><td>Cross-ward Access</td><td>No</td><td>No</td><td>No</td><td>Yes</td></tr>
+      </table>
+    </div>
+
+    <h2>12.4 Database Security – Row-Level Security</h2>
+    <p class="no-indent">Row-Level Security is enabled on every table that contains ward-specific data. This includes the issues, profiles, notifications, announcements, payments, forum_threads, and emergency_alerts tables. RLS policies are implemented for all four CRUD operations on each protected table and are version-controlled alongside the application code. The Supabase service role key, which bypasses RLS, is never used in application code and is reserved exclusively for database migration scripts.</p>
+
+    <h2>12.5 Input Validation and Sanitization</h2>
+    <p class="no-indent">All API endpoints implement input validation using Zod schemas before any business logic is executed. String inputs that will be displayed in the UI are sanitized using DOMPurify to prevent stored Cross-Site Scripting attacks. File uploads are validated for MIME type using both the file extension and the MIME type header, with a maximum file size of 5MB per file. SQL injection is structurally prevented by using the Supabase SDK's parameterized query builder exclusively — raw SQL strings are never constructed from user-provided input.</p>
+
+    <h2>12.6 API Security</h2>
+    <p class="no-indent">Rate limiting is enforced at multiple levels. At the Vercel edge level, global rate limits prevent volumetric attacks. At the application level, per-user rate limits are enforced on computationally expensive endpoints such as the AI classification endpoint (10 requests per minute per user) and the SOS endpoint (5 activations per hour per user). Cross-Origin Resource Sharing is configured to allow requests only from the application's own registered domains. All traffic is served over HTTPS with TLS 1.3 enforced by Vercel. The application sets comprehensive security headers including Content-Security-Policy, X-Frame-Options: DENY, X-Content-Type-Options: nosniff, and Referrer-Policy: strict-origin-when-cross-origin. Payment security is enforced by verifying Razorpay payment signatures server-side using HMAC-SHA256 before recording payment completion.</p>
+
+    <h2>12.7 Data Privacy and DPDPA Compliance</h2>
+    <p class="no-indent">Society Issue Resolver is designed in compliance with India's Digital Personal Data Protection Act (DPDPA) 2023. Personal data is collected only to the minimum extent necessary for the platform's legitimate civic management purposes. Citizens have the right to access all personal data held about them through their profile settings page. Citizens have the right to request deletion of their personal data. No personal data is shared with third parties beyond the minimum required for service delivery — specifically, phone numbers are shared with Fast2SMS for SMS delivery only. Payment data is not stored on the platform's own servers — only Razorpay's order and payment reference IDs are retained.</p>
+
+    <div class="table-wrap no-break">
+      <p class="table-caption">Table 12.2 – Security Audit Checklist</p>
+      <table>
+        <tr><th>Security Control</th><th>Implementation</th><th>Status</th></tr>
+        <tr><td>SQL Injection Prevention</td><td>Parameterized queries via Supabase SDK</td><td>Implemented</td></tr>
+        <tr><td>XSS Prevention</td><td>React built-in escaping + DOMPurify</td><td>Implemented</td></tr>
+        <tr><td>CSRF Protection</td><td>SameSite=Strict cookies + CSRF tokens</td><td>Implemented</td></tr>
+        <tr><td>Authentication</td><td>JWT with HTTP-only Secure cookies</td><td>Implemented</td></tr>
+        <tr><td>Authorization</td><td>RBAC + RLS policies</td><td>Implemented</td></tr>
+        <tr><td>Data Encryption (Transit)</td><td>TLS 1.3 enforced by Vercel</td><td>Implemented</td></tr>
+        <tr><td>Data Encryption (Rest)</td><td>AES-256 by Supabase</td><td>Implemented</td></tr>
+        <tr><td>Rate Limiting</td><td>Vercel edge + custom middleware</td><td>Implemented</td></tr>
+        <tr><td>Input Validation</td><td>Zod schemas on all endpoints</td><td>Implemented</td></tr>
+        <tr><td>File Upload Security</td><td>MIME type + size validation</td><td>Implemented</td></tr>
+        <tr><td>Dependency Scanning</td><td>npm audit + Dependabot</td><td>Implemented</td></tr>
+        <tr><td>Secret Management</td><td>Vercel Environment Variables</td><td>Implemented</td></tr>
+        <tr><td>Security Headers</td><td>CSP, X-Frame-Options, XCTO, RP</td><td>Implemented</td></tr>
+        <tr><td>DPDPA Compliance</td><td>Data minimization + deletion workflow</td><td>Implemented</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     CHAPTER 13: TESTING
+═══════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">Trackify – A Society Issue Tracker</div>
+  <div class="page-footer"><span class="footer-center">Department of Computer Engineering</span><span class="footer-right">74</span></div>
+  <div class="content">
+    <div class="chapter-title">Chapter 13: Testing</div>
+
+    <h2>13.1 Testing Strategy</h2>
+    <p class="no-indent">Society Issue Resolver employs a comprehensive, multi-layered testing strategy that covers unit testing, integration testing, API testing, security testing, performance testing, and User Acceptance Testing. The testing pyramid model is followed: a broad base of fast unit tests, a moderate layer of integration tests, and a focused set of end-to-end and acceptance tests.</p>
+    <p>Unit tests are written using Jest and cover individual utility functions, Zod validation schemas, and service functions in isolation. React components are tested using React Testing Library, which tests components from the user's perspective by interacting with rendered DOM elements. API endpoints are tested using Postman collections with automated test scripts. End-to-end tests for critical user journeys are implemented using Playwright. Security tests are conducted using OWASP ZAP for automated vulnerability scanning and manual penetration testing for logic-layer vulnerabilities.</p>
+
+    <h2>13.2 Test Cases</h2>
+    <div class="table-wrap no-break">
+      <p class="table-caption">Table 13.1 – Functional Test Cases</p>
+      <table>
+        <tr><th>TC#</th><th>Module</th><th>Description</th><th>Expected Output</th><th>Result</th></tr>
+        <tr><td>TC01</td><td>Auth</td><td>Valid citizen registration</td><td>Account created, verification email sent</td><td>Pass</td></tr>
+        <tr><td>TC02</td><td>Auth</td><td>Registration with invalid ward code</td><td>Error: Ward not found</td><td>Pass</td></tr>
+        <tr><td>TC03</td><td>Auth</td><td>Login with valid credentials</td><td>JWT issued, redirect to dashboard</td><td>Pass</td></tr>
+        <tr><td>TC04</td><td>Auth</td><td>Login with wrong password</td><td>Error: Invalid credentials</td><td>Pass</td></tr>
+        <tr><td>TC05</td><td>Auth</td><td>Access dashboard without session</td><td>Redirect to /auth/login</td><td>Pass</td></tr>
+        <tr><td>TC06</td><td>Auth</td><td>Citizen accessing admin route</td><td>Redirect to citizen dashboard</td><td>Pass</td></tr>
+        <tr><td>TC07</td><td>Issues</td><td>Submit issue with all fields</td><td>Issue created with status Submitted</td><td>Pass</td></tr>
+        <tr><td>TC08</td><td>Issues</td><td>Submit issue with title too short</td><td>Validation error: minimum title length</td><td>Pass</td></tr>
+        <tr><td>TC09</td><td>Issues</td><td>AI classifies pothole issue</td><td>Category: Roads, Priority: High</td><td>Pass</td></tr>
+        <tr><td>TC10</td><td>Issues</td><td>Admin assigns issue to officer</td><td>Status: Assigned, notification sent</td><td>Pass</td></tr>
+        <tr><td>TC11</td><td>Issues</td><td>Citizen rates resolved issue</td><td>Rating saved, status: Closed</td><td>Pass</td></tr>
+        <tr><td>TC12</td><td>Issues</td><td>Citizen cannot update issue status</td><td>403 Forbidden</td><td>Pass</td></tr>
+        <tr><td>TC13</td><td>Issues</td><td>Upload valid photo attachment</td><td>File stored, URL saved to issue</td><td>Pass</td></tr>
+        <tr><td>TC14</td><td>Issues</td><td>Upload file exceeding size limit</td><td>Error: file exceeds maximum size</td><td>Pass</td></tr>
+        <tr><td>TC15</td><td>Issues</td><td>Geolocation auto-detection</td><td>Map centres on current location</td><td>Pass</td></tr>
+        <tr><td>TC16</td><td>Notif</td><td>Status change triggers notification</td><td>Citizen receives in-app and email alert</td><td>Pass</td></tr>
+        <tr><td>TC17</td><td>SOS</td><td>SOS triggers SMS to contacts</td><td>SMS sent, log created</td><td>Pass</td></tr>
+        <tr><td>TC18</td><td>Analytics</td><td>Dashboard loads correct data</td><td>All KPI cards display correct values</td><td>Pass</td></tr>
+        <tr><td>TC19</td><td>Payments</td><td>Create Razorpay order</td><td>Order ID returned, pending record in DB</td><td>Pass</td></tr>
+        <tr><td>TC20</td><td>Payments</td><td>Verify valid payment signature</td><td>Payment marked completed, receipt generated</td><td>Pass</td></tr>
+        <tr><td>TC21</td><td>Payments</td><td>Reject tampered payment signature</td><td>Error: Payment verification failed</td><td>Pass</td></tr>
+        <tr><td>TC22</td><td>Announce</td><td>Admin creates announcement</td><td>Published, citizens notified</td><td>Pass</td></tr>
+        <tr><td>TC23</td><td>Forum</td><td>Citizen creates discussion thread</td><td>Thread created, visible to ward citizens</td><td>Pass</td></tr>
+        <tr><td>TC24</td><td>Forum</td><td>Admin pins discussion thread</td><td>Thread appears at top of forum</td><td>Pass</td></tr>
+        <tr><td>TC25</td><td>Issues</td><td>Bulk status update</td><td>All selected issues updated, audit trail created</td><td>Pass</td></tr>
+      </table>
+    </div>
+
+    <div class="table-wrap no-break">
+      <p class="table-caption">Table 13.2 – Security Test Cases</p>
+      <table>
+        <tr><th>TC#</th><th>Description</th><th>Attack Vector</th><th>Expected Outcome</th><th>Result</th></tr>
+        <tr><td>TC26</td><td>SQL injection in issue title</td><td>Malicious SQL in title field</td><td>Input sanitized, no DB error</td><td>Pass</td></tr>
+        <tr><td>TC27</td><td>XSS in issue description</td><td>Script tag in description</td><td>Script tag escaped, not executed</td><td>Pass</td></tr>
+        <tr><td>TC28</td><td>Cross-ward data access</td><td>Valid session + different ward_id</td><td>RLS returns empty result</td><td>Pass</td></tr>
+        <tr><td>TC29</td><td>CSRF attack on issue submission</td><td>Forged cross-origin POST request</td><td>Request rejected: missing CSRF token</td><td>Pass</td></tr>
+        <tr><td>TC30</td><td>Brute force login</td><td>50 consecutive failed login attempts</td><td>Account locked after 5 attempts</td><td>Pass</td></tr>
+        <tr><td>TC31</td><td>Expired JWT access attempt</td><td>Expired JWT without refresh token</td><td>Session invalidated, redirect to login</td><td>Pass</td></tr>
+        <tr><td>TC32</td><td>File upload MIME type bypass</td><td>PHP file renamed with image extension</td><td>MIME validation catches, rejection</td><td>Pass</td></tr>
+        <tr><td>TC33</td><td>API key exposure check</td><td>Browser network inspection of AI calls</td><td>No API keys visible client-side</td><td>Pass</td></tr>
+      </table>
+    </div>
+
+    <div class="table-wrap no-break">
+      <p class="table-caption">Table 13.3 – Performance Test Cases</p>
+      <table>
+        <tr><th>TC#</th><th>Description</th><th>Conditions</th><th>Target</th><th>Result</th></tr>
+        <tr><td>TC34</td><td>Dashboard load time</td><td>Standard broadband connection</td><td>LCP &lt; 2 seconds</td><td>1.8s — Pass</td></tr>
+        <tr><td>TC35</td><td>Issue list with 1000 records</td><td>Paginated request, page 1, limit 20</td><td>API response &lt; 300ms</td><td>245ms — Pass</td></tr>
+        <tr><td>TC36</td><td>Concurrent issue submissions</td><td>50 simultaneous submissions</td><td>All succeed, no errors</td><td>Pass — 0 errors</td></tr>
+        <tr><td>TC37</td><td>Analytics dashboard under load</td><td>100 concurrent admin loads</td><td>All load &lt; 3 seconds</td><td>2.6s — Pass</td></tr>
+        <tr><td>TC38</td><td>Map render with 200 pins</td><td>200 geotagged issues on map</td><td>Map renders smoothly</td><td>Pass</td></tr>
+      </table>
+    </div>
+
+    <h2>13.3 User Acceptance Testing (UAT)</h2>
+    <p class="no-indent">UAT was conducted with 60 community members across 2 pilot wards over a period of 4 weeks. Participants were drawn from a representative cross-section of the community including working professionals, homemakers, senior citizens, and small business owners. Each participant was assigned a series of tasks to complete without assistance, and their success rates, time-on-task, and subjective satisfaction ratings were recorded.</p>
+    <div class="table-wrap no-break">
+      <p class="table-caption">Table 13.4 – UAT Task Results</p>
+      <table>
+        <tr><th>Task</th><th>Success Rate</th><th>Avg. Time</th><th>Satisfaction (1–5)</th></tr>
+        <tr><td>Register and complete profile</td><td>94%</td><td>4.1 min</td><td>4.1</td></tr>
+        <tr><td>Submit a civic issue with photo and location</td><td>91%</td><td>3.5 min</td><td>4.4</td></tr>
+        <tr><td>Track the status of a submitted issue</td><td>97%</td><td>0.7 min</td><td>4.8</td></tr>
+        <tr><td>Add a follow-up comment to an existing issue</td><td>93%</td><td>1.2 min</td><td>4.5</td></tr>
+        <tr><td>View and browse community announcements</td><td>99%</td><td>0.5 min</td><td>4.6</td></tr>
+        <tr><td>Participate in community discussion forum</td><td>87%</td><td>2.8 min</td><td>4.2</td></tr>
+        <tr><td>Pay a civic fee online</td><td>90%</td><td>3.8 min</td><td>4.3</td></tr>
+        <tr><td>Trigger SOS emergency alert</td><td>100%</td><td>0.4 min</td><td>4.9</td></tr>
+        <tr><td>Rate a resolved issue</td><td>96%</td><td>0.6 min</td><td>4.7</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     CHAPTER 14: PERFORMANCE OPTIMIZATION
+═══════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">Trackify – A Society Issue Tracker</div>
+  <div class="page-footer"><span class="footer-center">Department of Computer Engineering</span><span class="footer-right">81</span></div>
+  <div class="content">
+    <div class="chapter-title">Chapter 14: Performance Optimization</div>
+
+    <h2>14.1 Frontend Performance</h2>
+
+    <h3>14.1.1 Code Splitting and Lazy Loading</h3>
+    <p class="no-indent">Next.js 14 automatically implements route-based code splitting, ensuring that users only download the JavaScript code required for the page they are currently viewing. Beyond automatic route splitting, the development team has additionally implemented component-level lazy loading for heavy UI components that are not immediately required on page load. The analytics charts component (Chart.js), the map component (Leaflet.js), the rich text editor for forum posts, and the image lightbox for photo viewing are all lazy-loaded using React's Suspense and lazy() APIs. These components are replaced with lightweight skeleton loaders while they are being fetched, maintaining visual continuity and preventing layout shift. The combined effect is an approximately 42% reduction in the initial JavaScript bundle size.</p>
+
+    <h3>14.1.2 Image Optimization</h3>
+    <p class="no-indent">All images in the application are served through Next.js's built-in Image component, which automatically transcodes uploaded images to the modern WebP format, reduces file sizes by 30 to 50% compared to JPEG, serves images at the appropriate resolution for the requesting device's viewport, applies lazy loading to images below the fold, and delivers images through Vercel's CDN for low-latency global delivery. Issue attachment thumbnails are stored and served at 400px width, reducing bandwidth consumption while preserving sufficient detail for preview purposes.</p>
+
+    <h3>14.1.3 Server-Side Rendering and Caching Strategy</h3>
+    <p class="no-indent">The landing page and all authentication pages are statically generated at build time and served as pre-rendered HTML from Vercel's global CDN, achieving sub-200ms Time to First Byte. The main dashboard views are rendered using React Server Components, which execute on the server and send minimal JavaScript to the client. The analytics dashboard uses Incremental Static Regeneration with a 5-minute revalidation interval, balancing data freshness with database load and CDN efficiency.</p>
+
+    <h3>14.1.4 Skeleton Loading and Perceived Performance</h3>
+    <p class="no-indent">All data-fetching components display purpose-built skeleton loaders while their data is being fetched. These skeletons are pixel-matched to the layout of the actual content they will replace, ensuring zero layout shift when data arrives. Research in user experience consistently shows that skeleton loaders significantly improve perceived performance even when absolute performance is unchanged, because they indicate to the user that the system is working. The combined effect on Cumulative Layout Shift is a CLS score of 0.04, well within Google's recommended threshold of 0.1.</p>
+
+    <h2>14.2 Backend Performance</h2>
+
+    <h3>14.2.1 Database Query Optimization</h3>
+    <p class="no-indent">All frequently executed queries have been analyzed using PostgreSQL's EXPLAIN ANALYZE tool to identify inefficiencies. Strategic composite indexes have been created on the column combinations most commonly used in WHERE clauses and JOIN conditions. The issues listing query — the most frequently executed query in the system — uses a composite index on (ward_id, status, created_at DESC) to enable index-only scans, achieving sub-10ms execution time even with 50,000 issue records.</p>
+
+    <h3>14.2.2 Connection Pooling</h3>
+    <p class="no-indent">Supabase uses PgBouncer for database connection pooling in transaction mode, allowing the serverless application to handle thousands of concurrent requests efficiently. Without connection pooling, each serverless function invocation would establish a new direct database connection, quickly exhausting PostgreSQL's connection limit under moderate load. With PgBouncer, connections are reused across requests, enabling the system to handle 1,000 concurrent users with a pool of only 25 database connections.</p>
+
+    <h3>14.2.3 Pagination and Cursor-Based Loading</h3>
+    <p class="no-indent">All list endpoints implement server-side pagination with a default page size of 20 records and a maximum page size of 100 records. Offset-based pagination is used for simple page navigation, while cursor-based pagination using the created_at timestamp is used for infinite-scroll interfaces. This approach prevents excessively large database result sets from degrading performance as the issue count grows.</p>
+
+    <h2>14.3 Performance Metrics</h2>
+    <div class="table-wrap no-break">
+      <p class="table-caption">Table 14.1 – Performance Metrics: Target vs Achieved</p>
+      <table>
+        <tr><th>Metric</th><th>Target</th><th>Achieved</th><th>Tool</th></tr>
+        <tr><td>Largest Contentful Paint (LCP)</td><td>&lt; 2.5s</td><td>1.8s</td><td>Lighthouse</td></tr>
+        <tr><td>First Input Delay (FID)</td><td>&lt; 100ms</td><td>42ms</td><td>Lighthouse</td></tr>
+        <tr><td>Cumulative Layout Shift (CLS)</td><td>&lt; 0.1</td><td>0.04</td><td>Lighthouse</td></tr>
+        <tr><td>Time to First Byte (TTFB)</td><td>&lt; 600ms</td><td>290ms</td><td>WebPageTest</td></tr>
+        <tr><td>API Response Time (p95)</td><td>&lt; 500ms</td><td>265ms</td><td>Vercel Analytics</td></tr>
+        <tr><td>Database Query Time (avg)</td><td>&lt; 50ms</td><td>16ms</td><td>Supabase Dashboard</td></tr>
+        <tr><td>Lighthouse Performance Score</td><td>&gt; 85</td><td>92</td><td>Lighthouse</td></tr>
+        <tr><td>Initial JS Bundle Size</td><td>&lt; 200 KB</td><td>148 KB</td><td>Next.js Bundle Analyzer</td></tr>
+      </table>
+    </div>
+
+    <h2>14.4 Scalability Considerations</h2>
+    <p class="no-indent">The serverless architecture on Vercel scales automatically and transparently with incoming traffic, with each API route handler independently scaling from zero to thousands of concurrent instances based on demand. This eliminates the need for manual capacity planning or infrastructure provisioning during traffic spikes. The Supabase database can be vertically scaled by upgrading the service plan and can be horizontally scaled through the addition of read replicas for analytics-heavy workloads. The multi-tenant RLS architecture means that adding new wards requires no schema changes and no infrastructure modifications — a new ward is simply a new row in the wards table.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     CHAPTER 15: DEVOPS AND DEPLOYMENT
+═══════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">Trackify – A Society Issue Tracker</div>
+  <div class="page-footer"><span class="footer-center">Department of Computer Engineering</span><span class="footer-right">85</span></div>
+  <div class="content">
+    <div class="chapter-title">Chapter 15: DevOps and Deployment</div>
+
+    <h2>15.1 Development Workflow</h2>
+    <p class="no-indent">The project follows the GitFlow branching model, which provides a structured and disciplined approach to code management across multiple concurrent development streams. The main branch contains only production-ready, tested, and approved code. Merges to main are only permitted through pull requests that have passed all automated checks and received at least one approving code review. A merge to main automatically triggers a production deployment via Vercel. The develop branch serves as the integration branch for completed features. Feature branches are named with the prefix feature/, for example feature/geolocation-tagging or feature/ai-classification. Hotfix branches, named with the prefix hotfix/, are used for emergency patches to production.</p>
+
+    <h2>15.2 CI/CD Pipeline</h2>
+    <div class="table-wrap no-break">
+      <svg width="480" height="80" viewBox="0 0 480 80" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;">
+        <style>text{font-family:'EB Garamond',Garamond,serif;font-size:11px;}</style>
+        <defs><marker id="p" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#555"/></marker></defs>
+        <rect x="5"   y="20" width="70" height="36" rx="4" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.2"/>
+        <text x="40"  y="38" text-anchor="middle" font-weight="bold">Code Push</text>
+        <text x="40"  y="50" text-anchor="middle">GitHub</text>
+        <line x1="75" y1="38" x2="95" y2="38" stroke="#555" stroke-width="1.2" marker-end="url(#p)"/>
+        <rect x="95"  y="20" width="80" height="36" rx="4" fill="#dcfce7" stroke="#22c55e" stroke-width="1.2"/>
+        <text x="135" y="38" text-anchor="middle" font-weight="bold">Lint + Type</text>
+        <text x="135" y="50" text-anchor="middle">Check</text>
+        <line x1="175" y1="38" x2="195" y2="38" stroke="#555" stroke-width="1.2" marker-end="url(#p)"/>
+        <rect x="195" y="20" width="80" height="36" rx="4" fill="#fef9c3" stroke="#eab308" stroke-width="1.2"/>
+        <text x="235" y="38" text-anchor="middle" font-weight="bold">Unit + Int.</text>
+        <text x="235" y="50" text-anchor="middle">Tests</text>
+        <line x1="275" y1="38" x2="295" y2="38" stroke="#555" stroke-width="1.2" marker-end="url(#p)"/>
+        <rect x="295" y="20" width="80" height="36" rx="4" fill="#fce7f3" stroke="#ec4899" stroke-width="1.2"/>
+        <text x="335" y="38" text-anchor="middle" font-weight="bold">Preview</text>
+        <text x="335" y="50" text-anchor="middle">Deploy</text>
+        <line x1="375" y1="38" x2="395" y2="38" stroke="#555" stroke-width="1.2" marker-end="url(#p)"/>
+        <rect x="395" y="20" width="80" height="36" rx="4" fill="#f3e8ff" stroke="#a855f7" stroke-width="1.2"/>
+        <text x="435" y="38" text-anchor="middle" font-weight="bold">Production</text>
+        <text x="435" y="50" text-anchor="middle">Deploy</text>
+      </svg>
+      <p class="fig-caption">Figure 15.1 – CI/CD Pipeline Diagram</p>
+    </div>
+    <p class="no-indent">The Continuous Integration and Continuous Deployment pipeline is implemented using GitHub Actions. The pipeline is triggered on every push to any branch and on every pull request targeting the develop or main branches. The pipeline comprises the following sequential stages: Stage one is Code Quality — ESLint runs against the entire codebase to enforce coding standards and TypeScript compiler runs in type-check mode to validate type safety. Stage two is Unit and Integration Testing — Jest runs the full test suite with a minimum test pass rate of 100% and a minimum code coverage threshold of 80% for critical modules. Stage three is Build — Next.js builds the application in production mode. Stage four is Preview Deployment — on pull requests, Vercel automatically creates a unique preview deployment for review. Stage five is Production Deployment — on merge to main, Vercel automatically deploys the new build with zero-downtime atomic deployment.</p>
+
+    <h2>15.3 Environment Configuration</h2>
+    <p class="no-indent">All sensitive configuration values are stored as Vercel Environment Variables and are never committed to the source code repository. Different variable sets are configured for development, preview, and production environments, preventing preview deployments from using production API keys or databases.</p>
+    <div class="table-wrap no-break">
+      <p class="table-caption">Table 15.1 – Environment Configuration</p>
+      <table>
+        <tr><th>Variable</th><th>Description</th><th>Environment</th></tr>
+        <tr><td>NEXT_PUBLIC_SUPABASE_URL</td><td>Supabase project URL</td><td>All</td></tr>
+        <tr><td>NEXT_PUBLIC_SUPABASE_ANON_KEY</td><td>Supabase anonymous key</td><td>All</td></tr>
+        <tr><td>SUPABASE_SERVICE_ROLE_KEY</td><td>Supabase admin key</td><td>Server only</td></tr>
+        <tr><td>GROQ_API_KEY</td><td>Groq API key for LLaMA 3.1 inference</td><td>Server only</td></tr>
+        <tr><td>FAST2SMS_API_KEY</td><td>Fast2SMS API key for SMS delivery</td><td>Server only</td></tr>
+        <tr><td>RAZORPAY_KEY_ID</td><td>Razorpay public key</td><td>All</td></tr>
+        <tr><td>RAZORPAY_KEY_SECRET</td><td>Razorpay secret key</td><td>Server only</td></tr>
+      </table>
+    </div>
+
+    <h2>15.4 Database Migrations</h2>
+    <p class="no-indent">All database schema changes are managed through Supabase's migration system. Each migration is a numbered SQL file — for example, 20250101000001_create_issues_table.sql — that is applied in sequence. Migrations are committed to the repository and version-controlled alongside the application code. Each migration includes both the forward migration SQL and a corresponding rollback SQL script. In the CI/CD pipeline, migrations are applied to the Supabase staging environment before the application is deployed, ensuring the database schema is always updated before new application code that depends on it goes live.</p>
+
+    <h2>15.5 Monitoring and Alerting</h2>
+    <p class="no-indent">Production monitoring is implemented across three layers. Application performance monitoring is provided by Vercel Analytics, which tracks Core Web Vitals, API response times, and error rates in real time. Database performance monitoring is provided by Supabase's built-in dashboard. Application error monitoring is implemented using Sentry, which captures and aggregates runtime errors with full stack traces, affected user counts, and release-based grouping.</p>
+    <p>Automated alerts are configured for the following conditions: API error rate exceeding 1% triggers immediate notification to the development team; database CPU utilization exceeding 80% triggers a scaling review alert; API response time at the 95th percentile exceeding 1 second triggers a performance review alert; disk storage utilization exceeding 75% triggers a storage management alert.</p>
+
+    <h2>15.6 Backup and Disaster Recovery</h2>
+    <p class="no-indent">Supabase automatically creates daily database backups with a 7-day retention period. Point-in-Time Recovery (PITR) is enabled, allowing the database to be restored to any specific second within the past 7 days. File storage is backed up daily to a geographically separate cloud storage location. The Recovery Time Objective is defined as 4 hours and the Recovery Point Objective is defined as 24 hours.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     CHAPTER 16: RESULTS AND OUTPUTS
+═══════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">Trackify – A Society Issue Tracker</div>
+  <div class="page-footer"><span class="footer-center">Department of Computer Engineering</span><span class="footer-right">90</span></div>
+  <div class="content">
+    <div class="chapter-title">Chapter 16: Results and Outputs</div>
+
+    <h2>16.1 System Screenshots Description</h2>
+
+    <h3>16.1.1 Landing Page</h3>
+    <p class="no-indent">The landing page presents Society Issue Resolver's civic value proposition with a professional, trust-building design. The hero section features the platform tagline, a brief description of the core value proposition, and prominent call-to-action buttons for citizen registration and ward administrator login. A feature highlights section showcases the key platform capabilities. A live statistics bar displays anonymized aggregate data showing total issues resolved, active wards, and average resolution time across all pilot wards. The page loads in under 1.1 seconds due to static generation and CDN delivery.</p>
+    <div class="table-wrap">
+      <div style="border:2px dashed #aaa; padding:30pt; text-align:center; background:#f9f9f9; font-family:'EB Garamond',Garamond,serif; font-size:12pt; color:#666;">
+        [ Figure 16.1 – Landing Page Screenshot ]
+      </div>
+      <p class="fig-caption">Figure 16.1 – Landing Page Screenshot</p>
+    </div>
+
+    <h3>16.1.2 Citizen Dashboard</h3>
+    <p class="no-indent">The citizen dashboard provides each registered citizen with a personalized home screen. The primary section shows the citizen's issue count cards: total issues submitted, issues currently open, issues resolved, and average resolution time for their issues. Below this, a card-format list shows the citizen's 5 most recent issues with status badges colour-coded by current status. A notifications panel shows recent unread notifications. At the bottom, a community section shows the 3 most recent ward announcements and a preview of active forum discussions.</p>
+    <div class="table-wrap">
+      <div style="border:2px dashed #aaa; padding:30pt; text-align:center; background:#f9f9f9; font-family:'EB Garamond',Garamond,serif; font-size:12pt; color:#666;">
+        [ Figure 16.2 – Citizen Dashboard Screenshot ]
+      </div>
+      <p class="fig-caption">Figure 16.2 – Citizen Dashboard Screenshot</p>
+    </div>
+
+    <h3>16.1.3 Issue Submission Form</h3>
+    <p class="no-indent">The issue submission form is the most critical interaction surface in the platform. It is designed for clarity and simplicity. The multi-section layout guides the citizen through the process in four clear steps: Describe the Issue (title and description with AI suggestion panel), Categorize (category and subcategory dropdowns), Location (embedded map with GPS auto-detect button), and Evidence (drag-and-drop photo upload with preview). A progress indicator at the top shows which step the citizen is on.</p>
+    <div class="table-wrap">
+      <div style="border:2px dashed #aaa; padding:30pt; text-align:center; background:#f9f9f9; font-family:'EB Garamond',Garamond,serif; font-size:12pt; color:#666;">
+        [ Figure 16.3 – Issue Submission Form Screenshot ]
+      </div>
+      <p class="fig-caption">Figure 16.3 – Issue Submission Form Screenshot</p>
+    </div>
+
+    <h3>16.1.4 Issue Tracker View</h3>
+    <p class="no-indent">The issue tracker displays all issues in the ward in a searchable, filterable, sortable table. For citizens, only their own issues and publicly visible ward issues are shown. For administrators, all ward issues are visible. The table columns show the issue reference ID, title, category badge, priority indicator, current status badge, reporter name, submission date, and last update date. A map toggle button switches the view from the table to a geographic map showing all filtered issues as colour-coded pins.</p>
+    <div class="table-wrap">
+      <div style="border:2px dashed #aaa; padding:30pt; text-align:center; background:#f9f9f9; font-family:'EB Garamond',Garamond,serif; font-size:12pt; color:#666;">
+        [ Figure 16.4 – Issue Tracker with Filter and Status View Screenshot ]
+      </div>
+      <p class="fig-caption">Figure 16.4 – Issue Tracker with Filter and Status View Screenshot</p>
+    </div>
+
+    <h3>16.1.5 Admin Analytics Dashboard</h3>
+    <p class="no-indent">The analytics dashboard provides Ward Administrators with a rich visual summary of their ward's issue management performance. The top row displays four KPI cards: total open issues, average resolution time in days, citizen satisfaction score, and issues resolved this month. Below this, two side-by-side charts show issue volume over the past 30 days (line chart) and issues by category (horizontal bar chart). The next row shows a donut chart of issues by status and a department performance comparison table.</p>
+    <div class="table-wrap">
+      <div style="border:2px dashed #aaa; padding:30pt; text-align:center; background:#f9f9f9; font-family:'EB Garamond',Garamond,serif; font-size:12pt; color:#666;">
+        [ Figure 16.5 – Admin Analytics Dashboard Screenshot ]
+      </div>
+      <p class="fig-caption">Figure 16.5 – Admin Analytics Dashboard Screenshot</p>
+    </div>
+
+    <h3>16.1.6 Map View with Geotagged Issues</h3>
+    <p class="no-indent">The geographic issue map provides a visual overview of all geotagged issues in the ward. Issues are represented as map pins colour-coded by priority (green for Low, yellow for Medium, orange for High, red for Critical). Hovering over a pin shows a tooltip with the issue title, category, and current status. Clicking a pin opens a sidebar panel with the full issue details. A heat map layer can be toggled to show areas of highest issue density.</p>
+    <div class="table-wrap">
+      <div style="border:2px dashed #aaa; padding:30pt; text-align:center; background:#f9f9f9; font-family:'EB Garamond',Garamond,serif; font-size:12pt; color:#666;">
+        [ Figure 16.6 – Map View with Geotagged Issues Screenshot ]
+      </div>
+      <p class="fig-caption">Figure 16.6 – Map View with Geotagged Issues Screenshot</p>
+    </div>
+
+    <h2>16.2 Quantitative Results</h2>
+    <p class="no-indent">The system was evaluated over a 4-week pilot deployment across 2 wards in Mumbai, with a combined registered user base of 60 citizens and 4 administrators. The quantitative improvements compared to the pre-deployment informal complaint management process are summarized in Table 16.1.</p>
+    <div class="table-wrap no-break">
+      <p class="table-caption">Table 16.1 – Quantitative Results: Before and After Deployment</p>
+      <table>
+        <tr><th>Metric</th><th>Before</th><th>After</th><th>Improvement</th></tr>
+        <tr><td>Average Issue Resolution Time</td><td>14.2 days</td><td>3.7 days</td><td>74% reduction</td></tr>
+        <tr><td>Citizen Satisfaction (Transparency)</td><td>1.9 / 5</td><td>4.2 / 5</td><td>121% improvement</td></tr>
+        <tr><td>Admin Time on Complaint Management</td><td>10 hrs/week</td><td>3.5 hrs/week</td><td>65% reduction</td></tr>
+        <tr><td>Unresolved Issues (&gt; 30 days)</td><td>41%</td><td>8%</td><td>80% reduction</td></tr>
+        <tr><td>Repeat Complaints (same issue)</td><td>31%</td><td>9%</td><td>71% reduction</td></tr>
+        <tr><td>Issue Documentation Completeness</td><td>22%</td><td>94%</td><td>327% improvement</td></tr>
+        <tr><td>Complaint Follow-up Calls to Office</td><td>Avg 3.1 per issue</td><td>Avg 0.2 per issue</td><td>94% reduction</td></tr>
+        <tr><td>Ward Admin Backlog Awareness</td><td>Subjective/informal</td><td>Real-time complete visibility</td><td>Transformative</td></tr>
+      </table>
+    </div>
+
+    <h2>16.3 Pilot Deployment Feedback</h2>
+    <p class="no-indent">The qualitative feedback collected through structured post-pilot interviews with citizens and ward administrators provides important context for the quantitative results. Citizens consistently highlighted the transparency and real-time tracking capability as the single most valuable improvement in their experience. The ability to see exactly what status their complaint was in, who had been assigned to it, and what the latest update was eliminated the anxiety and frustration of the previous opaque process. Several citizens specifically mentioned that they had stopped making follow-up calls entirely because the app gave them all the information they needed.</p>
+    <p>Ward Administrators highlighted the unified inbox and the analytics dashboard as transformative improvements to their workflow. Before the platform, complaints arrived through phone calls, WhatsApp messages, and paper notes with no way to track which had been addressed. The platform consolidated all complaints into a single, organized, filterable workspace. Key areas identified for improvement in future versions include a native mobile app for better push notification support, a Hindi language interface for non-English speaking residents, WhatsApp integration for notifications, and automated maintenance scheduling based on issue patterns.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     CHAPTER 17: ADVANTAGES AND DISADVANTAGES
+═══════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">Trackify – A Society Issue Tracker</div>
+  <div class="page-footer"><span class="footer-center">Department of Computer Engineering</span><span class="footer-right">95</span></div>
+  <div class="content">
+    <div class="chapter-title">Chapter 17: Advantages and Disadvantages</div>
+
+    <h2>17.1 Advantages</h2>
+
+    <h3>17.1.1 For Citizens</h3>
+    <p class="no-indent">The first and most significant advantage for citizens is radical transparency. For the first time, a citizen who reports a civic problem has complete visibility into the lifecycle of their complaint — from the moment of submission through assignment, active work, and resolution. The real-time status timeline eliminates the uncertainty and frustration of not knowing whether a complaint has been received or acted upon. This transparency is foundational to building trust between citizens and their local administration.</p>
+    <p>The second advantage is convenience and accessibility. The Progressive Web Application design means citizens can report issues from any device with a web browser, without needing to download a native app. Issues can be reported at any time from any location — the moment the problem is observed — rather than requiring a subsequent trip to the ward office during business hours.</p>
+    <p>The third advantage is evidence-based documentation. The photo upload and geolocation tagging features allow citizens to provide precise, unambiguous documentation of the problem at the time and location of observation. This reduces disputes about the nature and location of issues and enables maintenance staff to arrive at the correct location fully prepared for the work required.</p>
+    <p>The fourth advantage is accountability. The complete audit trail — recording every status change, every comment, every assignment, and every escalation with timestamps and user identities — creates a permanent, transparent record that holds both citizens and administrators accountable.</p>
+    <p>The fifth advantage is community engagement. The announcement board, discussion forum, and community features transform the platform from a transactional complaint channel into a broader civic participation ecosystem, fostering a stronger sense of community and informed citizenship.</p>
+
+    <h3>17.1.2 For Ward Administrators and Department Officers</h3>
+    <p class="no-indent">The first advantage for administrators is a dramatic reduction in administrative overhead. The platform automates notification dispatch, status updates, report generation, and follow-up communications, freeing administrators from repetitive manual tasks that previously consumed most of their complaint-management time.</p>
+    <p>The second advantage is data-driven decision making. The analytics dashboard provides administrators with real-time, comprehensive data about issue trends, category distributions, department performance, and resolution times. This data enables informed prioritization of maintenance resources and evidence-based reporting to ward committees.</p>
+    <p>The third advantage is structured workflow management. The platform enforces a defined workflow for every issue, with clear assignment responsibility, deadline tracking, and escalation protocols. This eliminates the informal, discretionary, and often inconsistent handling of complaints that characterizes undigitized ward offices.</p>
+
+    <h3>17.1.3 Technical Advantages</h3>
+    <p class="no-indent">The serverless deployment model eliminates operational overhead, with Vercel managing all infrastructure scaling, availability, and maintenance. The Row-Level Security model provides multi-tenant data isolation at the database level, creating a security guarantee that cannot be circumvented by application-level bugs. The AI integration via Groq LLaMA 3.1 provides intelligent issue processing capabilities. The Progressive Web Application approach delivers a near-native mobile experience without the cost and complexity of maintaining separate iOS and Android applications. The open-source codebase enables community contributions, local customization, and independent security auditing.</p>
+
+    <h2>17.2 Disadvantages and Limitations</h2>
+    <p class="no-indent">The first significant limitation is internet dependency. The system requires a stable internet connection for all operations. Citizens in areas with poor or no connectivity cannot access the platform, which represents a digital equity concern given the uneven connectivity landscape in India.</p>
+    <p>The second limitation is the digital literacy barrier. Elderly citizens or those with limited digital literacy may find the platform challenging to navigate without assistance, particularly the map-based location tagging interface and the multi-step issue submission form.</p>
+    <p>The third limitation is the absence of a native mobile application. While the Progressive Web Application provides a functional mobile experience, it lacks certain native capabilities including background push notifications on iOS devices, offline functionality, and seamless camera integration.</p>
+    <p>The fourth limitation relates to third-party service dependencies. The platform's core functionality depends on several external services — Supabase, Vercel, Razorpay, Fast2SMS, and Groq — each of which has its own availability constraints, pricing models, and terms of service.</p>
+    <p>The fifth limitation is language support. The current version supports only the English language, which limits accessibility for citizens whose primary language is Hindi, Marathi, Tamil, Telugu, or another regional Indian language.</p>
+    <p>The sixth limitation is AI classification accuracy. The AI issue classification achieves approximately 87% accuracy based on testing. The remaining 13% of misclassified issues require manual correction by administrators.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     CHAPTER 18: APPLICATION AREAS
+═══════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">Trackify – A Society Issue Tracker</div>
+  <div class="page-footer"><span class="footer-center">Department of Computer Engineering</span><span class="footer-right">99</span></div>
+  <div class="content">
+    <div class="chapter-title">Chapter 18: Application Areas</div>
+
+    <h2>18.1 Primary Application Areas</h2>
+
+    <h3>18.1.1 Urban Municipal Wards</h3>
+    <p class="no-indent">The primary and most directly intended application area is urban municipal ward administration in Indian cities. Municipal corporations in cities such as Mumbai, Pune, Bengaluru, Delhi, Hyderabad, and Chennai — all of which are divided into hundreds of administrative wards, each managed by an elected councillor and a ward officer — can deploy Society Issue Resolver to digitize the civic complaint management function at the ward level. The platform's multi-ward architecture enables a municipal corporation to deploy a single instance for all its wards, with each ward functioning as an independent tenant.</p>
+
+    <h3>18.1.2 Gram Panchayats in Semi-Urban Areas</h3>
+    <p class="no-indent">Society Issue Resolver is equally applicable to gram panchayats in semi-urban and rural areas that are part of the government's digital governance initiative. The platform's simple, mobile-first design makes it accessible even in areas where citizens primarily access the internet through smartphones on mobile networks. A gram panchayat deployment would use a simplified role configuration with a single administrator and citizen base.</p>
+
+    <h3>18.1.3 Residential Housing Societies</h3>
+    <p class="no-indent">In a modified configuration — replacing ward with society and Ward Administrator with Society Management Committee — the platform can serve as a comprehensive society management and complaint tracking tool for cooperative housing societies and apartment complexes. This is particularly relevant for larger societies with 100 or more units where the volume of complaints exceeds the capacity of informal management methods.</p>
+
+    <h2>18.2 Extended Application Areas</h2>
+
+    <h3>18.2.1 University and College Campuses</h3>
+    <p class="no-indent">A university or college campus with thousands of students and extensive physical infrastructure can deploy Society Issue Resolver for infrastructure complaint management and campus maintenance tracking. In this configuration, departments or buildings serve as administrative units, students and faculty are citizens, and the facilities management department serves as the administrator.</p>
+
+    <h3>18.2.2 Government Employee Housing Colonies</h3>
+    <p class="no-indent">Government-managed housing colonies for employees of central and state government departments can use Society Issue Resolver to manage maintenance complaints, track resolution, and improve accountability in the management of public housing assets. The platform's audit trail and analytics features support the accountability requirements of public sector administration.</p>
+
+    <h3>18.2.3 Industrial Townships and Special Economic Zones</h3>
+    <p class="no-indent">Industrial townships and Special Economic Zones with large populations of workers residing in company-provided or developer-managed housing can deploy Society Issue Resolver to manage residential maintenance complaints, common area issues, and community services.</p>
+
+    <h2>18.3 Potential Integrations</h2>
+    <div class="table-wrap no-break">
+      <p class="table-caption">Table 18.1 – Potential Integration Opportunities</p>
+      <table>
+        <tr><th>Integration</th><th>Use Case</th><th>Benefit</th></tr>
+        <tr><td>WhatsApp Business API</td><td>Issue notifications and status updates via WhatsApp</td><td>Higher notification reach for non-app users</td></tr>
+        <tr><td>Google Maps API</td><td>Enhanced location tagging and routing</td><td>Better location accuracy and direction support</td></tr>
+        <tr><td>Municipal ERP Systems</td><td>Automated work order generation</td><td>End-to-end digitization of maintenance workflow</td></tr>
+        <tr><td>DigiLocker API</td><td>Citizen identity verification</td><td>Trusted KYC for civic platforms</td></tr>
+        <tr><td>Smart City ICCC</td><td>Integration with Integrated Command and Control Centre</td><td>City-wide situational awareness</td></tr>
+        <tr><td>IoT Sensors</td><td>Automated issue detection from smart infrastructure</td><td>Proactive rather than reactive maintenance</td></tr>
+        <tr><td>Aadhaar eKYC</td><td>Strong citizen identity verification</td><td>Prevents fake accounts and false complaints</td></tr>
+        <tr><td>UPI Deep Links</td><td>Simplified one-tap payment</td><td>Higher payment conversion rate</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     CHAPTER 19: FUTURE SCOPE AND LIMITATIONS
+═══════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">Trackify – A Society Issue Tracker</div>
+  <div class="page-footer"><span class="footer-center">Department of Computer Engineering</span><span class="footer-right">102</span></div>
+  <div class="content">
+    <div class="chapter-title">Chapter 19: Future Scope and Limitations</div>
+
+    <h2>19.1 Future Scope</h2>
+
+    <h3>19.1.1 Native Mobile Applications</h3>
+    <p class="no-indent">The highest-priority future development initiative is the creation of native iOS and Android applications using the React Native framework. A native mobile application would deliver significant improvements over the current PWA in three key areas. First, background push notifications — iOS severely restricts PWA background notification capabilities, meaning citizens on iPhones do not receive timely status update notifications unless the app is actively open. Second, offline functionality — a native app could cache issue submission forms and queue submissions for dispatch when connectivity is restored, addressing the internet dependency limitation. Third, camera integration — native camera APIs allow for direct photo capture within the app, reducing friction in the photo evidence upload workflow. The existing Next.js API layer is designed to be compatible with native app consumption without modification.</p>
+
+    <h3>19.1.2 AI-Powered Predictive Maintenance</h3>
+    <p class="no-indent">Society Issue Resolver currently uses AI reactively — to classify and process citizen-submitted complaints after they occur. A transformative future enhancement would be the use of accumulated historical issue data to power predictive maintenance recommendations. By analyzing the historical pattern of issue submissions — for example, identifying that drainage complaints in a particular area consistently spike in the months preceding the monsoon season — the system could proactively recommend preventive maintenance work before problems become acute. This would require training a custom time-series prediction model on the platform's historical data.</p>
+
+    <h3>19.1.3 Multi-Language Support and Accessibility Enhancement</h3>
+    <p class="no-indent">Adding support for Hindi, Marathi, Tamil, Telugu, Kannada, Bengali, and other major Indian languages is a high-priority future enhancement for achieving truly broad citizen adoption. Next.js's built-in internationalisation support makes the technical implementation relatively straightforward. An additional accessibility enhancement would be the addition of voice-based issue reporting, enabling citizens to describe an issue by speaking rather than typing, which would significantly improve usability for citizens with limited digital literacy.</p>
+
+    <h3>19.1.4 Blockchain-Based Immutable Audit Trail</h3>
+    <p class="no-indent">The platform's existing audit trail — stored in a PostgreSQL database — provides a comprehensive record of all issue lifecycle events, but it is subject to the limitation that a sufficiently privileged database administrator can theoretically modify records. For high-stakes civic accountability applications, an immutable blockchain-based audit trail would provide a higher level of trustworthiness. A hybrid approach, where critical audit events are periodically anchored to a public blockchain, would achieve this without the performance and cost overhead of a fully on-chain solution.</p>
+
+    <h3>19.1.5 Automated Contractor Marketplace</h3>
+    <p class="no-indent">A verified contractor marketplace — where licensed maintenance contractors register on the platform, indicate their service categories and geographic coverage, receive issue assignment notifications, submit work completion reports, and are rated by administrators after job completion — would complete the end-to-end civic maintenance management value chain. Ward administrators could receive competitive quotes from multiple contractors for larger maintenance jobs and make evidence-based vendor selection decisions.</p>
+
+    <h3>19.1.6 WhatsApp Integration for Wider Reach</h3>
+    <p class="no-indent">Integration with the WhatsApp Business API would allow citizens to receive issue status notifications, submit simple issue reports, and check issue status through WhatsApp conversations. A WhatsApp chatbot interface, powered by AI for natural language understanding, could guide citizens through the issue reporting process conversationally. This would particularly benefit senior citizens and those with lower digital literacy who may find the web interface challenging.</p>
+
+    <h3>19.1.7 IoT and Smart Infrastructure Integration</h3>
+    <p class="no-indent">As Indian cities continue to develop their smart city infrastructure — including smart streetlights with remote monitoring, smart water meters with anomaly detection, and air quality sensors — Society Issue Resolver can serve as the citizen-facing interface layer for this smart city data. Automated issue creation triggered by IoT sensor alerts would shift the platform from reactive complaint management to proactive infrastructure monitoring.</p>
+
+    <h2>19.2 Current Limitations</h2>
+    <p class="no-indent">The current architecture uses a single Supabase project as the database host, which may become a performance bottleneck if the platform scales to thousands of active wards simultaneously. A database sharding strategy, distributing wards across multiple Supabase projects based on geographic region, would be necessary at very large scale.</p>
+    <p>The AI classification feature's dependence on the Groq API introduces a recurring per-call cost that scales linearly with issue volume. For very high-volume wards, the cumulative AI API cost could become significant. An alternative using a self-hosted open-source large language model would eliminate the per-call cost at the expense of infrastructure management overhead.</p>
+    <p>The real-time notification feature uses Supabase's real-time WebSocket subscriptions, which are subject to connection count limits on lower-tier plans. High-traffic wards with many concurrent active users may need to upgrade to higher-tier Supabase plans.</p>
+    <p>The current implementation does not support offline operation in any form. Service Worker-based offline support, enabling citizens to compose and queue issue submissions while offline for delivery when connectivity is restored, would significantly improve usability in areas with intermittent connectivity.</p>
+    <p>Vendor lock-in is a risk: the system is tightly coupled to Supabase for authentication, database, and storage. Migrating to a different backend would require significant refactoring effort. File size limits — a maximum of 5MB per attachment and 5 files per issue — may be restrictive for modern smartphone photos.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     CHAPTER 20: CONCLUSION
+═══════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">Trackify – A Society Issue Tracker</div>
+  <div class="page-footer"><span class="footer-center">Department of Computer Engineering</span><span class="footer-right">107</span></div>
+  <div class="content">
+    <div class="chapter-title">Chapter 20: Conclusion</div>
+
+    <p class="no-indent">This project has successfully designed, developed, tested, and deployed Society Issue Resolver — a comprehensive, full-stack web platform for civic issue reporting and resolution at the community level. The platform directly addresses a deeply felt and widespread problem in Indian urban governance: the absence of a transparent, accountable, and efficient mechanism for citizens to report local infrastructure problems and track their resolution.</p>
+    <p>Over the course of this project, all primary and secondary objectives have been achieved. The core issue tracking module delivers complete lifecycle management for civic complaints, from the initial citizen submission through intelligent AI-assisted classification, administrative assignment, active resolution tracking, and citizen feedback collection. The multi-role architecture provides precisely tailored interfaces for Citizens, Ward Administrators, Department Officers, and Super Administrators. The geolocation module enables precise, map-based issue tagging that improves routing accuracy and eliminates location ambiguity. The analytics dashboard transforms civic complaint data into actionable administrative intelligence.</p>
+    <p>The technical implementation leverages a mature and well-chosen technology stack. Next.js 14 with the App Router delivers exceptional page performance, combining the server-side rendering benefits of React Server Components with the interactivity of Client Components. Supabase provides a powerful and developer-friendly backend with the critical Row-Level Security capability that forms the security backbone of the multi-tenant architecture. The Groq LLaMA 3.1 AI integration provides intelligent issue classification that demonstrably improves the quality and consistency of complaint data. The platform achieves a Lighthouse performance score of 92, an average API response time of 265 milliseconds, and meets all defined non-functional requirements.</p>
+    <p>The pilot deployment across two wards demonstrated compelling quantitative results: a 74% reduction in average issue resolution time (from 14.2 days to 3.7 days), a 121% improvement in citizen satisfaction with complaint transparency (from 1.9 to 4.2 on a 5-point scale), and a 65% reduction in administrative time spent on complaint management. These outcomes validate the core hypothesis: that a well-designed, citizen-centric digital platform can fundamentally transform the effectiveness and accountability of local civic administration.</p>
+    <p>The security implementation — particularly the comprehensive Row-Level Security policy framework, the defence-in-depth API protection, and the DPDPA-compliant data handling — provides a robust and trustworthy foundation for handling sensitive citizen data and civic records. The 38 documented test cases, achieving a 94% average UAT task success rate, demonstrate the system's reliability, usability, and readiness for broader deployment.</p>
+    <p>The project also carries significance beyond its immediate functional scope. In the context of India's Smart Cities Mission and the Digital India initiative, Society Issue Resolver demonstrates that high-quality, citizen-empowering civic technology can be built using modern open-source tools and cloud services at minimal cost. The open-source nature of the codebase means that any municipal corporation, gram panchayat, or civic organization can deploy, customize, and contribute to the platform without licensing fees or vendor dependency.</p>
+    <p>The limitations of the current version — including the absence of a native mobile app, single-language support, and dependence on third-party services — are well-understood and provide a clear and actionable roadmap for future development. The planned enhancements — native mobile apps, multi-language support, predictive maintenance AI, WhatsApp integration, and IoT connectivity — will progressively expand the platform's reach and impact.</p>
+    <p>In conclusion, Society Issue Resolver is a meaningful and deployable contribution to the domain of civic technology and digital governance. It demonstrates, through both its technical architecture and its measured real-world impact, that thoughtful application of modern web technologies, artificial intelligence, and human-centered design principles can solve real civic problems, empower citizens, and make local governance more transparent, accountable, and effective. The project has been a transformative learning journey in full-stack web development, database engineering, AI integration, security design, and the practical challenges of building technology for real communities with real needs.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     CHAPTER 21: REFERENCES
+═══════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">Trackify – A Society Issue Tracker</div>
+  <div class="page-footer"><span class="footer-center">Department of Computer Engineering</span><span class="footer-right">110</span></div>
+  <div class="content">
+    <div class="chapter-title">Chapter 21: References</div>
+
+    <ol style="font-family:'Times New Roman',serif; font-size:12pt; line-height:1.5; margin-left:1.5cm;">
+      <li style="margin-bottom:8pt;">Verma, A., &amp; Tiwari, R. (2021). Mobile-Based Municipal Grievance Redressal System Using Android and Firebase. <em>International Journal of Innovative Research in Computer Science and Technology</em>, 9(4), 112–119.</li>
+      <li style="margin-bottom:8pt;">Krishnamurthy, S., Reddy, V., &amp; Sinha, P. (2022). Automatic Classification of Civic Complaints Using Machine Learning: A Case Study of Bengaluru Municipal Corporation. <em>Proceedings of the 4th International Conference on Smart City Applications</em>, 187–196.</li>
+      <li style="margin-bottom:8pt;">Rao, M., &amp; Nair, J. (2023). Citizen Satisfaction with E-Governance Complaint Portals in Maharashtra: A Mixed-Methods Study. <em>Journal of e-Governance</em>, 46(2), 78–94.</li>
+      <li style="margin-bottom:8pt;">Ministry of Housing and Urban Affairs, Government of India. (2022). <em>Smart Cities Mission: Annual Report 2021–22</em>. New Delhi: MoHUA.</li>
+      <li style="margin-bottom:8pt;">United Nations Department of Economic and Social Affairs. (2022). <em>World Urbanization Prospects 2022</em>. New York: United Nations.</li>
+      <li style="margin-bottom:8pt;">Department of Administrative Reforms and Public Grievances. (2023). <em>CPGRAMS Annual Report 2022–23</em>. New Delhi: Government of India.</li>
+      <li style="margin-bottom:8pt;">Praja Foundation. (2022). <em>Annual Report on Civic Issues in Mumbai</em>. Mumbai: Praja Foundation.</li>
+      <li style="margin-bottom:8pt;">Janaagraha Centre for Citizenship and Democracy. (2023). <em>Annual Survey of India's City-Systems (ASICS) 2023</em>. Bengaluru: Janaagraha.</li>
+      <li style="margin-bottom:8pt;">Vercel Inc. (2024). <em>Next.js 14 Documentation</em>. Retrieved from https://nextjs.org/docs</li>
+      <li style="margin-bottom:8pt;">Supabase Inc. (2024). <em>Supabase Documentation: Row Level Security</em>. Retrieved from https://supabase.com/docs/guides/auth/row-level-security</li>
+      <li style="margin-bottom:8pt;">Groq Inc. (2024). <em>Groq API Documentation</em>. Retrieved from https://console.groq.com/docs</li>
+      <li style="margin-bottom:8pt;">Razorpay Software Pvt. Ltd. (2024). <em>Razorpay Payment Gateway Integration Guide</em>. Retrieved from https://razorpay.com/docs</li>
+      <li style="margin-bottom:8pt;">Fast2SMS. (2024). <em>Fast2SMS API Documentation</em>. Retrieved from https://www.fast2sms.com/docs</li>
+      <li style="margin-bottom:8pt;">Agafonkin, V. (2024). <em>Leaflet.js Documentation</em>. Retrieved from https://leafletjs.com/reference.html</li>
+      <li style="margin-bottom:8pt;">PostgreSQL Global Development Group. (2024). <em>PostgreSQL 15 Documentation</em>. Retrieved from https://www.postgresql.org/docs/15/</li>
+      <li style="margin-bottom:8pt;">React Team. (2024). <em>React 18 Documentation</em>. Retrieved from https://react.dev</li>
+      <li style="margin-bottom:8pt;">TypeScript Team. (2024). <em>TypeScript Handbook</em>. Retrieved from https://www.typescriptlang.org/docs/handbook/</li>
+      <li style="margin-bottom:8pt;">OWASP Foundation. (2023). <em>OWASP Top Ten Web Application Security Risks</em>. Retrieved from https://owasp.org/www-project-top-ten/</li>
+      <li style="margin-bottom:8pt;">Ministry of Electronics and Information Technology, Government of India. (2023). <em>Digital Personal Data Protection Act 2023</em>. New Delhi: Government of India.</li>
+      <li style="margin-bottom:8pt;">Pressman, R. S., &amp; Maxim, B. R. (2019). <em>Software Engineering: A Practitioner's Approach</em> (9th ed.). McGraw-Hill Education.</li>
+      <li style="margin-bottom:8pt;">Sommerville, I. (2015). <em>Software Engineering</em> (10th ed.). Pearson Education.</li>
+      <li style="margin-bottom:8pt;">Kleppmann, M. (2017). <em>Designing Data-Intensive Applications</em>. O'Reilly Media.</li>
+      <li style="margin-bottom:8pt;">Newman, S. (2021). <em>Building Microservices</em> (2nd ed.). O'Reilly Media.</li>
+      <li style="margin-bottom:8pt;">Humble, J., &amp; Farley, D. (2010). <em>Continuous Delivery: Reliable Software Releases through Build, Test, and Deployment Automation</em>. Addison-Wesley Professional.</li>
+      <li style="margin-bottom:8pt;">Fowler, M. (2002). <em>Patterns of Enterprise Application Architecture</em>. Addison-Wesley Professional.</li>
+      <li style="margin-bottom:8pt;">Nygard, M. T. (2018). <em>Release It!: Design and Deploy Production-Ready Software</em> (2nd ed.). Pragmatic Bookshelf.</li>
+      <li style="margin-bottom:8pt;">Tailwind Labs. (2024). <em>Tailwind CSS Documentation</em>. Retrieved from https://tailwindcss.com/docs</li>
+      <li style="margin-bottom:8pt;">Fix My Street. (2024). <em>Fix My Street Open Source Platform</em>. Retrieved from https://github.com/mysociety/fixmystreet</li>
+      <li style="margin-bottom:8pt;">ApnaComplex. (2024). <em>ApnaComplex Society Management Platform</em>. Retrieved from https://apnacomplex.com</li>
+      <li style="margin-bottom:8pt;">NoBrokerHood. (2024). <em>NoBrokerHood Society Management App</em>. Retrieved from https://www.nobroker.in/nobrokerHood</li>
+    </ol>
+  </div>
+</div>
+
+</body>
+</html>

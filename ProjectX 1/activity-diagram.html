@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Activity Diagram – Trackify</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;600;700&display=swap');
+  @page { size: A4 landscape; margin: 20mm; }
+  @media print { body { margin: 0; } }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'EB Garamond', Garamond, 'Times New Roman', serif;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20mm;
+  }
+  h1 { font-size: 18pt; font-weight: 700; text-align: center; margin-bottom: 4pt; }
+  p.sub { font-size: 12pt; color: #444; text-align: center; margin-bottom: 12pt; }
+  svg text { font-family: 'EB Garamond', Garamond, 'Times New Roman', serif; }
+</style>
+</head>
+<body>
+<h1>Activity Diagram</h1>
+<p class="sub">Trackify – Concurrent Activities Across All Roles</p>
+<svg width="760" height="700" viewBox="0 0 760 700" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="a" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L0,8 L10,4 z" fill="#222"/>
+    </marker>
+  </defs>
+
+  <!-- Swim lane backgrounds -->
+  <rect x="10"  y="10" width="230" height="680" rx="8" fill="#fafafa" stroke="#bbb" stroke-width="1.2"/>
+  <rect x="260" y="10" width="230" height="680" rx="8" fill="#f5f5f5" stroke="#bbb" stroke-width="1.2"/>
+  <rect x="510" y="10" width="240" height="680" rx="8" fill="#fafafa" stroke="#bbb" stroke-width="1.2"/>
+
+  <text x="125" y="36" text-anchor="middle" font-size="14" font-weight="bold" fill="#222">RESIDENT</text>
+  <text x="375" y="36" text-anchor="middle" font-size="14" font-weight="bold" fill="#222">SYSTEM / NEXT.JS</text>
+  <text x="630" y="36" text-anchor="middle" font-size="14" font-weight="bold" fill="#222">ADMIN</text>
+
+  <!-- ── INITIAL NODE ── -->
+  <circle cx="125" cy="68" r="14" fill="#222"/>
+  <line x1="125" y1="82" x2="125" y2="104" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <!-- RESIDENT activities -->
+  <rect x="30"  y="106" width="190" height="44" rx="22" fill="#fff" stroke="#333" stroke-width="1.5"/>
+  <text x="125" y="133" text-anchor="middle" font-size="13" font-weight="bold">Login to System</text>
+  <line x1="125" y1="150" x2="125" y2="172" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <rect x="30"  y="174" width="190" height="44" rx="22" fill="#fff" stroke="#333" stroke-width="1.5"/>
+  <text x="125" y="201" text-anchor="middle" font-size="13" font-weight="bold">View Dashboard</text>
+  <line x1="125" y1="218" x2="125" y2="240" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <!-- FORK BAR -->
+  <rect x="10" y="242" width="740" height="7" rx="3" fill="#222"/>
+  <text x="380" y="236" text-anchor="middle" font-size="12" fill="#555">[ Fork – Parallel Activities Begin ]</text>
+
+  <!-- RESIDENT branch -->
+  <line x1="125" y1="249" x2="125" y2="271" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+  <rect x="30"  y="273" width="190" height="44" rx="22" fill="#fff" stroke="#333" stroke-width="1.5"/>
+  <text x="125" y="300" text-anchor="middle" font-size="13" font-weight="bold">Submit Issue</text>
+  <line x1="125" y1="317" x2="125" y2="339" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <rect x="30"  y="341" width="190" height="44" rx="22" fill="#fff" stroke="#333" stroke-width="1.5"/>
+  <text x="125" y="368" text-anchor="middle" font-size="13" font-weight="bold">Register Visitor</text>
+  <line x1="125" y1="385" x2="125" y2="407" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <rect x="30"  y="409" width="190" height="44" rx="22" fill="#fff" stroke="#333" stroke-width="1.5"/>
+  <text x="125" y="436" text-anchor="middle" font-size="13" font-weight="bold">Pay Maintenance Fee</text>
+  <line x1="125" y1="453" x2="125" y2="475" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <rect x="30"  y="477" width="190" height="44" rx="22" fill="#fff" stroke="#333" stroke-width="1.5"/>
+  <text x="125" y="504" text-anchor="middle" font-size="13" font-weight="bold">Trigger SOS Alert</text>
+
+  <!-- SYSTEM branch -->
+  <line x1="375" y1="249" x2="375" y2="271" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+  <rect x="280" y="273" width="190" height="44" rx="22" fill="#fff" stroke="#333" stroke-width="1.5"/>
+  <text x="375" y="300" text-anchor="middle" font-size="13" font-weight="bold">Validate &amp; Classify (AI)</text>
+  <line x1="375" y1="317" x2="375" y2="339" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <rect x="280" y="341" width="190" height="44" rx="22" fill="#fff" stroke="#333" stroke-width="1.5"/>
+  <text x="375" y="368" text-anchor="middle" font-size="13" font-weight="bold">Save to Database</text>
+  <line x1="375" y1="385" x2="375" y2="407" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <rect x="280" y="409" width="190" height="44" rx="22" fill="#fff" stroke="#333" stroke-width="1.5"/>
+  <text x="375" y="436" text-anchor="middle" font-size="13" font-weight="bold">Generate OTP · Send SMS</text>
+  <line x1="375" y1="453" x2="375" y2="475" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <rect x="280" y="477" width="190" height="44" rx="22" fill="#fff" stroke="#333" stroke-width="1.5"/>
+  <text x="375" y="504" text-anchor="middle" font-size="13" font-weight="bold">Create Razorpay Order</text>
+
+  <!-- ADMIN branch -->
+  <line x1="630" y1="249" x2="630" y2="271" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+  <rect x="530" y="273" width="200" height="44" rx="22" fill="#fff" stroke="#333" stroke-width="1.5"/>
+  <text x="630" y="300" text-anchor="middle" font-size="13" font-weight="bold">Receive Notification</text>
+  <line x1="630" y1="317" x2="630" y2="339" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <rect x="530" y="341" width="200" height="44" rx="22" fill="#fff" stroke="#333" stroke-width="1.5"/>
+  <text x="630" y="368" text-anchor="middle" font-size="13" font-weight="bold">Review &amp; Assign Issue</text>
+  <line x1="630" y1="385" x2="630" y2="407" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <rect x="530" y="409" width="200" height="44" rx="22" fill="#fff" stroke="#333" stroke-width="1.5"/>
+  <text x="630" y="436" text-anchor="middle" font-size="13" font-weight="bold">Monitor Progress</text>
+  <line x1="630" y1="453" x2="630" y2="475" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <rect x="530" y="477" width="200" height="44" rx="22" fill="#fff" stroke="#333" stroke-width="1.5"/>
+  <text x="630" y="504" text-anchor="middle" font-size="13" font-weight="bold">Mark Resolved</text>
+
+  <!-- JOIN BAR -->
+  <rect x="10" y="534" width="740" height="7" rx="3" fill="#222"/>
+  <text x="380" y="528" text-anchor="middle" font-size="12" fill="#555">[ Join – Synchronize ]</text>
+
+  <!-- Post-join -->
+  <line x1="380" y1="541" x2="380" y2="563" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+  <rect x="240" y="565" width="280" height="44" rx="22" fill="#fff" stroke="#333" stroke-width="1.5"/>
+  <text x="380" y="592" text-anchor="middle" font-size="13" font-weight="bold">Resident Confirms Resolution</text>
+  <line x1="380" y1="609" x2="380" y2="631" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <rect x="240" y="633" width="280" height="44" rx="22" fill="#fff" stroke="#333" stroke-width="1.5"/>
+  <text x="380" y="660" text-anchor="middle" font-size="13" font-weight="bold">Rate Resolution (1–5 Stars)</text>
+  <line x1="380" y1="677" x2="380" y2="686" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <!-- FINAL NODE -->
+  <circle cx="380" cy="690" r="10" fill="#222"/>
+  <circle cx="380" cy="690" r="15" fill="none" stroke="#222" stroke-width="2.5"/>
+</svg>
+</body>
+</html>

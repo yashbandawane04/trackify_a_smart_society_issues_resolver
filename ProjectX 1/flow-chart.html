@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Flowchart – Smart Civic Issue Reporting System</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: #ffffff;
+    color: #111;
+    padding: 40px 32px 60px;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 36px;
+    border-bottom: 2px solid #111;
+    padding-bottom: 16px;
+  }
+  .page-header h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: .02em; }
+  .page-header p  { font-size: .9rem; color: #555; margin-top: 4px; }
+
+  .section-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: #222;
+  }
+
+  .diagram-box {
+    border: 1.5px solid #ccc;
+    border-radius: 8px;
+    padding: 28px 16px;
+    max-width: 900px;
+    margin: 0 auto;
+    background: #fafafa;
+    overflow-x: auto;
+  }
+
+  .mermaid { display: flex; justify-content: center; }
+
+  .legend {
+    max-width: 900px;
+    margin: 20px auto 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 28px;
+    font-size: .8rem;
+    color: #444;
+    padding: 12px 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    background: #f9f9f9;
+  }
+  .legend-item { display: flex; align-items: center; gap: 7px; }
+  .dot { width: 13px; height: 13px; border-radius: 3px; flex-shrink: 0; }
+
+  footer {
+    text-align: center;
+    margin-top: 40px;
+    font-size: .75rem;
+    color: #999;
+    border-top: 1px solid #ddd;
+    padding-top: 12px;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>Smart Civic Issue Reporting System</h1>
+  <p>System Flowchart — End-to-End Process Flow</p>
+</div>
+
+<div class="section-title">System Flowchart — Citizen to Resolution</div>
+
+<div class="diagram-box">
+  <div class="mermaid">
+flowchart TD
+    START(["START"])
+
+    LOGIN["Login / Register"]
+    SUBMIT["Submit Issue\n(Title, Location, Photo)"]
+    VALIDATE{"Valid Input?"}
+
+    ERR["Show Validation Error"]
+    END1(["END"])
+
+    STORE["Store in Issues DB"]
+    AI["AI Classification\n(Category & Priority)"]
+    ASSIGN["Assign to Municipal Officer"]
+    NOTIFY_OFF["Notify Officer\n(SMS / Email)"]
+
+    REVIEW["Officer Reviews Issue"]
+    ACCEPT{"Accept Issue?"}
+
+    REJECT_ACT["Mark as Rejected"]
+    NOTIFY_REJ["Notify Citizen\n(Rejection Reason)"]
+    END2(["END"])
+
+    INPROG["Mark In Progress\n& Begin Work"]
+    RESOLVE["Resolve Issue\n(Add Resolution Note)"]
+    NOTIFY_RES["Notify Citizen\n(Issue Resolved)"]
+
+    FEEDBACK{"Citizen Satisfied?"}
+
+    CLOSE["Close Issue\n(Save Rating)"]
+    END3(["END"])
+
+    REOPEN["Reopen / Pending Info"]
+
+    START       --> LOGIN
+    LOGIN       --> SUBMIT
+    SUBMIT      --> VALIDATE
+
+    VALIDATE    -->|"No"| ERR
+    ERR         --> END1
+
+    VALIDATE    -->|"Yes"| STORE
+    STORE       --> AI
+    AI          --> ASSIGN
+    ASSIGN      --> NOTIFY_OFF
+    NOTIFY_OFF  --> REVIEW
+    REVIEW      --> ACCEPT
+
+    ACCEPT      -->|"Reject"| REJECT_ACT
+    REJECT_ACT  --> NOTIFY_REJ
+    NOTIFY_REJ  --> END2
+
+    ACCEPT      -->|"Accept"| INPROG
+    INPROG      --> RESOLVE
+    RESOLVE     --> NOTIFY_RES
+    NOTIFY_RES  --> FEEDBACK
+
+    FEEDBACK    -->|"Yes"| CLOSE
+    CLOSE       --> END3
+
+    FEEDBACK    -->|"No"| REOPEN
+    REOPEN      -->|"Loop back to review"| REVIEW
+
+    style START      fill:#1e293b,stroke:#1e293b,color:#fff
+    style END1       fill:#1e293b,stroke:#1e293b,color:#fff
+    style END2       fill:#1e293b,stroke:#1e293b,color:#fff
+    style END3       fill:#1e293b,stroke:#1e293b,color:#fff
+
+    style LOGIN      fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+    style SUBMIT     fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+    style STORE      fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+    style AI         fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+    style ASSIGN     fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+    style NOTIFY_OFF fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+    style REVIEW     fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+    style INPROG     fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+    style RESOLVE    fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+    style NOTIFY_RES fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+    style CLOSE      fill:#dcfce7,stroke:#16a34a,color:#14532d
+
+    style VALIDATE   fill:#fef9c3,stroke:#ca8a04,color:#713f12
+    style ACCEPT     fill:#fef9c3,stroke:#ca8a04,color:#713f12
+    style FEEDBACK   fill:#fef9c3,stroke:#ca8a04,color:#713f12
+
+    style ERR        fill:#fee2e2,stroke:#dc2626,color:#7f1d1d
+    style REJECT_ACT fill:#fee2e2,stroke:#dc2626,color:#7f1d1d
+    style NOTIFY_REJ fill:#fee2e2,stroke:#dc2626,color:#7f1d1d
+    style REOPEN     fill:#ffedd5,stroke:#ea580c,color:#7c2d12
+  </div>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="dot" style="background:#1e293b;"></div> Start / End</div>
+  <div class="legend-item"><div class="dot" style="background:#2563eb;"></div> Process / Action</div>
+  <div class="legend-item"><div class="dot" style="background:#ca8a04;"></div> Decision Point</div>
+  <div class="legend-item"><div class="dot" style="background:#16a34a;"></div> Success / Close</div>
+  <div class="legend-item"><div class="dot" style="background:#dc2626;"></div> Error / Rejection</div>
+  <div class="legend-item"><div class="dot" style="background:#ea580c;"></div> Reopen / Loop</div>
+</div>
+
+<footer>Smart Civic Issue Reporting System &nbsp;·&nbsp; System Flowchart &nbsp;·&nbsp; Academic Submission 2025–26</footer>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'default',
+    flowchart: { curve: 'basis', padding: 24, nodeSpacing: 45, rankSpacing: 55 }
+  });
+</script>
+</body>
+</html>

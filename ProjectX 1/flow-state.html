@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>State Transition – Smart Civic Issue Reporting System</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: #ffffff;
+    color: #111;
+    padding: 40px 32px 60px;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 36px;
+    border-bottom: 2px solid #111;
+    padding-bottom: 16px;
+  }
+  .page-header h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: .02em; }
+  .page-header p  { font-size: .9rem; color: #555; margin-top: 4px; }
+
+  .section-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: #222;
+  }
+
+  .diagram-box {
+    border: 1.5px solid #ccc;
+    border-radius: 8px;
+    padding: 28px 16px;
+    max-width: 900px;
+    margin: 0 auto;
+    background: #fafafa;
+    overflow-x: auto;
+  }
+
+  .mermaid { display: flex; justify-content: center; }
+
+  .states-grid {
+    max-width: 900px;
+    margin: 20px auto 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    background: #f9f9f9;
+  }
+  .state-pill {
+    padding: 4px 14px;
+    border-radius: 999px;
+    font-size: .78rem;
+    font-weight: 500;
+    border: 1.5px solid;
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 40px;
+    font-size: .75rem;
+    color: #999;
+    border-top: 1px solid #ddd;
+    padding-top: 12px;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>Smart Civic Issue Reporting System</h1>
+  <p>State Transition Diagram — Issue Lifecycle</p>
+</div>
+
+<div class="section-title">State Transition — All Valid Issue States &amp; Transitions</div>
+
+<div class="diagram-box">
+  <div class="mermaid">
+stateDiagram-v2
+    direction TB
+
+    [*] --> Submitted : Citizen submits issue
+
+    Submitted --> UnderReview   : Admin opens &amp; reviews
+    Submitted --> Rejected      : Duplicate / Invalid
+
+    UnderReview --> Assigned    : Admin assigns officer
+    UnderReview --> PendingInfo : More info needed
+    UnderReview --> Rejected    : Not actionable
+
+    PendingInfo --> UnderReview : Citizen provides info
+
+    Assigned --> InProgress     : Officer begins work
+
+    InProgress --> PendingInfo  : Needs clarification
+    InProgress --> Resolved     : Work completed
+    InProgress --> Rejected     : Cannot be resolved
+
+    Resolved --> Closed         : Citizen confirms ✓
+    Resolved --> InProgress     : Resolution inadequate
+
+    Closed   --> [*]
+    Rejected --> [*]
+  </div>
+</div>
+
+<div class="states-grid">
+  <div class="state-pill" style="background:#dbeafe;border-color:#2563eb;color:#1e3a8a;">Submitted</div>
+  <div class="state-pill" style="background:#fef9c3;border-color:#ca8a04;color:#713f12;">Under Review</div>
+  <div class="state-pill" style="background:#ede9fe;border-color:#7c3aed;color:#3b0764;">Assigned</div>
+  <div class="state-pill" style="background:#ffedd5;border-color:#ea580c;color:#7c2d12;">In Progress</div>
+  <div class="state-pill" style="background:#cffafe;border-color:#0891b2;color:#164e63;">Pending Info</div>
+  <div class="state-pill" style="background:#dcfce7;border-color:#16a34a;color:#14532d;">Resolved</div>
+  <div class="state-pill" style="background:#d1fae5;border-color:#059669;color:#064e3b;">Closed ✓ Terminal</div>
+  <div class="state-pill" style="background:#fee2e2;border-color:#dc2626;color:#7f1d1d;">Rejected ✗ Terminal</div>
+</div>
+
+<footer>Smart Civic Issue Reporting System &nbsp;·&nbsp; State Transition Diagram &nbsp;·&nbsp; Academic Submission 2025–26</footer>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'default',
+    stateDiagram: { padding: 20 }
+  });
+</script>
+</body>
+</html>

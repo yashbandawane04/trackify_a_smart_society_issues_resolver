@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Login Flow – Trackify</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;600;700&display=swap');
+  @page { size: A4 portrait; margin: 20mm; }
+  @media print { body { margin: 0; } }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'EB Garamond', Garamond, 'Times New Roman', serif;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20mm;
+  }
+  h1 { font-size: 18pt; font-weight: 700; text-align: center; margin-bottom: 4pt; }
+  p.sub { font-size: 12pt; color: #444; text-align: center; margin-bottom: 12pt; }
+  svg text { font-family: 'EB Garamond', Garamond, 'Times New Roman', serif; }
+</style>
+</head>
+<body>
+<h1>Login &amp; Authentication Flow</h1>
+<p class="sub">Trackify – User Login, Session &amp; Role-Based Routing</p>
+<svg width="520" height="860" viewBox="0 0 520 860" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="a" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L0,8 L10,4 z" fill="#222"/>
+    </marker>
+  </defs>
+
+  <!-- START -->
+  <ellipse cx="260" cy="36" rx="100" ry="28" fill="#222"/>
+  <text x="260" y="41" text-anchor="middle" font-size="14" fill="#fff" font-weight="bold">START</text>
+  <line x1="260" y1="64" x2="260" y2="88" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <!-- Step 1 -->
+  <rect x="110" y="90" width="300" height="52" rx="8" fill="#f5f5f5" stroke="#333" stroke-width="1.5"/>
+  <text x="260" y="112" text-anchor="middle" font-size="13" font-weight="bold">User Visits Login Page</text>
+  <text x="260" y="130" text-anchor="middle" font-size="12" fill="#555">/auth/login</text>
+  <line x1="260" y1="142" x2="260" y2="166" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <!-- Decision: Active session? -->
+  <polygon points="260,168 420,210 260,252 100,210" fill="#f5f5f5" stroke="#333" stroke-width="1.5"/>
+  <text x="260" y="205" text-anchor="middle" font-size="13" font-weight="bold">Active Session?</text>
+  <text x="260" y="222" text-anchor="middle" font-size="12" fill="#555">(valid JWT cookie)</text>
+  <!-- Yes right -->
+  <line x1="420" y1="210" x2="490" y2="210" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+  <text x="452" y="202" text-anchor="middle" font-size="12" fill="#080" font-weight="bold">Yes</text>
+  <rect x="490" y="192" width="20" height="36" rx="4" fill="#e8e8e8" stroke="#555" stroke-width="1"/>
+  <text x="500" y="214" text-anchor="middle" font-size="9" fill="#333" transform="rotate(90,500,210)">→ /dashboard</text>
+  <!-- No down -->
+  <line x1="260" y1="252" x2="260" y2="276" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+  <text x="278" y="268" font-size="12" fill="#c00" font-weight="bold">No</text>
+
+  <!-- Step 2 -->
+  <rect x="110" y="278" width="300" height="52" rx="8" fill="#f5f5f5" stroke="#333" stroke-width="1.5"/>
+  <text x="260" y="300" text-anchor="middle" font-size="13" font-weight="bold">Enter Email &amp; Password</text>
+  <text x="260" y="318" text-anchor="middle" font-size="12" fill="#555">Submit login form</text>
+  <line x1="260" y1="330" x2="260" y2="354" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <!-- Decision: Fields valid? -->
+  <polygon points="260,356 420,394 260,432 100,394" fill="#f5f5f5" stroke="#333" stroke-width="1.5"/>
+  <text x="260" y="389" text-anchor="middle" font-size="13" font-weight="bold">Fields Valid?</text>
+  <text x="260" y="406" text-anchor="middle" font-size="12" fill="#555">(format + length)</text>
+  <!-- No left loop -->
+  <line x1="100" y1="394" x2="50" y2="394" stroke="#222" stroke-width="1.8"/>
+  <line x1="50" y1="394" x2="50" y2="304" stroke="#222" stroke-width="1.8"/>
+  <line x1="50" y1="304" x2="110" y2="304" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+  <text x="72" y="386" text-anchor="middle" font-size="12" fill="#c00" font-weight="bold">No</text>
+  <!-- Yes down -->
+  <line x1="260" y1="432" x2="260" y2="456" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+  <text x="278" y="448" font-size="12" fill="#080" font-weight="bold">Yes</text>
+
+  <!-- Step 3 -->
+  <rect x="110" y="458" width="300" height="52" rx="8" fill="#f5f5f5" stroke="#333" stroke-width="1.5"/>
+  <text x="260" y="480" text-anchor="middle" font-size="13" font-weight="bold">Call Supabase Auth API</text>
+  <text x="260" y="498" text-anchor="middle" font-size="12" fill="#555">signInWithPassword()</text>
+  <line x1="260" y1="510" x2="260" y2="534" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <!-- Decision: Auth success? -->
+  <polygon points="260,536 420,574 260,612 100,574" fill="#f5f5f5" stroke="#333" stroke-width="1.5"/>
+  <text x="260" y="569" text-anchor="middle" font-size="13" font-weight="bold">Auth Successful?</text>
+  <!-- No left -->
+  <line x1="100" y1="574" x2="30" y2="574" stroke="#222" stroke-width="1.8"/>
+  <rect x="10" y="556" width="20" height="36" rx="4" fill="#ffe0e0" stroke="#c00" stroke-width="1"/>
+  <text x="20" y="578" text-anchor="middle" font-size="9" fill="#c00" transform="rotate(90,20,574)">Show Error</text>
+  <text x="62" y="566" text-anchor="middle" font-size="12" fill="#c00" font-weight="bold">No</text>
+  <!-- Yes down -->
+  <line x1="260" y1="612" x2="260" y2="636" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+  <text x="278" y="628" font-size="12" fill="#080" font-weight="bold">Yes</text>
+
+  <!-- Step 4 -->
+  <rect x="110" y="638" width="300" height="52" rx="8" fill="#f5f5f5" stroke="#333" stroke-width="1.5"/>
+  <text x="260" y="660" text-anchor="middle" font-size="13" font-weight="bold">Issue JWT + Set Cookie</text>
+  <text x="260" y="678" text-anchor="middle" font-size="12" fill="#555">Access (1hr) + Refresh (7d)</text>
+  <line x1="260" y1="690" x2="260" y2="714" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <!-- Step 5 -->
+  <rect x="110" y="716" width="300" height="52" rx="8" fill="#f5f5f5" stroke="#333" stroke-width="1.5"/>
+  <text x="260" y="738" text-anchor="middle" font-size="13" font-weight="bold">Fetch User Role from DB</text>
+  <text x="260" y="756" text-anchor="middle" font-size="12" fill="#555">resident / admin / guard</text>
+  <line x1="260" y1="768" x2="260" y2="792" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <!-- Three role boxes -->
+  <rect x="20"  y="794" width="140" height="48" rx="8" fill="#e8e8e8" stroke="#555" stroke-width="1.2"/>
+  <text x="90"  y="814" text-anchor="middle" font-size="13" font-weight="bold">Admin</text>
+  <text x="90"  y="832" text-anchor="middle" font-size="12" fill="#444">/dashboard/admin</text>
+  <rect x="190" y="794" width="140" height="48" rx="8" fill="#e8e8e8" stroke="#555" stroke-width="1.2"/>
+  <text x="260" y="814" text-anchor="middle" font-size="13" font-weight="bold">Resident</text>
+  <text x="260" y="832" text-anchor="middle" font-size="12" fill="#444">/dashboard</text>
+  <rect x="360" y="794" width="140" height="48" rx="8" fill="#e8e8e8" stroke="#555" stroke-width="1.2"/>
+  <text x="430" y="814" text-anchor="middle" font-size="13" font-weight="bold">Guard</text>
+  <text x="430" y="832" text-anchor="middle" font-size="12" fill="#444">/guard</text>
+
+  <line x1="200" y1="792" x2="90"  y2="794" stroke="#222" stroke-width="1.5" marker-end="url(#a)"/>
+  <line x1="260" y1="792" x2="260" y2="794" stroke="#222" stroke-width="1.5" marker-end="url(#a)"/>
+  <line x1="320" y1="792" x2="430" y2="794" stroke="#222" stroke-width="1.5" marker-end="url(#a)"/>
+</svg>
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Class Diagram – Trackify</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;600;700&display=swap');
+  @page { size: A4 landscape; margin: 20mm; }
+  @media print { body { margin: 0; } }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'EB Garamond', Garamond, 'Times New Roman', serif;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20mm;
+  }
+  h1 { font-size: 18pt; font-weight: 700; text-align: center; margin-bottom: 4pt; }
+  p.sub { font-size: 12pt; color: #444; text-align: center; margin-bottom: 12pt; }
+  svg text { font-family: 'EB Garamond', Garamond, 'Times New Roman', serif; }
+</style>
+</head>
+<body>
+<h1>Class Diagram</h1>
+<p class="sub">Trackify – Core Domain Model</p>
+<svg width="760" height="560" viewBox="0 0 760 560" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="assoc" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L0,8 L10,4 z" fill="#333"/>
+    </marker>
+  </defs>
+
+  <!-- ── Society ── -->
+  <rect x="10" y="30" width="170" height="190" rx="5" fill="#fff" stroke="#222" stroke-width="1.8"/>
+  <rect x="10" y="30" width="170" height="32" rx="5" fill="#222"/>
+  <text x="95" y="51" text-anchor="middle" font-size="14" fill="#fff" font-weight="bold">Society</text>
+  <line x1="10" y1="62" x2="180" y2="62" stroke="#222" stroke-width="1"/>
+  <text x="20" y="80"  font-size="12" fill="#333">– id : UUID</text>
+  <text x="20" y="96"  font-size="12" fill="#333">– name : String</text>
+  <text x="20" y="112" font-size="12" fill="#333">– code : String</text>
+  <text x="20" y="128" font-size="12" fill="#333">– address : String</text>
+  <text x="20" y="144" font-size="12" fill="#333">– total_units : Integer</text>
+  <text x="20" y="160" font-size="12" fill="#333">– is_active : Boolean</text>
+  <line x1="10" y1="170" x2="180" y2="170" stroke="#aaa" stroke-width="1"/>
+  <text x="20" y="186" font-size="12" fill="#555">+ getMembers()</text>
+  <text x="20" y="202" font-size="12" fill="#555">+ getIssues()</text>
+  <text x="20" y="218" font-size="12" fill="#555">+ getAmenities()</text>
+
+  <!-- ── Profile ── -->
+  <rect x="210" y="30" width="180" height="220" rx="5" fill="#fff" stroke="#222" stroke-width="1.8"/>
+  <rect x="210" y="30" width="180" height="32" rx="5" fill="#222"/>
+  <text x="300" y="51" text-anchor="middle" font-size="14" fill="#fff" font-weight="bold">Profile</text>
+  <line x1="210" y1="62" x2="390" y2="62" stroke="#222" stroke-width="1"/>
+  <text x="220" y="80"  font-size="12" fill="#333">– id : UUID</text>
+  <text x="220" y="96"  font-size="12" fill="#333">– society_id : UUID</text>
+  <text x="220" y="112" font-size="12" fill="#333">– full_name : String</text>
+  <text x="220" y="128" font-size="12" fill="#333">– email : String</text>
+  <text x="220" y="144" font-size="12" fill="#333">– flat_number : String</text>
+  <text x="220" y="160" font-size="12" fill="#333">– role : Enum</text>
+  <text x="220" y="176" font-size="12" fill="#555" font-style="italic">  resident | admin | guard</text>
+  <text x="220" y="192" font-size="12" fill="#333">– is_approved : Boolean</text>
+  <line x1="210" y1="202" x2="390" y2="202" stroke="#aaa" stroke-width="1"/>
+  <text x="220" y="218" font-size="12" fill="#555">+ getIssues()</text>
+  <text x="220" y="234" font-size="12" fill="#555">+ getVisitorPasses()</text>
+  <text x="220" y="250" font-size="12" fill="#555">+ getPayments()</text>
+
+  <!-- ── Issue ── -->
+  <rect x="420" y="30" width="190" height="260" rx="5" fill="#fff" stroke="#222" stroke-width="1.8"/>
+  <rect x="420" y="30" width="190" height="32" rx="5" fill="#222"/>
+  <text x="515" y="51" text-anchor="middle" font-size="14" fill="#fff" font-weight="bold">Issue</text>
+  <line x1="420" y1="62" x2="610" y2="62" stroke="#222" stroke-width="1"/>
+  <text x="430" y="80"  font-size="12" fill="#333">– id : UUID</text>
+  <text x="430" y="96"  font-size="12" fill="#333">– society_id : UUID</text>
+  <text x="430" y="112" font-size="12" fill="#333">– reporter_id : UUID</text>
+  <text x="430" y="128" font-size="12" fill="#333">– title : String</text>
+  <text x="430" y="144" font-size="12" fill="#333">– category : String</text>
+  <text x="430" y="160" font-size="12" fill="#333">– priority : Enum</text>
+  <text x="430" y="176" font-size="12" fill="#555" font-style="italic">  low|medium|high|critical</text>
+  <text x="430" y="192" font-size="12" fill="#333">– status : Enum</text>
+  <text x="430" y="208" font-size="12" fill="#555" font-style="italic">  open|in_progress|resolved</text>
+  <text x="430" y="224" font-size="12" fill="#333">– due_date : Date</text>
+  <text x="430" y="240" font-size="12" fill="#333">– rating : Integer (1–5)</text>
+  <line x1="420" y1="250" x2="610" y2="250" stroke="#aaa" stroke-width="1"/>
+  <text x="430" y="266" font-size="12" fill="#555">+ addComment()</text>
+  <text x="430" y="282" font-size="12" fill="#555">+ updateStatus()</text>
+
+  <!-- ── VisitorPass ── -->
+  <rect x="10" y="330" width="180" height="200" rx="5" fill="#fff" stroke="#222" stroke-width="1.8"/>
+  <rect x="10" y="330" width="180" height="32" rx="5" fill="#222"/>
+  <text x="100" y="351" text-anchor="middle" font-size="14" fill="#fff" font-weight="bold">VisitorPass</text>
+  <line x1="10" y1="362" x2="190" y2="362" stroke="#222" stroke-width="1"/>
+  <text x="20" y="380" font-size="12" fill="#333">– id : UUID</text>
+  <text x="20" y="396" font-size="12" fill="#333">– resident_id : UUID</text>
+  <text x="20" y="412" font-size="12" fill="#333">– visitor_name : String</text>
+  <text x="20" y="428" font-size="12" fill="#333">– otp : String</text>
+  <text x="20" y="444" font-size="12" fill="#333">– status : Enum</text>
+  <line x1="10" y1="454" x2="190" y2="454" stroke="#aaa" stroke-width="1"/>
+  <text x="20" y="470" font-size="12" fill="#555">+ verifyOTP() : Boolean</text>
+  <text x="20" y="486" font-size="12" fill="#555">+ logEntry()</text>
+  <text x="20" y="502" font-size="12" fill="#555">+ cancel()</text>
+
+  <!-- ── Payment ── -->
+  <rect x="210" y="330" width="190" height="200" rx="5" fill="#fff" stroke="#222" stroke-width="1.8"/>
+  <rect x="210" y="330" width="190" height="32" rx="5" fill="#222"/>
+  <text x="305" y="351" text-anchor="middle" font-size="14" fill="#fff" font-weight="bold">Payment</text>
+  <line x1="210" y1="362" x2="400" y2="362" stroke="#222" stroke-width="1"/>
+  <text x="220" y="380" font-size="12" fill="#333">– id : UUID</text>
+  <text x="220" y="396" font-size="12" fill="#333">– resident_id : UUID</text>
+  <text x="220" y="412" font-size="12" fill="#333">– razorpay_order_id</text>
+  <text x="220" y="428" font-size="12" fill="#333">– amount : Decimal</text>
+  <text x="220" y="444" font-size="12" fill="#333">– status : Enum</text>
+  <line x1="210" y1="454" x2="400" y2="454" stroke="#aaa" stroke-width="1"/>
+  <text x="220" y="470" font-size="12" fill="#555">+ verify() : Boolean</text>
+  <text x="220" y="486" font-size="12" fill="#555">+ generateReceipt()</text>
+  <text x="220" y="502" font-size="12" fill="#555">+ refund()</text>
+
+  <!-- ── Amenity ── -->
+  <rect x="420" y="330" width="180" height="200" rx="5" fill="#fff" stroke="#222" stroke-width="1.8"/>
+  <rect x="420" y="330" width="180" height="32" rx="5" fill="#222"/>
+  <text x="510" y="351" text-anchor="middle" font-size="14" fill="#fff" font-weight="bold">Amenity</text>
+  <line x1="420" y1="362" x2="600" y2="362" stroke="#222" stroke-width="1"/>
+  <text x="430" y="380" font-size="12" fill="#333">– id : UUID</text>
+  <text x="430" y="396" font-size="12" fill="#333">– society_id : UUID</text>
+  <text x="430" y="412" font-size="12" fill="#333">– name : String</text>
+  <text x="430" y="428" font-size="12" fill="#333">– capacity : Integer</text>
+  <text x="430" y="444" font-size="12" fill="#333">– is_active : Boolean</text>
+  <line x1="420" y1="454" x2="600" y2="454" stroke="#aaa" stroke-width="1"/>
+  <text x="430" y="470" font-size="12" fill="#555">+ checkAvailability()</text>
+  <text x="430" y="486" font-size="12" fill="#555">+ book(resident)</text>
+  <text x="430" y="502" font-size="12" fill="#555">+ getBookings()</text>
+
+  <!-- ── IssueComment ── -->
+  <rect x="620" y="30" width="130" height="160" rx="5" fill="#fff" stroke="#222" stroke-width="1.8"/>
+  <rect x="620" y="30" width="130" height="32" rx="5" fill="#222"/>
+  <text x="685" y="51" text-anchor="middle" font-size="13" fill="#fff" font-weight="bold">IssueComment</text>
+  <line x1="620" y1="62" x2="750" y2="62" stroke="#222" stroke-width="1"/>
+  <text x="630" y="80"  font-size="12" fill="#333">– id : UUID</text>
+  <text x="630" y="96"  font-size="12" fill="#333">– issue_id : UUID</text>
+  <text x="630" y="112" font-size="12" fill="#333">– author_id : UUID</text>
+  <text x="630" y="128" font-size="12" fill="#333">– content : Text</text>
+  <text x="630" y="144" font-size="12" fill="#333">– is_internal : Bool</text>
+  <line x1="620" y1="154" x2="750" y2="154" stroke="#aaa" stroke-width="1"/>
+  <text x="630" y="170" font-size="12" fill="#555">+ delete()</text>
+  <text x="630" y="186" font-size="12" fill="#555">+ getAuthor()</text>
+
+  <!-- ── RELATIONSHIPS ── -->
+  <!-- Society 1 → * Profile -->
+  <line x1="180" y1="130" x2="210" y2="130" stroke="#333" stroke-width="1.5" marker-end="url(#assoc)"/>
+  <text x="184" y="124" font-size="11" fill="#333">1</text>
+  <text x="200" y="124" font-size="11" fill="#333">*</text>
+
+  <!-- Profile 1 → * Issue -->
+  <line x1="390" y1="140" x2="420" y2="140" stroke="#333" stroke-width="1.5" marker-end="url(#assoc)"/>
+  <text x="394" y="134" font-size="11" fill="#333">1</text>
+  <text x="410" y="134" font-size="11" fill="#333">*</text>
+
+  <!-- Issue 1 → * IssueComment -->
+  <line x1="610" y1="140" x2="620" y2="140" stroke="#333" stroke-width="1.5" marker-end="url(#assoc)"/>
+  <text x="612" y="134" font-size="11" fill="#333">1</text>
+  <text x="616" y="134" font-size="11" fill="#333">*</text>
+
+  <!-- Profile 1 → * VisitorPass -->
+  <line x1="300" y1="250" x2="300" y2="290" stroke="#333" stroke-width="1.5"/>
+  <line x1="300" y1="290" x2="100" y2="290" stroke="#333" stroke-width="1.5"/>
+  <line x1="100" y1="290" x2="100" y2="330" stroke="#333" stroke-width="1.5" marker-end="url(#assoc)"/>
+  <text x="308" y="270" font-size="11" fill="#333">1</text>
+  <text x="88"  y="324" font-size="11" fill="#333">*</text>
+
+  <!-- Profile 1 → * Payment -->
+  <line x1="300" y1="250" x2="300" y2="330" stroke="#333" stroke-width="1.5" marker-end="url(#assoc)"/>
+  <text x="308" y="295" font-size="11" fill="#333">1..*</text>
+
+  <!-- Society 1 → * Amenity -->
+  <line x1="95" y1="220" x2="95" y2="290" stroke="#333" stroke-width="1.5"/>
+  <line x1="95" y1="290" x2="510" y2="290" stroke="#333" stroke-width="1.5"/>
+  <line x1="510" y1="290" x2="510" y2="330" stroke="#333" stroke-width="1.5" marker-end="url(#assoc)"/>
+  <text x="103" y="240" font-size="11" fill="#333">1</text>
+  <text x="498" y="324" font-size="11" fill="#333">*</text>
+</svg>
+</body>
+</html>

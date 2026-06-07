@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DFD – Smart Civic Issue Reporting System</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: #ffffff;
+    color: #111;
+    padding: 40px 32px 60px;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 36px;
+    border-bottom: 2px solid #111;
+    padding-bottom: 16px;
+  }
+  .page-header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: .02em;
+  }
+  .page-header p {
+    font-size: .9rem;
+    color: #555;
+    margin-top: 4px;
+  }
+
+  .section-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: #222;
+  }
+
+  .diagram-box {
+    border: 1.5px solid #ccc;
+    border-radius: 8px;
+    padding: 28px 16px;
+    max-width: 900px;
+    margin: 0 auto;
+    background: #fafafa;
+    overflow-x: auto;
+  }
+
+  .mermaid {
+    display: flex;
+    justify-content: center;
+  }
+
+  .legend {
+    max-width: 900px;
+    margin: 20px auto 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 28px;
+    font-size: .8rem;
+    color: #444;
+    padding: 12px 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    background: #f9f9f9;
+  }
+  .legend-item { display: flex; align-items: center; gap: 7px; }
+  .dot { width: 13px; height: 13px; border-radius: 3px; flex-shrink: 0; }
+
+  footer {
+    text-align: center;
+    margin-top: 40px;
+    font-size: .75rem;
+    color: #999;
+    border-top: 1px solid #ddd;
+    padding-top: 12px;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>Smart Civic Issue Reporting System</h1>
+  <p>Data Flow Diagram (DFD) — Level 1</p>
+</div>
+
+<div class="section-title">DFD Level 1 — Data Flow Between Entities, Processes &amp; Stores</div>
+
+<div class="diagram-box">
+  <div class="mermaid">
+flowchart TD
+    CITIZEN(["👤 Citizen"])
+    OFFICER(["🏛️ Municipal Officer"])
+    AI(["🤖 AI System"])
+
+    P1["1.0 Submit Issue"]
+    P2["2.0 Validate & Store Issue"]
+    P3["3.0 AI Classification"]
+    P4["4.0 Assign Issue"]
+    P5["5.0 Track Status"]
+    P6["6.0 Update Issue"]
+    P7["7.0 Feedback System"]
+
+    DS1[("Issues DB")]
+    DS2[("Users DB")]
+    DS3[("Wards DB")]
+
+    CITIZEN -->|"Issue Details"| P1
+    P1 -->|"Raw Issue Data"| P2
+    DS2 -->|"User Profile"| P2
+    DS3 -->|"Ward Info"| P2
+    P2 -->|"Validated Issue"| DS1
+
+    DS1 -->|"Issue Text & Metadata"| P3
+    AI  -->|"ML Model"| P3
+    P3  -->|"Category & Priority"| DS1
+
+    DS1 -->|"Classified Issue"| P4
+    DS3 -->|"Ward Assignment"| P4
+    P4  -->|"Assignment Notice"| OFFICER
+
+    OFFICER -->|"Status Update"| P6
+    P6 -->|"Updated Record"| DS1
+
+    DS1 -->|"Current Status"| P5
+    P5  -->|"Status Notification"| CITIZEN
+
+    CITIZEN -->|"Rating & Comments"| P7
+    P7 -->|"Feedback Record"| DS1
+
+    style CITIZEN fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+    style OFFICER fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+    style AI      fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+    style P1 fill:#ede9fe,stroke:#7c3aed,color:#3b0764
+    style P2 fill:#ede9fe,stroke:#7c3aed,color:#3b0764
+    style P3 fill:#ede9fe,stroke:#7c3aed,color:#3b0764
+    style P4 fill:#ede9fe,stroke:#7c3aed,color:#3b0764
+    style P5 fill:#ede9fe,stroke:#7c3aed,color:#3b0764
+    style P6 fill:#ede9fe,stroke:#7c3aed,color:#3b0764
+    style P7 fill:#ede9fe,stroke:#7c3aed,color:#3b0764
+    style DS1 fill:#dcfce7,stroke:#16a34a,color:#14532d
+    style DS2 fill:#dcfce7,stroke:#16a34a,color:#14532d
+    style DS3 fill:#dcfce7,stroke:#16a34a,color:#14532d
+  </div>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="dot" style="background:#2563eb;"></div> External Entity (Citizen / Officer / AI)</div>
+  <div class="legend-item"><div class="dot" style="background:#7c3aed;"></div> Process (1.0 – 7.0)</div>
+  <div class="legend-item"><div class="dot" style="background:#16a34a;"></div> Data Store (Issues / Users / Wards DB)</div>
+  <div class="legend-item"><div class="dot" style="background:#888;"></div> Data Flow (Arrow with label)</div>
+</div>
+
+<footer>Smart Civic Issue Reporting System &nbsp;·&nbsp; DFD Level 1 &nbsp;·&nbsp; Academic Submission 2025–26</footer>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'default',
+    flowchart: { curve: 'basis', padding: 24, nodeSpacing: 50, rankSpacing: 60 }
+  });
+</script>
+</body>
+</html>

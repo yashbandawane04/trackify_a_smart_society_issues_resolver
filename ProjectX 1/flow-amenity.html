@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Amenity Booking Flow – Trackify</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #fff; font-family: 'Segoe UI', Arial, sans-serif; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; }
+  h1 { font-size: 26px; font-weight: bold; margin-bottom: 6px; }
+  p.sub { font-size: 15px; color: #444; margin-bottom: 30px; }
+  svg text { font-family: 'Segoe UI', Arial, sans-serif; }
+</style>
+</head>
+<body>
+<h1>Amenity Booking Flowchart</h1>
+<p class="sub">Trackify – Amenity Reservation Process</p>
+<svg width="700" height="1100" viewBox="0 0 700 1100" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto">
+      <path d="M0,0 L0,8 L10,4 z" fill="#222"/>
+    </marker>
+  </defs>
+
+  <ellipse cx="350" cy="50" rx="120" ry="36" fill="#222"/>
+  <text x="350" y="56" text-anchor="middle" font-size="18" fill="#fff" font-weight="bold">START</text>
+  <line x1="350" y1="86" x2="350" y2="118" stroke="#222" stroke-width="2.5" marker-end="url(#a)"/>
+
+  <rect x="160" y="120" width="380" height="60" rx="10" fill="#f5f5f5" stroke="#333" stroke-width="2"/>
+  <text x="350" y="145" text-anchor="middle" font-size="16" font-weight="bold">Resident Opens Amenities Page</text>
+  <text x="350" y="167" text-anchor="middle" font-size="13" fill="#555">/dashboard/amenities</text>
+  <line x1="350" y1="180" x2="350" y2="212" stroke="#222" stroke-width="2.5" marker-end="url(#a)"/>
+
+  <rect x="160" y="215" width="380" height="60" rx="10" fill="#f5f5f5" stroke="#333" stroke-width="2"/>
+  <text x="350" y="240" text-anchor="middle" font-size="16" font-weight="bold">Browse Available Amenities</text>
+  <text x="350" y="262" text-anchor="middle" font-size="13" fill="#555">Clubhouse · Pool · Court · Hall</text>
+  <line x1="350" y1="275" x2="350" y2="307" stroke="#222" stroke-width="2.5" marker-end="url(#a)"/>
+
+  <rect x="160" y="310" width="380" height="60" rx="10" fill="#f5f5f5" stroke="#333" stroke-width="2"/>
+  <text x="350" y="335" text-anchor="middle" font-size="16" font-weight="bold">Select Amenity &amp; Date</text>
+  <text x="350" y="357" text-anchor="middle" font-size="13" fill="#555">Choose time slot from calendar</text>
+  <line x1="350" y1="370" x2="350" y2="402" stroke="#222" stroke-width="2.5" marker-end="url(#a)"/>
+
+  <!-- Decision: Slot available? -->
+  <polygon points="350,405 530,450 350,495 170,450" fill="#f5f5f5" stroke="#333" stroke-width="2"/>
+  <text x="350" y="445" text-anchor="middle" font-size="16" font-weight="bold">Slot Available?</text>
+  <!-- No -->
+  <line x1="530" y1="450" x2="620" y2="450" stroke="#222" stroke-width="2.5"/>
+  <rect x="620" y="425" width="60" height="50" rx="8" fill="#ffe0e0" stroke="#c00" stroke-width="1.5"/>
+  <text x="650" y="447" text-anchor="middle" font-size="12" fill="#c00">Show</text>
+  <text x="650" y="463" text-anchor="middle" font-size="12" fill="#c00">Conflict</text>
+  <text x="578" y="440" font-size="14" fill="#c00" font-weight="bold">No</text>
+  <!-- Yes -->
+  <line x1="350" y1="495" x2="350" y2="527" stroke="#222" stroke-width="2.5" marker-end="url(#a)"/>
+  <text x="370" y="515" font-size="14" fill="#080" font-weight="bold">Yes</text>
+
+  <rect x="160" y="530" width="380" height="60" rx="10" fill="#f5f5f5" stroke="#333" stroke-width="2"/>
+  <text x="350" y="555" text-anchor="middle" font-size="16" font-weight="bold">Confirm Booking Details</text>
+  <text x="350" y="577" text-anchor="middle" font-size="13" fill="#555">Review date · time · notes</text>
+  <line x1="350" y1="590" x2="350" y2="622" stroke="#222" stroke-width="2.5" marker-end="url(#a)"/>
+
+  <rect x="160" y="625" width="380" height="60" rx="10" fill="#f5f5f5" stroke="#333" stroke-width="2"/>
+  <text x="350" y="650" text-anchor="middle" font-size="16" font-weight="bold">INSERT Booking Record</text>
+  <text x="350" y="672" text-anchor="middle" font-size="13" fill="#555">amenity_bookings · status = confirmed</text>
+  <line x1="350" y1="685" x2="350" y2="717" stroke="#222" stroke-width="2.5" marker-end="url(#a)"/>
+
+  <rect x="160" y="720" width="380" height="60" rx="10" fill="#f5f5f5" stroke="#333" stroke-width="2"/>
+  <text x="350" y="745" text-anchor="middle" font-size="16" font-weight="bold">Send Confirmation Notification</text>
+  <text x="350" y="767" text-anchor="middle" font-size="13" fill="#555">In-app + email to resident</text>
+  <line x1="350" y1="780" x2="350" y2="812" stroke="#222" stroke-width="2.5" marker-end="url(#a)"/>
+
+  <rect x="160" y="815" width="380" height="60" rx="10" fill="#f5f5f5" stroke="#333" stroke-width="2"/>
+  <text x="350" y="840" text-anchor="middle" font-size="16" font-weight="bold">Booking Appears in Calendar</text>
+  <text x="350" y="862" text-anchor="middle" font-size="13" fill="#555">Slot blocked for other residents</text>
+  <line x1="350" y1="875" x2="350" y2="907" stroke="#222" stroke-width="2.5" marker-end="url(#a)"/>
+
+  <!-- Decision: Cancel? -->
+  <polygon points="350,910 530,950 350,990 170,950" fill="#f5f5f5" stroke="#333" stroke-width="2"/>
+  <text x="350" y="955" text-anchor="middle" font-size="16" font-weight="bold">Resident Cancels?</text>
+  <!-- Yes cancel -->
+  <line x1="530" y1="950" x2="620" y2="950" stroke="#222" stroke-width="2.5"/>
+  <rect x="620" y="925" width="60" height="50" rx="8" fill="#f5f5f5" stroke="#555" stroke-width="1.5"/>
+  <text x="650" y="947" text-anchor="middle" font-size="12">Update</text>
+  <text x="650" y="963" text-anchor="middle" font-size="12">Cancelled</text>
+  <text x="578" y="940" font-size="14" fill="#c00" font-weight="bold">Yes</text>
+  <!-- No -->
+  <line x1="350" y1="990" x2="350" y2="1022" stroke="#222" stroke-width="2.5" marker-end="url(#a)"/>
+  <text x="370" y="1010" font-size="14" fill="#080" font-weight="bold">No</text>
+
+  <rect x="160" y="1025" width="380" height="50" rx="10" fill="#f5f5f5" stroke="#333" stroke-width="2"/>
+  <text x="350" y="1055" text-anchor="middle" font-size="16" font-weight="bold">Booking Completed</text>
+  <line x1="350" y1="1075" x2="350" y2="1087" stroke="#222" stroke-width="2.5" marker-end="url(#a)"/>
+
+  <ellipse cx="350" cy="1090" rx="120" ry="32" fill="#222"/>
+  <text x="350" y="1096" text-anchor="middle" font-size="18" fill="#fff" font-weight="bold">END</text>
+</svg>
+</body>
+</html>

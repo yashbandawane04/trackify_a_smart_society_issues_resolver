@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SOS Alert Flow – Trackify</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;600;700&display=swap');
+  @page { size: A4 portrait; margin: 20mm; }
+  @media print { body { margin: 0; } }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'EB Garamond', Garamond, 'Times New Roman', serif;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20mm;
+  }
+  h1 { font-size: 18pt; font-weight: 700; text-align: center; margin-bottom: 4pt; }
+  p.sub { font-size: 12pt; color: #444; text-align: center; margin-bottom: 12pt; }
+  svg text { font-family: 'EB Garamond', Garamond, 'Times New Roman', serif; }
+</style>
+</head>
+<body>
+<h1>SOS Emergency Alert Flow</h1>
+<p class="sub">Trackify – Emergency Alert Dispatch Process</p>
+<svg width="520" height="900" viewBox="0 0 520 900" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="a" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L0,8 L10,4 z" fill="#222"/>
+    </marker>
+  </defs>
+
+  <ellipse cx="260" cy="34" rx="120" ry="26" fill="#222"/>
+  <text x="260" y="39" text-anchor="middle" font-size="14" fill="#fff" font-weight="bold">EMERGENCY OCCURS</text>
+  <line x1="260" y1="60" x2="260" y2="82" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <rect x="110" y="84" width="300" height="52" rx="8" fill="#f5f5f5" stroke="#333" stroke-width="1.5"/>
+  <text x="260" y="106" text-anchor="middle" font-size="13" font-weight="bold">Resident Opens SOS Page</text>
+  <text x="260" y="124" text-anchor="middle" font-size="12" fill="#555">/dashboard/sos</text>
+  <line x1="260" y1="136" x2="260" y2="158" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <rect x="110" y="160" width="300" height="52" rx="8" fill="#f5f5f5" stroke="#333" stroke-width="1.5"/>
+  <text x="260" y="182" text-anchor="middle" font-size="13" font-weight="bold">Press SOS Button</text>
+  <text x="260" y="200" text-anchor="middle" font-size="12" fill="#555">Single tap · No confirmation needed</text>
+  <line x1="260" y1="212" x2="260" y2="234" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <rect x="110" y="236" width="300" height="52" rx="8" fill="#f5f5f5" stroke="#333" stroke-width="1.5"/>
+  <text x="260" y="258" text-anchor="middle" font-size="13" font-weight="bold">Collect GPS Location</text>
+  <text x="260" y="276" text-anchor="middle" font-size="12" fill="#555">Browser Geolocation API (if permitted)</text>
+  <line x1="260" y1="288" x2="260" y2="310" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <rect x="110" y="312" width="300" height="52" rx="8" fill="#f5f5f5" stroke="#333" stroke-width="1.5"/>
+  <text x="260" y="334" text-anchor="middle" font-size="13" font-weight="bold">POST /api/send-sos-sms</text>
+  <text x="260" y="352" text-anchor="middle" font-size="12" fill="#555">resident_id · message · location</text>
+  <line x1="260" y1="364" x2="260" y2="386" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <rect x="110" y="388" width="300" height="52" rx="8" fill="#f5f5f5" stroke="#333" stroke-width="1.5"/>
+  <text x="260" y="410" text-anchor="middle" font-size="13" font-weight="bold">Fetch Emergency Contacts</text>
+  <text x="260" y="428" text-anchor="middle" font-size="12" fill="#555">Guard · Admin · Registered contacts</text>
+  <line x1="260" y1="440" x2="260" y2="462" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <rect x="110" y="464" width="300" height="52" rx="8" fill="#f5f5f5" stroke="#333" stroke-width="1.5"/>
+  <text x="260" y="486" text-anchor="middle" font-size="13" font-weight="bold">Send SMS via Twilio</text>
+  <text x="260" y="504" text-anchor="middle" font-size="12" fill="#555">To all contacts simultaneously</text>
+  <line x1="260" y1="516" x2="260" y2="538" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <rect x="110" y="540" width="300" height="52" rx="8" fill="#f5f5f5" stroke="#333" stroke-width="1.5"/>
+  <text x="260" y="562" text-anchor="middle" font-size="13" font-weight="bold">Log SOS Alert in Database</text>
+  <text x="260" y="580" text-anchor="middle" font-size="12" fill="#555">Timestamp · Location · Resident details</text>
+  <line x1="260" y1="592" x2="260" y2="614" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <rect x="110" y="616" width="300" height="52" rx="8" fill="#f5f5f5" stroke="#333" stroke-width="1.5"/>
+  <text x="260" y="638" text-anchor="middle" font-size="13" font-weight="bold">Show Confirmation to Resident</text>
+  <text x="260" y="656" text-anchor="middle" font-size="12" fill="#555">"Help is on the way"</text>
+  <line x1="260" y1="668" x2="260" y2="690" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <rect x="110" y="692" width="300" height="52" rx="8" fill="#f5f5f5" stroke="#333" stroke-width="1.5"/>
+  <text x="260" y="714" text-anchor="middle" font-size="13" font-weight="bold">Guard / Admin Responds</text>
+  <text x="260" y="732" text-anchor="middle" font-size="12" fill="#555">Acknowledges alert in system</text>
+  <line x1="260" y1="744" x2="260" y2="766" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <rect x="110" y="768" width="300" height="52" rx="8" fill="#f5f5f5" stroke="#333" stroke-width="1.5"/>
+  <text x="260" y="790" text-anchor="middle" font-size="13" font-weight="bold">Alert Marked as Resolved</text>
+  <text x="260" y="808" text-anchor="middle" font-size="12" fill="#555">Status updated · Resident notified</text>
+  <line x1="260" y1="820" x2="260" y2="842" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <ellipse cx="260" cy="868" rx="120" ry="26" fill="#222"/>
+  <text x="260" y="873" text-anchor="middle" font-size="14" fill="#fff" font-weight="bold">ALERT RESOLVED</text>
+</svg>
+</body>
+</html>

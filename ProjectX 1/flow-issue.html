@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Issue Submission Flow – Trackify</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;600;700&display=swap');
+  @page { size: A4 portrait; margin: 20mm; }
+  @media print { body { margin: 0; } }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'EB Garamond', Garamond, 'Times New Roman', serif;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20mm;
+  }
+  h1 { font-size: 18pt; font-weight: 700; text-align: center; margin-bottom: 4pt; }
+  p.sub { font-size: 12pt; color: #444; text-align: center; margin-bottom: 12pt; }
+  svg text { font-family: 'EB Garamond', Garamond, 'Times New Roman', serif; }
+</style>
+</head>
+<body>
+<h1>Issue Submission Flow</h1>
+<p class="sub">Trackify – Complete Issue Lifecycle: Submission to Closure</p>
+<svg width="520" height="980" viewBox="0 0 520 980" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="a" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L0,8 L10,4 z" fill="#222"/>
+    </marker>
+  </defs>
+
+  <!-- START -->
+  <ellipse cx="260" cy="34" rx="100" ry="26" fill="#222"/>
+  <text x="260" y="39" text-anchor="middle" font-size="14" fill="#fff" font-weight="bold">START</text>
+  <line x1="260" y1="60" x2="260" y2="82" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <!-- 1 -->
+  <rect x="110" y="84" width="300" height="52" rx="8" fill="#f5f5f5" stroke="#333" stroke-width="1.5"/>
+  <text x="260" y="106" text-anchor="middle" font-size="13" font-weight="bold">Resident Opens Issue Form</text>
+  <text x="260" y="124" text-anchor="middle" font-size="12" fill="#555">Fills title, description, category, location</text>
+  <line x1="260" y1="136" x2="260" y2="158" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <!-- D1: Form valid? -->
+  <polygon points="260,160 410,196 260,232 110,196" fill="#f5f5f5" stroke="#333" stroke-width="1.5"/>
+  <text x="260" y="191" text-anchor="middle" font-size="13" font-weight="bold">Form Valid?</text>
+  <text x="260" y="207" text-anchor="middle" font-size="12" fill="#555">(required fields)</text>
+  <line x1="110" y1="196" x2="50" y2="196" stroke="#222" stroke-width="1.8"/>
+  <line x1="50" y1="196" x2="50" y2="110" stroke="#222" stroke-width="1.8"/>
+  <line x1="50" y1="110" x2="110" y2="110" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+  <text x="76" y="188" text-anchor="middle" font-size="12" fill="#c00" font-weight="bold">No</text>
+  <line x1="260" y1="232" x2="260" y2="254" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+  <text x="278" y="247" font-size="12" fill="#080" font-weight="bold">Yes</text>
+
+  <!-- 2 -->
+  <rect x="110" y="256" width="300" height="52" rx="8" fill="#f5f5f5" stroke="#333" stroke-width="1.5"/>
+  <text x="260" y="278" text-anchor="middle" font-size="13" font-weight="bold">Upload Photo Attachments</text>
+  <text x="260" y="296" text-anchor="middle" font-size="12" fill="#555">Optional · Max 5 files · 5 MB each</text>
+  <line x1="260" y1="308" x2="260" y2="330" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <!-- 3 -->
+  <rect x="110" y="332" width="300" height="52" rx="8" fill="#f5f5f5" stroke="#333" stroke-width="1.5"/>
+  <text x="260" y="354" text-anchor="middle" font-size="13" font-weight="bold">Send to Gemini AI API</text>
+  <text x="260" y="372" text-anchor="middle" font-size="12" fill="#555">POST /api/classify-issue</text>
+  <line x1="260" y1="384" x2="260" y2="406" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <!-- 4 -->
+  <rect x="110" y="408" width="300" height="52" rx="8" fill="#f5f5f5" stroke="#333" stroke-width="1.5"/>
+  <text x="260" y="430" text-anchor="middle" font-size="13" font-weight="bold">AI Returns Suggestion</text>
+  <text x="260" y="448" text-anchor="middle" font-size="12" fill="#555">Category · Priority · Enhanced Description</text>
+  <line x1="260" y1="460" x2="260" y2="482" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <!-- D2: Accept AI? -->
+  <polygon points="260,484 420,520 260,556 100,520" fill="#f5f5f5" stroke="#333" stroke-width="1.5"/>
+  <text x="260" y="515" text-anchor="middle" font-size="13" font-weight="bold">Accept AI Suggestion?</text>
+  <line x1="420" y1="520" x2="480" y2="520" stroke="#222" stroke-width="1.8"/>
+  <line x1="480" y1="520" x2="480" y2="434" stroke="#222" stroke-width="1.8"/>
+  <line x1="480" y1="434" x2="410" y2="434" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+  <text x="454" y="512" text-anchor="middle" font-size="12" fill="#c00" font-weight="bold">No</text>
+  <text x="468" y="480" font-size="11" fill="#c00">Modify</text>
+  <line x1="260" y1="556" x2="260" y2="578" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+  <text x="278" y="571" font-size="12" fill="#080" font-weight="bold">Yes</text>
+
+  <!-- 5 -->
+  <rect x="110" y="580" width="300" height="52" rx="8" fill="#f5f5f5" stroke="#333" stroke-width="1.5"/>
+  <text x="260" y="602" text-anchor="middle" font-size="13" font-weight="bold">Save Issue to Database</text>
+  <text x="260" y="620" text-anchor="middle" font-size="12" fill="#555">INSERT · status = Open</text>
+  <line x1="260" y1="632" x2="260" y2="654" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <!-- 6 -->
+  <rect x="110" y="656" width="300" height="52" rx="8" fill="#f5f5f5" stroke="#333" stroke-width="1.5"/>
+  <text x="260" y="678" text-anchor="middle" font-size="13" font-weight="bold">Notify Admin</text>
+  <text x="260" y="696" text-anchor="middle" font-size="12" fill="#555">Push notification + Email</text>
+  <line x1="260" y1="708" x2="260" y2="730" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <!-- 7 -->
+  <rect x="110" y="732" width="300" height="52" rx="8" fill="#f5f5f5" stroke="#333" stroke-width="1.5"/>
+  <text x="260" y="754" text-anchor="middle" font-size="13" font-weight="bold">Admin Assigns &amp; Updates Status</text>
+  <text x="260" y="772" text-anchor="middle" font-size="12" fill="#555">In Progress → Resolved</text>
+  <line x1="260" y1="784" x2="260" y2="806" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+
+  <!-- D3: Resident confirms? -->
+  <polygon points="260,808 420,844 260,880 100,844" fill="#f5f5f5" stroke="#333" stroke-width="1.5"/>
+  <text x="260" y="839" text-anchor="middle" font-size="13" font-weight="bold">Resident Confirms?</text>
+  <line x1="100" y1="844" x2="50" y2="844" stroke="#222" stroke-width="1.8"/>
+  <line x1="50" y1="844" x2="50" y2="758" stroke="#222" stroke-width="1.8"/>
+  <line x1="50" y1="758" x2="110" y2="758" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+  <text x="72" y="836" text-anchor="middle" font-size="12" fill="#c00" font-weight="bold">No</text>
+  <line x1="260" y1="880" x2="260" y2="902" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+  <text x="278" y="895" font-size="12" fill="#080" font-weight="bold">Yes</text>
+
+  <!-- END -->
+  <ellipse cx="260" cy="950" rx="100" ry="26" fill="#222"/>
+  <text x="260" y="955" text-anchor="middle" font-size="14" fill="#fff" font-weight="bold">ISSUE CLOSED</text>
+  <line x1="260" y1="902" x2="260" y2="924" stroke="#222" stroke-width="1.8" marker-end="url(#a)"/>
+</svg>
+</body>
+</html>
